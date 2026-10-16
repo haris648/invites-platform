@@ -41,9 +41,10 @@ export default {
       console.error(err);
       return json({ error: "Something went wrong on our side. Please try again." }, 500);
     }
-    return env.ASSETS.fetch(req);
-  },
-};
+    const res = await env.ASSETS.fetch(req);
+       return res.status === 404 ? notFound(env, url) : res;
+     },
+   };
 
 /* ---------------- try-on ---------------- */
 
