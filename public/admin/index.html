@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin · Dawat Invites</title>
+<title>Admin · Moving Invites</title>
 <meta name="robots" content="noindex">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Corinthia&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Marcellus+SC&display=swap">
 <link rel="stylesheet" href="/assets/shop.css">
@@ -25,7 +25,7 @@ td .btn{min-height:36px;padding:0 14px;font-size:11px}
 </style>
 </head>
 <body>
-<header class="top"><div class="wrap"><a class="brand" href="/">Dawat</a><span class="label">Admin</span></div></header>
+<header class="top"><div class="wrap"><a class="brand" href="/">Moving Invites</a><span class="label">Admin</span></div></header>
 
 <main class="wrap">
   <section class="card" id="login">
@@ -70,6 +70,11 @@ td .btn{min-height:36px;padding:0 14px;font-size:11px}
       <div class="row"><button class="btn solid" type="button" id="gAdd">Add guest</button></div>
       <p class="msg" id="gMsg" hidden></p>
       <div class="tbl"><table><thead><tr><th>Guest</th><th>Seats</th><th>Functions</th><th>Link</th><th></th></tr></thead><tbody id="guests"></tbody></table></div>
+
+      <h2 style="font-size:36px;margin-top:8px">Replies</h2>
+      <p class="muted" id="rsvpSummary" style="margin:0"></p>
+      <div class="row"><button class="btn" type="button" id="rsvpCopy">Copy for spreadsheet</button></div>
+      <div class="tbl"><table><thead><tr><th>When</th><th>Name</th><th>Reply</th><th>Guests</th><th>Meals</th><th>Dietary</th><th>Song</th><th>Note</th></tr></thead><tbody id="rsvps"></tbody></table></div>
     </section>
   </div>
 </main>
@@ -137,7 +142,7 @@ async function openEditor(slug) {
   $("#edOpen").href = "/" + slug;
   $("#edMsg").hidden = true; $("#gMsg").hidden = true;
   $("#gEvents").innerHTML = data.events.map((e) => `<label><input type="checkbox" value="${esc(e)}" checked><span>${esc(e)}</span></label>`).join("");
-  renderGuests();
+  renderGuests(); renderRsvps();
   $("#editor").scrollIntoView({ behavior: "smooth" });
 }
 function renderGuests() {
@@ -146,6 +151,31 @@ function renderGuests() {
     <td class="mono">${esc((g.events || ["all"]).join(", "))}</td><td>${copyBtn(location.origin + "/" + slug + "/" + g.key)}</td>
     <td><button class="btn" type="button" data-del="${esc(g.key)}">Remove</button></td></tr>`).join("")
     || `<tr><td colspan="5" class="muted">No guests yet. Without guests, everyone uses the main link.</td></tr>`;
+}
+function latestRsvps() {
+  // One row per guest link (or per name for the open link): the newest reply wins.
+  const seen = new Set();
+  return current.rsvps.filter((r) => { const k = r.guest_key || "name:" + r.name.toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; });
+}
+function renderRsvps() {
+  const list = latestRsvps();
+  const yes = list.filter((r) => r.attending === "yes"), no = list.filter((r) => r.attending === "no");
+  const people = yes.reduce((n, r) => n + (r.count || 0), 0);
+  const meals = {}; yes.forEach((r) => (r.meals || []).forEach((m) => { if (m) meals[m] = (meals[m] || 0) + 1; }));
+  $("#rsvpSummary").textContent = list.length
+    ? `${people} ${people === 1 ? "guest" : "guests"} coming from ${yes.length} ${yes.length === 1 ? "reply" : "replies"} · ${no.length} declined` + (Object.keys(meals).length ? " · " + Object.entries(meals).map(([m, n]) => `${n} × ${m}`).join(", ") : "")
+    : "No replies yet. They appear here as guests RSVP on the invitation.";
+  $("#rsvps").innerHTML = list.map((r) => `<tr><td>${when(r.created_at)}</td><td>${esc(r.name)}</td><td>${r.attending === "yes" ? "Accepts" : "Declines"}</td><td>${r.count || ""}</td>
+    <td>${esc((r.meals || []).filter(Boolean).join(", "))}</td><td>${esc(r.dietary)}</td><td>${esc(r.song)}</td><td>${esc(r.message)}</td></tr>`).join("");
+}
+async function copyRsvps(btn) {
+  const cell = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  const rows = [["Name", "Reply", "Guests", "Meals", "Dietary", "Song", "Note", "Received"]]
+    .concat(latestRsvps().map((r) => [r.name, r.attending === "yes" ? "Accepts" : "Declines", r.count, (r.meals || []).join("; "), r.dietary, r.song, r.message, new Date(r.created_at).toLocaleString("en-GB")]));
+  const text = rows.map((r) => r.map(cell).join("\t")).join("\n");
+  try { await navigator.clipboard.writeText(text); btn.textContent = "Copied, paste into Sheets or Excel"; }
+  catch { btn.textContent = "Couldn't copy. Select the table instead."; }
+  setTimeout(() => (btn.textContent = "Copy for spreadsheet"), 2500);
 }
 async function save() {
   let data;
@@ -172,6 +202,7 @@ document.addEventListener("click", async (e) => {
   if (t.id === "signin") return signIn();
   if (t.id === "edSave") return save();
   if (t.id === "gAdd") return addGuest();
+  if (t.id === "rsvpCopy") return copyRsvps(t);
   if (t.dataset.live) return makeLive(t.dataset.live, t.dataset.names);
   if (t.dataset.confirm) return confirmLive(t.dataset.confirm, t.closest(".row").querySelector("input"));
   if (t.dataset.edit) return openEditor(t.dataset.edit);

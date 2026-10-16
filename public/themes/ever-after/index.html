@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>document.documentElement.className += " js";</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#7E95AA">
+<title>Wedding Invitation</title>
+<meta name="description" content="You're invited">
+<meta name="robots" content="noindex">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Wedding Invitation">
+<meta property="og:description" content="You're invited">
+<meta property="og:image" content="/themes/ever-after/og.jpg">
+<meta property="og:url" content="">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preload" as="image" href="assets/envelope.jpg">
+<link rel="preload" as="image" href="assets/seal-blank.png">
+<link rel="preload" as="image" href="assets/hero.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Pinyon+Script&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --ink:#2E3B4A;
+  --slate:#566B7F;
+  --dusty:#7E95AA;
+  --mist:#E9EFF5;
+  --pearl:#F6F8FB;
+  --gold:#B8955A;
+  --gold-hi:#E9D3A0;
+  --silver:#8C98A5;
+  --serif:'Cormorant Garamond', Georgia, serif;
+  --caps:'Cinzel', Georgia, serif;
+  --script:'Pinyon Script', cursive;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;background:#C9D4DF}
+body{font-family:var(--serif);color:var(--ink);background:#C9D4DF;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.js body.locked{overflow:hidden;height:100%}
+img{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.app{position:relative;max-width:480px;margin:0 auto;background:var(--pearl);overflow:hidden;box-shadow:0 0 60px rgba(30,45,65,.25)}
+
+/* =========================================================
+   ENVELOPE
+   ========================================================= */
+#envelope{display:none}
+.js #envelope{display:block;position:fixed;top:0;bottom:0;left:50%;width:100%;max-width:480px;transform:translateX(-50%);
+  z-index:100;overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:none;-webkit-user-select:none;user-select:none}
+#envelope.done{display:none}
+.env-black{position:absolute;inset:0;background:#06090F}
+.env-flash{position:absolute;top:0;bottom:0;left:50%;width:46%;margin-left:-23%;opacity:0;pointer-events:none;
+  background:radial-gradient(50% 60% at 50% 50%,rgba(255,240,205,.95),rgba(233,200,130,.45) 45%,rgba(233,200,130,0) 75%)}
+/* two doors, hinged at the outer edges; each carries the full envelope so the seam lines up */
+.door{position:absolute;inset:0;will-change:transform}
+.door.left{-webkit-clip-path:inset(0 50% 0 0);clip-path:inset(0 50% 0 0);transform-origin:0% 50%}
+.door.right{-webkit-clip-path:inset(0 0 0 50%);clip-path:inset(0 0 0 50%);transform-origin:100% 50%}
+.door-face,.door-gold,.door-glow{position:absolute;inset:0;background:url(assets/envelope.jpg) center/cover}
+/* the same paper, re-coloured as gold leaf: the embossed pattern lights up gold */
+.door-gold,.door-glow{opacity:0;background-size:cover;background-position:center;pointer-events:none}
+/* a ring of gold light travels outward from the seal, lighting up the pattern as it passes */
+.door-glow{-webkit-mask-image:radial-gradient(circle at 50% 50%,transparent calc(var(--r,0px) - 110px),#000 calc(var(--r,0px) - 30px),#000 var(--r,0px),transparent calc(var(--r,0px) + 45px));
+                  mask-image:radial-gradient(circle at 50% 50%,transparent calc(var(--r,0px) - 110px),#000 calc(var(--r,0px) - 30px),#000 var(--r,0px),transparent calc(var(--r,0px) + 45px))}
+/* ...and leaves the pattern softly lit behind it */
+.door-gold{-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 calc(var(--r,0px) - 120px),transparent var(--r,0px));
+                  mask-image:radial-gradient(circle at 50% 50%,#000 calc(var(--r,0px) - 120px),transparent var(--r,0px))}
+.cssgold .door-gold,.cssgold .door-glow{filter:grayscale(1) contrast(3.2) brightness(.75) sepia(1) saturate(2) hue-rotate(170deg);mix-blend-mode:screen}
+#envSpark{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:6}
+.door .lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.door .seam{position:absolute;top:0;bottom:0;width:40px;opacity:0;pointer-events:none}
+.door.left .seam{left:calc(50% - 40px);background:linear-gradient(90deg,rgba(0,0,0,0),rgba(0,0,0,.4))}
+.door.right .seam{left:50%;background:linear-gradient(270deg,rgba(0,0,0,0),rgba(0,0,0,.4))}
+.seal-img{position:absolute;left:50%;top:50%;width:38%;max-width:170px;transform:translate(-50%,-50%);filter:drop-shadow(0 8px 10px rgba(20,35,55,.4))}
+.seal-img.gold{filter:sepia(1) saturate(2.2) hue-rotate(-8deg) brightness(1.08) drop-shadow(0 0 14px rgba(255,214,140,.7));opacity:0}
+/* seal effect layer: a gold ring draws round the seal, then the seal fills with gold in a circular sweep */
+.seal-fx{position:absolute;left:50%;top:50%;width:38%;max-width:170px;aspect-ratio:1;transform:translate(-50%,-50%);z-index:4;pointer-events:none}
+.seal-fx img{position:absolute;inset:0;width:100%;height:100%}
+.seal-fx .fill{filter:sepia(1) saturate(2.2) hue-rotate(-8deg) brightness(1.1);
+  -webkit-mask-image:conic-gradient(from 0deg,#000 var(--a,0deg),transparent var(--a,0deg));
+          mask-image:conic-gradient(from 0deg,#000 var(--a,0deg),transparent var(--a,0deg))}
+.seal-fx svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;transform:rotate(-90deg)}
+.seal-fx .ring{fill:none;stroke:url(#ringGold);stroke-width:2.4;stroke-linecap:round;stroke-dasharray:173;stroke-dashoffset:173;
+  filter:drop-shadow(0 0 3px rgba(200,232,255,.95)) drop-shadow(0 0 8px rgba(140,200,255,.75))}
+.seal-fx .halo{position:absolute;inset:-30%;border-radius:50%;opacity:0;background:radial-gradient(circle,rgba(255,255,255,.95),rgba(222,240,255,.5) 38%,rgba(200,228,255,0) 66%)}
+.seal-hit{position:absolute;left:50%;top:50%;width:38%;max-width:170px;aspect-ratio:1;transform:translate(-50%,-50%);z-index:5;pointer-events:none}
+.seal-glow{position:absolute;inset:-18%;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.45),rgba(255,255,255,0) 62%);animation:glow 2.8s ease-in-out infinite}
+@keyframes glow{50%{transform:scale(1.12);opacity:.55}}
+.env-title{position:absolute;left:0;right:0;top:64%;text-align:center;font-family:var(--script);font-size:clamp(54px,16vw,74px);line-height:1;
+  background:linear-gradient(100deg,#9C7B45 0%,#E9D3A0 30%,#B8955A 45%,#F6E7C1 58%,#A9874F 75%,#E2C892 100%);background-size:220% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 1px 0 rgba(255,250,235,.35)) drop-shadow(0 3px 5px rgba(20,32,48,.75));animation:shimmer 5s linear infinite}
+.env-shade{position:absolute;left:0;right:0;top:56%;bottom:0;background:radial-gradient(120% 70% at 50% 40%,rgba(40,58,80,.42),rgba(40,58,80,0) 70%);pointer-events:none}
+@keyframes shimmer{to{background-position:-220% 0}}
+.env-for{position:absolute;left:0;right:0;top:71.5%;text-align:center;font-family:var(--caps);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#fff;text-shadow:0 1px 3px rgba(20,35,55,.7)}
+.env-tap{position:absolute;left:0;right:0;top:76%;text-align:center;font-style:italic;font-size:22px;letter-spacing:.02em;color:#fff;
+  text-shadow:0 1px 3px rgba(20,35,55,.7),0 0 14px rgba(20,35,55,.45);animation:breathe 2.4s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.45}}
+
+/* fallback (no GSAP) open */
+#envelope.css-open{transition:opacity .9s ease;opacity:0}
+
+/* =========================================================
+   MUSIC + PETALS
+   ========================================================= */
+#music{position:fixed;top:calc(14px + env(safe-area-inset-top));left:max(14px,calc(50% - 226px));z-index:90;width:44px;height:44px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.22);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  display:none;place-items:center;cursor:pointer;color:#fff;box-shadow:0 4px 14px rgba(20,35,55,.18)}
+#music.show{display:grid}
+#music svg{width:20px;height:20px}
+#music .off{display:none}
+#music.muted .on{display:none}#music.muted .off{display:block}
+#petals{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:100%;pointer-events:none;z-index:80}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+.hero{position:relative;height:100vh;height:100svh;min-height:600px;overflow:hidden;color:#fff}
+.hero{background:#06090F}
+.hero-zoom{position:absolute;inset:-4% 0 -4% 0;transform-origin:50% 45%;will-change:transform}
+.hero-img{position:absolute;inset:0;background:url(assets/hero.jpg) center 30%/cover;transform-origin:50% 45%;will-change:transform,opacity}
+#walkCanvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+/* darker shade over the photo so it isn't too bright, deeper at the top behind the names */
+.hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  /* background:linear-gradient(180deg,rgba(6,10,18,.55) 0%,rgba(6,10,18,.30) 30%,rgba(6,10,18,.22) 55%,rgba(6,10,18,.32) 100%) */
+    background: linear-gradient(180deg, #060a128c, #ffffff00);}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:16%;background:linear-gradient(180deg,rgba(246,248,251,0),rgba(140,158,176,.35))}
+.hero-copy{position:absolute;left:0;right:0;top:11%;text-align:center;padding:0 18px;z-index:2;text-shadow:0 2px 14px rgba(30,50,80,.35)}
+.hero-kicker{font-family:var(--serif);font-size:17px;letter-spacing:.06em;opacity:.95}
+.hero-names{font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(34px,11.6vw,54px);line-height:1.1;margin:8px 0 14px;white-space:nowrap}
+.hero-names .amp{display:inline-block;color:var(--gold-hi);font-weight:400;padding:0 .08em}
+.hero-names .ch{display:inline-block}
+.divider{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 auto 12px;width:min(260px,72%)}
+.divider i{flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.85))}
+.divider i:last-child{background:linear-gradient(270deg,rgba(255,255,255,0),rgba(255,255,255,.85))}
+.divider b{width:7px;height:7px;transform:rotate(45deg);background:var(--gold-hi)}
+.scroll-cue{display:none!important}
+.scroll-cue-old{position:absolute;left:0;right:0;bottom:calc(22px + env(safe-area-inset-bottom));z-index:2;display:flex;flex-direction:column;align-items:center;gap:4px;
+  font-family:var(--caps);font-size:10px;letter-spacing:.3em;color:#fff;text-shadow:0 1px 8px rgba(30,50,80,.5)}
+.scroll-cue svg{animation:nudge 1.8s ease-in-out infinite}
+@keyframes nudge{50%{transform:translateY(5px)}}
+
+/* =========================================================
+   SAVE THE DATE (scratch)
+   ========================================================= */
+.savedate{position:relative;padding:62px 22px 66px;text-align:center;overflow:hidden;background:#EEF2F7;
+  min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.savedate > .scratch{width:min(100%,310px)}
+/* everything after the scratch card stays hidden until the date is revealed, so the page ends here */
+.js body.gated .after-gate{display:none}
+.savedate::before{content:"";position:absolute;inset:0;background:url(assets/lining.webp) center/cover;opacity:.05}
+.savedate > *{position:relative}
+.savedate .sec-title{color:var(--ink)}
+.savedate .sec-sub{color:var(--slate)}
+.scratch{position:relative;width:min(100%,310px);aspect-ratio:31/27;margin:28px auto 0;border-radius:18px;background:#fff;
+  box-shadow:0 24px 44px -20px rgba(40,60,85,.45),0 2px 6px rgba(40,60,85,.08)}
+.sc-under{position:absolute;inset:10px;border-radius:12px;border:1px solid rgba(184,149,90,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:radial-gradient(120% 90% at 50% 0%,#fff,#F3F6FA)}
+.sc-dow{font-family:var(--caps);font-size:14px;letter-spacing:.24em;color:var(--slate)}
+.sc-day{font-family:var(--serif);font-weight:500;font-size:92px;line-height:.95;color:var(--ink);font-variant-numeric:lining-nums}
+.sc-month{font-family:var(--serif);font-style:italic;font-size:26px;color:var(--ink)}
+.sc-time{font-family:var(--serif);font-weight:800;font-size:20px;color:var(--gold);margin-top:6px}
+.voice{display:none;margin:18px auto 0;align-items:center;gap:12px;padding:10px 18px 10px 10px;border-radius:999px;border:1px solid rgba(184,149,90,.45);
+  background:#fff;color:var(--ink);font-family:var(--serif);font-size:18px;cursor:pointer;box-shadow:0 12px 26px -14px rgba(40,60,85,.45)}
+.voice.show{display:inline-flex}
+.voice .vp{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--slate);color:#fff;flex:none}
+.voice .vp svg{width:16px;height:16px}
+.voice .pause{display:none}
+.voice.playing .play{display:none}.voice.playing .pause{display:block}
+.voice .bars{display:flex;align-items:center;gap:3px;height:22px}
+.voice .bars i{width:3px;height:30%;border-radius:2px;background:var(--gold)}
+.voice.playing .bars i{animation:bar .9s ease-in-out infinite}
+.voice.playing .bars i:nth-child(2){animation-delay:-.2s}.voice.playing .bars i:nth-child(3){animation-delay:-.45s}
+.voice.playing .bars i:nth-child(4){animation-delay:-.1s}.voice.playing .bars i:nth-child(5){animation-delay:-.6s}
+@keyframes bar{50%{height:100%}}
+.voice small{display:block;font-size:14px;color:var(--slate);font-style:italic}
+.sc-shine{position:absolute;inset:10px;border-radius:12px;overflow:hidden;pointer-events:none}
+.sc-shine::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;transform:skewX(-20deg);
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.85),rgba(255,255,255,0))}
+.sc-shine.go::after{animation:sweep 1.2s ease-out .2s 2}
+@keyframes sweep{to{left:130%}}
+#scratch{display:none}
+.js #scratch{display:block;position:absolute;inset:0;width:100%;height:100%;border-radius:18px;touch-action:none;cursor:grab;transition:opacity .7s ease}
+#scratch.gone{opacity:0;pointer-events:none}
+.sc-hint{display:none}
+.js .sc-hint{display:block;position:absolute;left:0;top:0;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(255,255,255,.95) 0 30%,rgba(255,255,255,.35) 31% 60%,rgba(255,255,255,0) 62%);
+  box-shadow:0 0 0 2px rgba(255,255,255,.55);animation:hintpath 2.6s ease-in-out infinite}
+.sc-hint.off{display:none!important}
+.sc-hint .finger{position:absolute;left:-3px;top:9px;width:46px;height:46px;filter:drop-shadow(0 4px 6px rgba(20,35,55,.45))}
+
+/* big swipe-up guide shown on the hero until the guest scrolls */
+#swipeHint{position:fixed;left:50%;bottom:calc(26px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:75;pointer-events:none;
+  display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 22px 8px;border-radius:22px;text-align:center;color:#fff;
+  background:rgba(14,24,40,.42);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.45);
+  box-shadow:0 10px 30px rgba(0,0,0,.25);opacity:0;visibility:hidden;transition:opacity .6s ease,visibility 0s .6s;width:max-content;max-width:calc(100% - 32px)}
+#swipeHint.show{opacity:1;visibility:visible;transition:opacity .6s ease}
+#swipeHint.solid{background:rgba(38,58,84,.88)}   /* stronger pill on the light Save the Date page */
+#swipeHint .hand{position:relative;width:44px;height:58px}
+#swipeHint .hand svg{position:absolute;left:4px;top:14px;width:36px;height:36px;animation:swipeUp 1.6s ease-in-out infinite;filter:drop-shadow(0 3px 5px rgba(0,0,0,.35))}
+#swipeHint .hand i{position:absolute;left:50%;top:6px;width:2px;height:30px;margin-left:-1px;border-radius:2px;
+  background:linear-gradient(to top,rgba(255,255,255,0),rgba(255,255,255,.9));animation:trail 1.6s ease-in-out infinite}
+@keyframes swipeUp{0%{transform:translateY(14px);opacity:0}20%{opacity:1}70%{transform:translateY(-12px);opacity:1}100%{transform:translateY(-16px);opacity:0}}
+@keyframes trail{0%,15%{opacity:0;transform:scaleY(.2);transform-origin:bottom}60%{opacity:1;transform:scaleY(1)}100%{opacity:0}}
+#swipeHint b{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:.02em}
+@keyframes hintpath{0%{transform:translate(70px,90px);opacity:0}10%{opacity:1}35%{transform:translate(230px,110px)}60%{transform:translate(90px,170px)}85%{transform:translate(230px,190px);opacity:1}100%{transform:translate(230px,190px);opacity:0}}
+.sc-after{font-style:italic;font-size:19px;color:var(--slate);margin-top:22px;min-height:1.4em}
+.sc-after .cue{display:block;margin-top:10px;font-family:var(--caps);font-style:normal;font-size:11px;letter-spacing:.22em;color:var(--dusty)}
+.sc-after .cue svg{display:block;margin:6px auto 0;animation:nudge 1.8s ease-in-out infinite}
+#popper{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:100%;pointer-events:none;z-index:85}
+
+/* =========================================================
+   COUNTDOWN
+   ========================================================= */
+.js .countdown.is-locked{display:none}
+.countdown{position:relative;padding:64px 22px 70px;text-align:center;color:#fff;overflow:hidden}
+.cd-bg{position:absolute;inset:-12% 0;background:url(assets/envelope.jpg) center/cover;will-change:transform}
+.countdown::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(62,82,104,.55),rgba(62,82,104,.40))}
+.countdown > *:not(.cd-bg){position:relative;z-index:2}
+.sec-title{font-family:var(--serif);font-style:italic;font-weight:500;font-size:44px;line-height:1.1}
+.sec-sub{font-family:var(--serif);font-style:italic;font-size:18px;margin-top:6px;opacity:.9}
+.countdown .sec-title,.countdown .sec-sub{text-shadow:0 2px 12px rgba(30,45,65,.35)}
+.cd-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:330px;margin:28px auto 0;perspective:800px}
+.cd-cell{padding:18px 6px 14px;border-radius:16px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.55);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-shadow:0 8px 24px rgba(30,45,65,.18), inset 0 1px 0 rgba(255,255,255,.35)}
+.cd-num{display:block;font-family:var(--serif);font-weight:500;font-size:50px;line-height:1;font-variant-numeric:lining-nums tabular-nums}
+.cd-lbl{display:block;margin-top:8px;font-family:var(--caps);font-size:11px;letter-spacing:.18em;opacity:.9}
+.cd-done{font-size:22px;font-style:italic;margin-top:24px}
+
+/* =========================================================
+   INVITATION CARD
+   ========================================================= */
+.invite{position:relative;padding:34px 16px 40px;background:linear-gradient(180deg,#EEF3F8,#F7F9FC 40%,#EEF3F8)}
+.frame{position:relative;padding:76px 44px 78px;text-align:center}
+.fr{position:absolute;pointer-events:none}
+.fr-c{width:118px;height:118px;background:url(assets/frame-corner.png) center/contain no-repeat}
+.fr-c.tl{top:0;left:0}.fr-c.tr{top:0;right:0;transform:scaleX(-1)}
+.fr-c.bl{bottom:0;left:0;transform:scaleY(-1)}.fr-c.br{bottom:0;right:0;transform:scale(-1,-1)}
+.fr-s{top:112px;bottom:112px;width:24px;background:url(assets/frame-side.png) center top/24px auto repeat-y}
+.fr-s.l{left:4px}.fr-s.r{right:4px;transform:scaleX(-1)}
+.fr-t{left:112px;right:112px;height:24px;background:url(assets/frame-top.png) left center/auto 24px repeat-x}
+.fr-t.t{top:4px}.fr-t.b{bottom:4px;transform:scaleY(-1)}
+.blessing{font-family:var(--caps);font-size:12px;letter-spacing:.2em;color:var(--slate);margin-top:14px}
+.person{margin-top:22px}
+.person .nm{font-family:var(--serif);font-weight:600;font-size:31px;line-height:1.15;color:var(--ink)}
+.person .of{font-style:italic;font-size:17px;color:var(--slate);margin-top:2px}
+.and{font-family:var(--script);font-size:40px;line-height:1;color:var(--gold);margin-top:16px}
+.cordial{font-style:italic;font-size:19px;line-height:1.45;color:var(--slate);margin:26px auto 0;max-width:15em}
+.when{font-family:var(--serif);font-weight:600;font-size:22px;color:var(--gold);margin-top:14px}
+.when-time{font-size:18px;color:var(--ink);margin-top:2px}
+.when-year{font-style:italic;font-size:19px;color:var(--ink);margin-top:2px}
+.place{font-family:var(--caps);font-size:12px;letter-spacing:.18em;color:var(--slate);margin-top:18px}
+.seats{font-style:italic;font-size:16px;color:var(--slate);margin-top:14px}
+
+/* =========================================================
+   VENUE
+   ========================================================= */
+.venue{padding:58px 20px 64px;text-align:center;background:linear-gradient(180deg,#EEF3F8,#E2EAF2)}
+.venue .sec-title{color:var(--ink)}
+.venue .sec-sub{color:var(--slate)}
+.v-card{margin:26px auto 0;max-width:380px;background:#fff;border-radius:6px;padding:26px 16px 18px;box-shadow:0 20px 40px -18px rgba(40,60,85,.35),0 2px 6px rgba(40,60,85,.06)}
+.pin{width:42px;height:42px;margin:0 auto;border-radius:50%;display:grid;place-items:center;background:var(--mist);color:var(--slate)}
+.pin svg{width:20px;height:20px}
+.v-name{font-family:var(--serif);font-weight:600;font-size:26px;margin-top:12px}
+.v-addr{font-size:16.5px;line-height:1.45;color:var(--slate);margin:6px auto 0;max-width:20em}
+.v-when{display:flex;justify-content:center;gap:18px;margin:16px 0 4px;font-size:16px;color:var(--ink)}
+.v-when span{display:flex;align-items:center;gap:6px}
+.v-when svg{width:15px;height:15px;color:var(--gold)}
+.map{position:relative;margin-top:16px;border-radius:4px;overflow:hidden;height:250px;background:#E6ECF2}
+.map iframe{width:100%;height:100%;border:0;filter:saturate(.75) contrast(.97)}
+.map-open{position:absolute;top:10px;left:10px;display:flex;align-items:center;gap:6px;padding:7px 11px;background:#fff;border-radius:3px;
+  font-family:system-ui,-apple-system,sans-serif;font-size:13px;color:#1a73e8;text-decoration:none;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;border-radius:999px;text-decoration:none;
+  font-family:var(--caps);font-size:13px;letter-spacing:.12em;transition:transform .15s ease}
+.btn:active{transform:scale(.97)}
+.btn svg{width:18px;height:18px}
+.btn-solid{background:var(--slate);color:#fff;margin-top:16px}
+.btn-line{border:1px solid var(--dusty);color:var(--slate);margin-top:10px}
+
+.v-list{display:grid;gap:22px;margin-top:26px}
+.v-list .v-card{margin:0 auto;width:100%}
+.v-label{font-family:var(--caps);font-size:11px;letter-spacing:.24em;color:var(--gold);margin-top:12px}
+.v-name{margin-top:4px}
+.v-title{font-family:var(--script);font-size:46px;line-height:1.05;color:var(--ink);margin-top:6px}
+.v-note{font-style:italic;font-size:16.5px;line-height:1.45;color:var(--slate);margin:10px auto 0;max-width:22em}
+
+/* =========================================================
+   GOOD TO KNOW + TRAVEL
+   ========================================================= */
+.know{padding:58px 20px 50px;text-align:center;background:linear-gradient(180deg,#EEF3F8,#E8EEF5)}
+.know-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:400px;margin:26px auto 0;text-align:left}
+.know-card{background:#fff;border-radius:8px;padding:16px 14px;box-shadow:0 14px 30px -18px rgba(40,60,85,.35);min-width:0}
+.know-card .k-lbl{font-family:var(--caps);font-size:10.5px;letter-spacing:.2em;color:var(--gold)}
+.know-card b{display:block;font-family:var(--serif);font-weight:600;font-size:20px;line-height:1.15;color:var(--ink);margin-top:6px}
+.know-card p{font-size:15.5px;line-height:1.4;color:var(--slate);margin-top:4px}
+@media (max-width:360px){.know-grid{grid-template-columns:1fr}}
+.travel{padding:20px 20px 60px;text-align:center;background:linear-gradient(180deg,#E8EEF5,#EEF3F8)}
+.stays{display:grid;gap:12px;max-width:380px;margin:24px auto 0;text-align:left}
+.stay{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#fff;border-radius:8px;padding:14px 16px;box-shadow:0 12px 26px -16px rgba(40,60,85,.35)}
+.stay b{display:block;font-family:var(--serif);font-weight:600;font-size:19px;color:var(--ink)}
+.stay small{font-size:15px;color:var(--slate)}
+.stay a{flex:none;font-family:var(--caps);font-size:11px;letter-spacing:.14em;color:var(--slate);border:1px solid var(--dusty);border-radius:999px;padding:7px 12px;text-decoration:none}
+.getting{max-width:22em;margin:18px auto 0;font-style:italic;font-size:17px;line-height:1.5;color:var(--slate)}
+
+/* =========================================================
+   ORDER OF EVENTS
+   ========================================================= */
+.events{position:relative;padding:58px 20px 40px;text-align:center;background:linear-gradient(180deg,#E2EAF2,#EAF0F6 60%,#EEF3F8)}
+.events .sec-title{color:var(--ink)}
+.events .sec-sub{color:var(--slate)}
+.ev-list{position:relative;max-width:360px;margin:34px auto 0;padding:4px 0 6px;text-align:left}
+.tl-line{position:absolute;left:30px;top:10px;bottom:10px;width:1.5px;background:rgba(86,107,127,.22)}
+.tl-fill{position:absolute;inset:0;background:linear-gradient(180deg,var(--gold-hi),var(--gold));transform-origin:50% 0}
+.tl-item{position:relative;display:flex;align-items:center;gap:18px;padding:14px 0}
+.tl-ic{position:relative;z-index:1;flex:none;width:60px;height:60px;border-radius:50%;display:grid;place-items:center;color:var(--slate);
+  background:radial-gradient(circle at 35% 30%,#fff,#DCE7F3);border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 10px 22px -10px rgba(40,60,85,.45),0 0 0 6px rgba(220,231,243,.55)}
+.tl-ic svg{width:24px;height:24px}
+.tl-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tl-time{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-size:12px;font-weight:600;letter-spacing:.02em;color:#fff;background:var(--ink);
+  padding:4px 10px;border-radius:7px;font-variant-numeric:tabular-nums}
+.tl-name{font-family:var(--serif);font-weight:600;font-size:22px;color:var(--ink);line-height:1.1}
+.tl-desc{font-style:italic;font-size:17px;color:var(--slate);margin-top:4px}
+
+/* =========================================================
+   GIFTS
+   ========================================================= */
+.gifts{padding:30px 22px 66px;text-align:center;background:linear-gradient(180deg,#EEF3F8,var(--pearl))}
+.gift-ic{width:44px;height:44px;margin:0 auto 6px;color:var(--slate)}
+.gifts .sec-title{color:var(--ink)}
+.gift-card{max-width:340px;margin:22px auto 0;padding:24px 22px;border-radius:10px;background:rgba(255,255,255,.75);border:1px solid #fff;
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-shadow:0 18px 36px -18px rgba(40,60,85,.35)}
+.gift-card svg{width:26px;height:26px;color:var(--gold)}
+.gift-card p{font-family:var(--serif);font-size:20px;line-height:1.45;color:var(--ink);margin-top:8px}
+
+/* =========================================================
+   RSVP
+   ========================================================= */
+.rsvp{position:relative;padding:60px 22px 64px;text-align:center;background:var(--pearl)}
+.rsvp .sec-title{color:var(--ink)}
+.rsvp .sec-sub{color:var(--slate)}
+.rsvp-form{max-width:380px;margin:24px auto 0;display:grid;gap:14px;text-align:left;background:#fff;border-radius:12px;padding:22px 18px;
+  box-shadow:0 20px 40px -18px rgba(40,60,85,.35),0 2px 6px rgba(40,60,85,.06)}
+.deadline{font-style:italic;font-size:17px;color:var(--gold);margin-top:6px}
+.f{display:grid;gap:6px;min-width:0;border:0}
+.f>label,.f>legend{font-family:var(--caps);font-size:11px;letter-spacing:.16em;color:var(--slate);padding:0}
+.f input,.f select,.f textarea{width:100%;min-height:48px;padding:10px 12px;border:1px solid #D3DCE6;border-radius:8px;background:var(--pearl);font-family:var(--serif);font-size:18px;color:var(--ink)}
+.f textarea{min-height:76px;resize:vertical}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.choice label{position:relative;cursor:pointer}
+.choice input{position:absolute;opacity:0;pointer-events:none}
+.choice span{display:grid;place-items:center;min-height:54px;padding:6px 8px;text-align:center;border:1px solid #D3DCE6;border-radius:8px;background:var(--pearl);font-style:italic;font-size:18px;line-height:1.15;color:var(--ink)}
+.choice input:checked+span{background:var(--slate);border-color:var(--slate);color:#fff}
+.choice input:focus-visible+span{outline:2px solid var(--gold);outline-offset:2px}
+.meals{display:grid;gap:8px}
+.r-msg{color:#9A3B2F;font-size:16px}
+.rsvp-form .btn-solid{margin-top:4px;border:0;cursor:pointer;width:100%}
+.thanks{max-width:380px;margin:24px auto 0;background:#fff;border-radius:12px;padding:28px 20px;box-shadow:0 20px 40px -18px rgba(40,60,85,.35)}
+.thanks .t-big{font-family:var(--script);font-size:54px;line-height:1.1;color:var(--ink)}
+.thanks p{font-size:18px;color:var(--slate);margin-top:6px}
+.thanks small{display:block;font-family:var(--caps);font-size:10.5px;letter-spacing:.16em;color:var(--dusty);margin-top:12px}
+.thanks .btn-line{max-width:220px;margin:16px auto 0;background:none;cursor:pointer;width:100%}
+[hidden]{display:none!important}
+
+/* preview mode */
+.previewbar{position:fixed;top:calc(12px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:95;display:flex;align-items:center;gap:10px;padding:5px 5px 5px 16px;border-radius:999px;
+  background:rgba(255,255,255,.92);border:1px solid var(--gold);box-shadow:0 8px 22px rgba(20,35,55,.22);white-space:nowrap;font-family:var(--caps);font-size:11px;letter-spacing:.18em;color:var(--slate)}
+.previewbar a{display:inline-flex;align-items:center;min-height:34px;padding:0 14px;border-radius:999px;background:var(--slate);color:#fff;text-decoration:none}
+
+.footer p {
+    font-family: math;
+    font-size: 14px;
+    line-height: 1.45;
+    color: #000000;
+    margin-top: 8px;
+    text-align: center;
+}
+/* =========================================================
+   CLOSING
+   ========================================================= */
+.closing{position:relative;padding:70px 26px 56px;text-align:center;color:#fff;overflow:hidden}
+.closing-bg{position:absolute;inset:0;background:url(assets/envelope.jpg) center/cover}
+.closing::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(52,70,92,.62),rgba(38,50,64,.78))}
+.closing > *:not(.closing-bg){position:relative;z-index:2}
+.quote{font-family:var(--serif);font-style:italic;font-size:22px;line-height:1.5;color:var(--gold-hi);max-width:18em;margin:0 auto}
+.quote-by{font-family:var(--caps);font-size:11px;letter-spacing:.2em;opacity:.85;margin-top:12px}
+.sign{font-family:var(--script);font-size:44px;line-height:1.2;margin-top:34px}
+.tag{font-family:var(--caps);font-size:14px;letter-spacing:.14em;color:var(--gold-hi);margin-top:10px}
+.foot{font-size:14px;opacity:.7;margin-top:30px;font-style:italic}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important}
+}
+</style>
+</head>
+<body class="locked gated">
+
+<!-- ============ ENVELOPE ============ -->
+<div id="envelope" role="button" tabindex="0" aria-label="Tap to open the invitation">
+  <div class="env-black" id="envBlack"></div>
+  <div class="env-flash" id="envFlash"></div>
+  <div class="door left" id="doorL">
+    <div class="door-face"></div><div class="door-gold"></div><div class="door-glow"></div>
+    <svg class="lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <polyline points="0,34 50,50 100,34" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="1.3" vector-effect="non-scaling-stroke"/>
+    </svg>
+    <img class="seal-img" src="assets/seal-blank.png" alt=""><img class="seal-img gold" src="assets/seal-blank.png" alt="">
+    <i class="seam"></i>
+  </div>
+  <div class="door right" id="doorR">
+    <div class="door-face"></div><div class="door-gold"></div><div class="door-glow"></div>
+    <svg class="lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <polyline points="0,34 50,50 100,34" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="1.3" vector-effect="non-scaling-stroke"/>
+    </svg>
+    <img class="seal-img" src="assets/seal-blank.png" alt=""><img class="seal-img gold" src="assets/seal-blank.png" alt="">
+    <i class="seam"></i>
+  </div>
+  <div class="seal-fx" id="sealFx">
+    <i class="halo"></i>
+    <svg viewBox="0 0 100 100" aria-hidden="true">
+      <defs><linearGradient id="ringGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".5" stop-color="#A9D6FF"/><stop offset="1" stop-color="#E4F3FF"/></linearGradient></defs>
+      <circle class="ring" cx="50" cy="50" r="27.5"/>
+    </svg>
+  </div>
+  <canvas id="envSpark" aria-hidden="true"></canvas>
+  <div class="env-text" id="envText" style="position:absolute;inset:0;pointer-events:none">
+    <div class="env-shade" id="envShade"></div>
+    <div class="env-title" id="envTitle">Invitation</div>
+    <div class="env-for" id="envFor" hidden></div>
+    <div class="env-tap" id="envTap">Tap the seal to open</div>
+  </div>
+  <div class="seal-hit" id="seal"><div class="seal-glow"></div></div>
+</div>
+
+<button id="music" aria-label="Pause music">
+  <svg class="on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" stroke="none"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg>
+  <svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" stroke="none"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
+</button>
+<div id="swipeHint" aria-hidden="true">
+  <span class="hand"><i></i><svg viewBox="0 0 24 24" fill="#fff" stroke="rgba(30,45,65,.55)" stroke-width="1.1" stroke-linejoin="round"><path d="M9.2 13.2V5.4a1.6 1.6 0 0 1 3.2 0v5.4l.1-1.1a1.5 1.5 0 0 1 3 .2v1.2l.1-.6a1.5 1.5 0 0 1 3 .3v1.3l.1-.3a1.4 1.4 0 0 1 2.7.6v3.2a6.7 6.7 0 0 1-6.7 6.7h-1.3a6.4 6.4 0 0 1-5.2-2.7l-3.3-4.6a1.6 1.6 0 0 1 2.4-2.1z"/></svg></span>
+  <b>Swipe up to continue</b>
+</div>
+<canvas id="petals" aria-hidden="true"></canvas>
+<canvas id="popper" aria-hidden="true"></canvas>
+<div class="previewbar" id="previewbar" hidden>PREVIEW <a id="buyLink" href="#" target="_blank" rel="noopener">Buy this design</a></div>
+
+<div class="app">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="hero">
+    <div class="hero-zoom" id="heroZoom"><div class="hero-img" id="heroImg"><canvas id="walkCanvas" aria-hidden="true"></canvas></div></div>
+    <div class="hero-copy" id="heroCopy">
+      <p class="hero-kicker h-in" id="heroKicker">The Wedding of</p>
+      <h1 class="hero-names" id="heroNames"></h1>
+      <div class="divider h-in" aria-hidden="true"><i></i><b></b><i></i></div>
+    </div>
+    <div class="scroll-cue h-in" aria-hidden="true">SCROLL
+      <svg width="14" height="9" viewBox="0 0 14 9"><path d="M1 1l6 6 6-6" fill="none" stroke="#fff" stroke-width="1.5"/></svg>
+    </div>
+  </section>
+
+  <!-- ============ SAVE THE DATE (scratch) ============ -->
+  <section class="savedate" id="savedate">
+    <h2 class="sec-title rv">Save the Date</h2>
+    <p class="sec-sub rv">Scratch the card to reveal our special day</p>
+    <div class="scratch" id="scratchWrap">
+      <div class="sc-under">
+        <span class="sc-dow" id="scDow"></span>
+        <span class="sc-day" id="scDay"></span>
+        <span class="sc-month" id="scMonth"></span>
+        <span class="sc-time" id="scTime"></span>
+      </div>
+      <div class="sc-shine" id="scShine"></div>
+      <canvas id="scratch" tabindex="0" aria-label="Scratch card hiding the date. Press Enter to reveal it."></canvas>
+      <span class="sc-hint" id="scHint"><span class="finger"><svg viewBox="0 0 24 24" fill="#fff" stroke="rgba(30,45,65,.55)" stroke-width="1.1" stroke-linejoin="round"><path d="M9.2 13.2V5.4a1.6 1.6 0 0 1 3.2 0v5.4l.1-1.1a1.5 1.5 0 0 1 3 .2v1.2l.1-.6a1.5 1.5 0 0 1 3 .3v1.3l.1-.3a1.4 1.4 0 0 1 2.7.6v3.2a6.7 6.7 0 0 1-6.7 6.7h-1.3a6.4 6.4 0 0 1-5.2-2.7l-3.3-4.6a1.6 1.6 0 0 1 2.4-2.1z"/></svg></span></span>
+    </div>
+    <p class="sc-after" id="scAfter">Scratch the card to open the rest of the invitation</p>
+  </section>
+
+  <!-- ============ COUNTDOWN (appears after the date is revealed) ============ -->
+  <section class="countdown is-locked after-gate" id="countdown">
+    <div class="cd-bg" id="cdBg"></div>
+    <h2 class="sec-title rv">Countdown</h2>
+    <p class="sec-sub rv">Until we say "I do"</p>
+    <div class="cd-grid" id="cdGrid">
+      <div class="cd-cell"><span class="cd-num" id="cdD">00</span><span class="cd-lbl">DAYS</span></div>
+      <div class="cd-cell"><span class="cd-num" id="cdH">00</span><span class="cd-lbl">HOURS</span></div>
+      <div class="cd-cell"><span class="cd-num" id="cdM">00</span><span class="cd-lbl">MINUTES</span></div>
+      <div class="cd-cell"><span class="cd-num" id="cdS">00</span><span class="cd-lbl">SECONDS</span></div>
+    </div>
+  </section>
+
+  <!-- ============ INVITATION ============ -->
+  <section class="invite after-gate" id="invite">
+    <div class="frame" id="frame">
+      <i class="fr fr-c tl"></i><i class="fr fr-c tr"></i><i class="fr fr-c bl"></i><i class="fr fr-c br"></i>
+      <i class="fr fr-s l"></i><i class="fr fr-s r"></i><i class="fr fr-t t"></i><i class="fr fr-t b"></i>
+
+      <p class="blessing iv" id="hosts"></p>
+      <div class="person iv">
+        <p class="nm" id="nmA"></p>
+        <p class="of" id="ofA" hidden></p>
+      </div>
+      <p class="and iv">&amp;</p>
+      <div class="person iv" style="margin-top:10px">
+        <p class="nm" id="nmB"></p>
+        <p class="of" id="ofB" hidden></p>
+      </div>
+      <p class="cordial iv" id="request"></p>
+      <p class="when iv" id="whenDay"></p>
+      <p class="when-year iv" id="whenYear"></p>
+      <p class="when-time iv" id="whenTime"></p>
+      <p class="place iv" id="place"></p>
+      <p class="seats iv" id="seats" hidden></p>
+    </div>
+  </section>
+
+  <!-- ============ VENUE ============ -->
+  <section class="venue after-gate" id="venue">
+    <h2 class="sec-title rv">The Celebrations</h2>
+    <p class="sec-sub rv">Where and when we'll celebrate</p>
+    <div class="v-list" id="vList"></div>
+  </section>
+
+  <!-- ============ ORDER OF EVENTS ============ -->
+  <section class="events after-gate" id="events">
+    <h2 class="sec-title rv">Order of the Day</h2>
+    <p class="sec-sub rv">How the day will unfold</p>
+    <div class="ev-list" id="tl">
+      <div class="tl-line"><i class="tl-fill" id="tlFill"></i></div>
+    </div>
+  </section>
+
+  <!-- ============ GOOD TO KNOW ============ -->
+  <section class="know after-gate" id="know">
+    <h2 class="sec-title rv">Good to Know</h2>
+    <p class="sec-sub rv">A few details for the day</p>
+    <div class="know-grid" id="knowGrid"></div>
+  </section>
+
+  <!-- ============ TRAVEL ============ -->
+  <section class="travel after-gate" id="travel">
+    <h2 class="sec-title rv">Travel &amp; Stay</h2>
+    <p class="sec-sub rv">Getting there and places to rest</p>
+    <div class="stays" id="stays"></div>
+    <p class="getting rv" id="getting"></p>
+  </section>
+
+  <!-- ============ GIFTS ============ -->
+  <section class="gifts after-gate" id="gifts">
+    <svg class="gift-ic rv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="8" width="17" height="4" rx="1"/><path d="M5 12v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8M12 8v13"/><path d="M12 8C10 4 6.5 4.5 7 6.5S12 8 12 8zM12 8c2-4 5.5-3.5 5-1.5S12 8 12 8z"/></svg>
+    <h2 class="sec-title rv">Gifts</h2>
+    <div class="gift-card" id="giftCard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg>
+      <p id="giftText"></p>
+      <a class="btn btn-line" id="giftLink" href="#" target="_blank" rel="noopener" hidden>View our registry</a>
+    </div>
+  </section>
+
+  <!-- ============ RSVP ============ -->
+  <section class="rsvp after-gate" id="rsvp">
+    <h2 class="sec-title rv">Will you join us?</h2>
+    <p class="sec-sub rv">Kindly reply below</p>
+    <p class="deadline rv" id="deadline" hidden></p>
+    <div id="rsvpBox"></div>
+  </section>
+
+  <!-- ============ CLOSING ============ -->
+  <section class="closing after-gate" id="closing">
+    <div class="closing-bg"></div>
+    <p class="quote cl" id="quote"></p>
+    <p class="quote-by cl" id="quoteBy"></p>
+    <p class="sign cl" id="sign"></p>
+    <p class="tag cl" id="hashtag"></p>
+    <p class="foot cl" id="closingLine"></p>
+  </section>
+  <section class="footer after-gate" id="footer">
+    <p>Made with love by Moving Invites</p>
+  </section>
+</div>
+
+<!-- The server replaces "null" with this customer's settings. Opened directly, the sample below is shown. -->
+<script id="invite-data" type="application/json">null</script>
+<script>
+/* ==========================================================
+   SAMPLE CONTENT. Each customer's saved settings are merged over this.
+   ========================================================== */
+var DEFAULTS = {
+  timeZone: "Europe/London",
+  couple: { bride: "Olivia", groom: "James" },             // short names: hero, seal, sign-off
+  fullNames: { bride: "Olivia Grace Bennett", groom: "James Edward Carter" },
+  parents: { bride: "", groom: "" },                         // optional, e.g. "daughter of Thomas & Anne Bennett"
+  hosts: "Together with their families",
+  request: "request the pleasure of your company at the celebration of their marriage",
+  place: "Ashcombe Gardens · The Cotswolds",
+  guest: { name: "The Harrison Family", seats: 3 },          // set per guest link by the server
+  selectedEvents: ["ceremony", "reception"],
+  events: {
+    welcome:   { title: "Welcome Drinks", start: "2027-06-18T19:00:00+01:00", hours: 3, venue: "The Willow Inn", address: "Mill Lane, Bibury, Gloucestershire GL7 5NW", note: "Relaxed drinks by the river the evening before. Come as you are." },
+    ceremony:  { title: "The Ceremony", start: "2027-06-19T14:00:00+01:00", hours: 1, venue: "Ashcombe Gardens", address: "Ashcombe Lane, Cirencester, Gloucestershire GL7 6AB", note: "We marry outdoors beneath the old oak. Please be seated by 1:40 pm." },
+    reception: { title: "The Reception", start: "2027-06-19T16:30:00+01:00", hours: 7.5, venue: "The Garden Marquee", address: "Ashcombe Gardens, Cirencester, Gloucestershire GL7 6AB", note: "Dinner, speeches and dancing until late." },
+    brunch:    { title: "Farewell Brunch", start: "2027-06-20T10:30:00+01:00", hours: 2, venue: "The Orangery", address: "Ashcombe Gardens, Cirencester, Gloucestershire GL7 6AB", note: "Coffee, pastries and one last goodbye." }
+  },
+  timeline: [
+    { time: "1:30 PM", title: "Guests Arrive", note: "Welcome to the garden", icon: "arrive" },
+    { time: "2:00 PM", title: "The Ceremony", note: "Beneath the old oak", icon: "rings" },
+    { time: "2:45 PM", title: "Drinks & Canapés", note: "Lawn games and photos", icon: "drinks" },
+    { time: "4:30 PM", title: "Wedding Breakfast", note: "Dinner in the marquee", icon: "dinner" },
+    { time: "7:00 PM", title: "Speeches & Cake", note: "Raise a glass with us", icon: "cake" },
+    { time: "8:30 PM", title: "First Dance", note: "Then the floor is yours", icon: "dance" },
+    { time: "Midnight", title: "Carriages", note: "Safe travels home", icon: "car" }
+  ],
+  details: [
+    { label: "Dress code", title: "Garden formal", text: "Summer suits and floaty dresses. Block heels are kind to the lawn." },
+    { label: "Weather", title: "Rain or shine", text: "If it rains, the ceremony moves into the marquee." },
+    { label: "Little ones", title: "Adults only", text: "We love your little ones, but our day is adults only." },
+    { label: "Unplugged", title: "Phones away", text: "Our photographer has the ceremony covered, so please keep phones in pockets." }
+  ],
+  travel: {
+    stays: [
+      { name: "The Willow Inn", note: "10 minutes away · mention our names for 15% off", url: "" },
+      { name: "Rosebank Cottage B&B", note: "5 minutes away · cosy and quiet", url: "" }
+    ],
+    getting: "The nearest station is Kemble, a 15 minute taxi ride. Free parking on site, and taxis are booked for midnight."
+  },
+  gifts: { text: "Your presence is the greatest gift. If you'd like to give something, a contribution towards our honeymoon would mean the world.", label: "View our registry", url: "" },
+  rsvp: { deadline: "2027-05-01", meals: ["Spring lamb", "Pan-roasted salmon", "Wild mushroom risotto (v)"], askSong: true },
+  quote: { text: "Whatever our souls are made of, his and mine are the same.", by: "Emily Brontë" },
+  hashtag: "#OliviaAndJamesSayIDo",
+  closing: "We can't wait to celebrate with you",
+  music: "assets/music.mp3"
+};
+var ORDER = ["welcome", "ceremony", "reception", "brunch"];
+function merge(base, over) {
+  if (Array.isArray(over) || over === null || typeof over !== "object") return over === undefined ? base : over;
+  var out = {}; for (var k in base) out[k] = base[k];
+  Object.keys(over).forEach(function (k) {
+    out[k] = (base && base[k] && typeof base[k] === "object" && !Array.isArray(base[k])) ? merge(base[k], over[k]) : over[k];
+  });
+  return out;
+}
+var INJECTED = (function () { try { return JSON.parse(document.getElementById("invite-data").textContent); } catch (e) { return null; } })();
+var CONFIG = merge(DEFAULTS, INJECTED || {});
+// names typed in the try-on form become the full names too, unless full names were saved separately
+if (INJECTED && INJECTED.couple && !(INJECTED.fullNames)) CONFIG.fullNames = { bride: CONFIG.couple.bride, groom: CONFIG.couple.groom };
+CONFIG.selectedEvents = (CONFIG.selectedEvents || []).filter(function (k) { return CONFIG.events[k]; });
+// a hashtag made from the couple's names, unless one was saved
+if (INJECTED && INJECTED.couple && !INJECTED.hashtag) CONFIG.hashtag = "#" + (CONFIG.couple.bride + "And" + CONFIG.couple.groom).replace(/[^A-Za-z0-9]/g, "");
+CONFIG.voice = "";
+
+/* Standalone envelope opener: works even if animation library fails to load */
+var opened = false, audio = null;
+function openInvite() {
+  if (opened) return; opened = true;
+  try { if (window.__startAudio) window.__startAudio(); } catch (e) {}
+  if (window.__playOpen) { window.__playOpen(); return; }
+  var env = document.getElementById("envelope");
+  env.className += " css-open";
+  document.body.className = document.body.className.replace("locked", "");
+  setTimeout(function(){ env.className += " done"; }, 950);
+}
+(function(){
+  var env = document.getElementById("envelope");
+  env.addEventListener("click", openInvite);
+  env.addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openInvite(); } });
+})();
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<script>
+(function () {
+  var C = CONFIG;
+  var $ = function (s) { return document.querySelector(s); };
+  var $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
+  var RM = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var esc = function (v) { return String(v == null ? "" : v).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+  var setText = function (sel, v) { var el = $(sel); if (!el) return; el.textContent = v || ""; el.hidden = !v; };
+
+  /* ---------- dates, written the traditional way ---------- */
+  function dparts(d) {
+    var o = {};
+    new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "numeric", minute: "2-digit", hourCycle: "h23", timeZone: C.timeZone })
+      .formatToParts(d).forEach(function (p) { o[p.type] = p.value; });
+    return { weekday: o.weekday, day: +o.day, month: o.month, year: +o.year, hour: +o.hour, minute: +o.minute };
+  }
+  var ONES = ["zero","one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen"];
+  var TENS = ["","","twenty","thirty","forty","fifty","sixty","seventy","eighty","ninety"];
+  var ORD1 = ["","first","second","third","fourth","fifth","sixth","seventh","eighth","ninth","tenth","eleventh","twelfth","thirteenth","fourteenth","fifteenth","sixteenth","seventeenth","eighteenth","nineteenth"];
+  function words(n) { return n < 20 ? ONES[n] : TENS[Math.floor(n / 10)] + (n % 10 ? "-" + ONES[n % 10] : ""); }
+  function ordinal(n) { return n < 20 ? ORD1[n] : n === 20 ? "twentieth" : n === 30 ? "thirtieth" : TENS[Math.floor(n / 10)] + "-" + ORD1[n % 10]; }
+  function yearWords(y) { var t = Math.floor(y / 1000), r = y % 1000; return ONES[t] + " thousand" + (r ? (r < 100 ? " and " + words(r) : " " + ONES[Math.floor(r / 100)] + " hundred" + (r % 100 ? " and " + words(r % 100) : "")) : ""); }
+  function timeWords(h, m) {
+    if (h === 12 && m === 0) return "twelve noon";
+    var hw = function (x) { return words(((x + 11) % 12) + 1); };
+    var per = h < 12 ? "in the morning" : h < 17 ? "in the afternoon" : "in the evening";
+    if (m === 0) return hw(h) + " o'clock " + per;
+    if (m === 30) return "half past " + hw(h) + " " + per;
+    if (m === 15) return "quarter past " + hw(h) + " " + per;
+    if (m === 45) return "quarter to " + hw(h + 1) + " " + per;
+    return clock12(h, m);
+  }
+  function clock12(h, m) { return ((h + 11) % 12 + 1) + ":" + pad(m) + " " + (h < 12 ? "AM" : "PM"); }
+  var pad = function (n) { return (n < 10 ? "0" : "") + n; };
+
+  /* ---------- which events, and the main one ---------- */
+  var EVS = ORDER.filter(function (k) { return C.selectedEvents.indexOf(k) > -1; }).map(function (k) {
+    var e = C.events[k], st = new Date(e.start);
+    return { key: k, title: e.title, venue: e.venue, address: e.address, note: e.note, map: e.map, start: st, end: new Date(st.getTime() + (e.hours || 3) * 36e5) };
+  });
+  var MAIN = EVS.filter(function (e) { return e.key === "ceremony"; })[0] || EVS[0] || { start: new Date(), end: new Date() };
+  var START = MAIN.start, END = MAIN.end, MP = dparts(START);
+
+  /* ---------- fill the page ---------- */
+  var A = C.couple.bride, B = C.couple.groom;
+  $("#heroNames").innerHTML = '<span data-split>' + esc(A) + '</span> <span class="amp">&amp;</span> <span data-split>' + esc(B) + '</span>';
+  if (C.guest && C.guest.name) setText("#envFor", "For " + C.guest.name);
+  $("#scDow").textContent = MP.weekday.toUpperCase();
+  $("#scDay").textContent = MP.day;
+  $("#scMonth").textContent = MP.month + " " + MP.year;
+  $("#scTime").textContent = clock12(MP.hour, MP.minute);
+  setText("#hosts", (C.hosts || "").toUpperCase());
+  setText("#nmA", C.fullNames.bride || A); setText("#ofA", C.parents && C.parents.bride);
+  setText("#nmB", C.fullNames.groom || B); setText("#ofB", C.parents && C.parents.groom);
+  setText("#request", C.request);
+  setText("#whenDay", MP.weekday + ", the " + ordinal(MP.day) + " of " + MP.month);
+  setText("#whenYear", yearWords(MP.year));
+  setText("#whenTime", "at " + timeWords(MP.hour, MP.minute));
+  setText("#place", (C.place || "").toUpperCase());
+  if (C.guest && C.guest.seats) setText("#seats", "We have reserved " + C.guest.seats + " " + (C.guest.seats > 1 ? "seats" : "seat") + " in your honour");
+
+  /* event cards */
+  var gfmt = function (d) { return d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z"; };
+  var isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  var PIN = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>';
+  var CAL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
+  var CLK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+  var EXT = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
+  $("#vList").innerHTML = EVS.map(function (e, i) {
+    var p = dparts(e.start), where = e.venue + ", " + e.address;
+    var maps = e.map || "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(where);
+    var title = e.title + " · " + A + " & " + B, cal;
+    if (isIOS) {
+      var ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Moving Invites//EN", "BEGIN:VEVENT", "UID:" + e.key + "-" + e.start.getTime() + "@invite", "DTSTAMP:" + gfmt(new Date()),
+        "DTSTART:" + gfmt(e.start), "DTEND:" + gfmt(e.end), "SUMMARY:" + title, "LOCATION:" + where.replace(/,/g, "\\,"), "END:VEVENT", "END:VCALENDAR"].join("\r\n");
+      cal = 'href="data:text/calendar;charset=utf-8,' + encodeURIComponent(ics) + '" download="' + e.key + '.ics"';
+    } else {
+      cal = 'href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(title) + "&dates=" + gfmt(e.start) + "/" + gfmt(e.end) +
+        "&location=" + encodeURIComponent(where) + "&ctz=" + encodeURIComponent(C.timeZone) + '" target="_blank" rel="noopener"';
+    }
+    return '<div class="v-card">' +
+      '<div class="pin">' + PIN + '</div>' +
+      (EVS.length > 1 ? '<p class="v-label">' + (i + 1) + ' of ' + EVS.length + '</p>' : '') +
+      '<p class="v-title">' + esc(e.title) + '</p>' +
+      '<p class="v-name">' + esc(e.venue) + '</p><p class="v-addr">' + esc(e.address) + '</p>' +
+      '<div class="v-when"><span>' + CAL + p.weekday.slice(0, 3) + ', ' + p.day + ' ' + p.month.slice(0, 3) + '</span><span>' + CLK + clock12(p.hour, p.minute) + '</span></div>' +
+      (e.note ? '<p class="v-note">' + esc(e.note) + '</p>' : '') +
+      '<div class="map"><iframe title="Map to ' + esc(e.venue) + '" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=' + encodeURIComponent(where) + '&z=15&output=embed"></iframe>' +
+      '<a class="map-open" href="' + esc(maps) + '" target="_blank" rel="noopener">Open in Maps ' + EXT + '</a></div>' +
+      '<a class="btn btn-solid" href="' + esc(maps) + '" target="_blank" rel="noopener">' + PIN + 'Directions</a>' +
+      '<a class="btn btn-line" ' + cal + '>' + CAL + 'Add to calendar</a></div>';
+  }).join("");
+
+  /* order of the day */
+  var ICONS = {
+    arrive: '<path d="M3 21h18M5 21V9l7-5 7 5v12"/><path d="M10 21v-6h4v6"/>',
+    rings: '<circle cx="9" cy="14" r="5"/><circle cx="15" cy="14" r="5"/><path d="M10 4l2 3 2-3"/>',
+    drinks: '<path d="M6 3h12l-1.5 8a4.5 4.5 0 0 1-9 0L6 3z"/><path d="M12 15.5V21M8.5 21h7M6.6 7h10.8"/>',
+    photo: '<path d="M3 8a2 2 0 0 1 2-2h2.5l1.5-2h6l1.5 2H19a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/><circle cx="12" cy="13" r="4"/>',
+    dinner: '<path d="M7 3v8M4.5 3v5a2.5 2.5 0 0 0 5 0V3M7 11v10"/><path d="M17 21V3c-2.2 1.3-3.5 3.6-3.5 7v4H17"/>',
+    cake: '<path d="M4 21h16M5 21v-6h14v6M7 15v-4h10v4"/><path d="M12 11V8M12 5.5c.8 0 1 .8 1 1.2S12.6 8 12 8s-1-.6-1-1.3.4-1.2 1-1.2z"/>',
+    dance: '<path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/>',
+    car: '<path d="M5 17H3v-4.5l2-5A2 2 0 0 1 6.9 6h10.2a2 2 0 0 1 1.9 1.5l2 5V17h-2"/><path d="M3 12.5h18"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/><path d="M9.5 17h5"/>',
+    heart: '<path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/>'
+  };
+  var showDay = C.timeline && C.timeline.length && C.selectedEvents.indexOf("ceremony") > -1;
+  if (showDay) {
+    $("#tl").insertAdjacentHTML("beforeend", C.timeline.map(function (t) {
+      return '<div class="tl-item"><span class="tl-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + (ICONS[t.icon] || ICONS.heart) + '</svg></span>' +
+        '<div><div class="tl-head"><span class="tl-time">' + esc(t.time) + '</span><span class="tl-name">' + esc(t.title) + '</span></div>' + (t.note ? '<p class="tl-desc">' + esc(t.note) + '</p>' : '') + '</div></div>';
+    }).join(""));
+  } else $("#events").remove();
+
+  /* good to know, travel, gifts */
+  if (C.details && C.details.length) $("#knowGrid").innerHTML = C.details.map(function (d) {
+    return '<div class="know-card"><span class="k-lbl">' + esc(d.label).toUpperCase() + '</span><b>' + esc(d.title) + '</b><p>' + esc(d.text) + '</p></div>';
+  }).join(""); else $("#know").remove();
+  var T = C.travel || {};
+  if ((T.stays && T.stays.length) || T.getting) {
+    $("#stays").innerHTML = (T.stays || []).map(function (h) {
+      return '<div class="stay"><span><b>' + esc(h.name) + '</b><small>' + esc(h.note) + '</small></span>' + (h.url ? '<a href="' + esc(h.url) + '" target="_blank" rel="noopener">Book</a>' : '') + '</div>';
+    }).join("");
+    setText("#getting", T.getting);
+  } else $("#travel").remove();
+  if (C.gifts && C.gifts.text) {
+    setText("#giftText", C.gifts.text);
+    if (C.gifts.url) { var gl = $("#giftLink"); gl.href = C.gifts.url; gl.textContent = C.gifts.label || "View our registry"; gl.hidden = false; }
+  } else $("#gifts").remove();
+
+  /* closing */
+  setText("#quote", C.quote && C.quote.text ? "“" + C.quote.text + "”" : "");
+  setText("#quoteBy", C.quote && C.quote.by ? C.quote.by.toUpperCase() : "");
+  setText("#sign", A + " & " + B);
+  setText("#hashtag", C.hashtag);
+  setText("#closingLine", C.closing);
+
+  /* preview mode */
+  if (C.preview) { $("#previewbar").hidden = false; if (C.buyUrl) $("#buyLink").href = C.buyUrl; else $("#buyLink").hidden = true; }
+
+  /* ---------- the seal carries the couple's initials ---------- */
+  (function makeSeal() {
+    var base = new Image();
+    base.onload = function () {
+      var draw = function () {
+        try {
+          var c = document.createElement("canvas"); c.width = base.naturalWidth; c.height = base.naturalHeight;
+          var x = c.getContext("2d"); x.drawImage(base, 0, 0);
+          var txt = (A.charAt(0) + "&" + B.charAt(0)).toUpperCase().replace("&", "&");
+          x.textAlign = "center"; x.textBaseline = "middle"; x.font = Math.round(c.width * .23) + "px 'Pinyon Script', cursive";
+          var cx = c.width * .504, cy = c.height * .51;
+          x.fillStyle = "rgba(255,255,255,.7)"; x.fillText(txt, cx + 1, cy + 2);       // pressed-in highlight
+          x.fillStyle = "#23262B"; x.fillText(txt, cx, cy);
+          var url = c.toDataURL("image/png");
+          $$(".seal-img").forEach(function (im) { im.src = url; });
+        } catch (e) {}
+      };
+      if (document.fonts && document.fonts.load) document.fonts.load("80px 'Pinyon Script'").then(draw, draw); else draw();
+    };
+    base.src = "assets/seal-blank.png";
+  })();
+
+  /* ---------- RSVP ---------- */
+  var RS = C.rsvp;
+  if (RS) {
+    if (RS.deadline) { var dl = dparts(new Date(RS.deadline + "T12:00:00Z")); setText("#deadline", "by " + dl.day + " " + dl.month + " " + dl.year); }
+    var RKEY = "mi-rsvp-" + (C.slug || "sample") + "-" + (C.guestKey || "");
+    var renderRsvp = function (sent) {
+      var box = $("#rsvpBox"), done = sent;
+      try { done = done || JSON.parse(localStorage.getItem(RKEY)); } catch (e) {}
+      if (done) {
+        box.innerHTML = '<div class="thanks"><p class="t-big">Thank you</p><p>' + (done.attending === "yes" ? "We've saved your seat" + (done.count > 1 ? "s" : "") + ". We can't wait to see you!" : "We'll miss you, and thank you for letting us know.") + '</p>' +
+          (C.slug ? '' : '<small>PREVIEW: REPLIES ARE SAVED ONCE THE INVITATION IS LIVE</small>') +
+          '<button class="btn btn-line" type="button" id="rAgain">Change my reply</button></div>';
+        return;
+      }
+      var max = (C.guest && C.guest.seats) || 4, opts = "";
+      for (var i = 1; i <= max; i++) opts += '<option value="' + i + '">' + i + '</option>';
+      box.innerHTML = '<form class="rsvp-form" id="rForm" novalidate>' +
+        '<div class="f"><label for="rName">Your name' + (max > 1 ? 's' : '') + '</label><input id="rName" maxlength="80" autocomplete="name" value="' + esc(C.guest && C.guest.name) + '"></div>' +
+        '<fieldset class="f"><legend>Will you join us?</legend><div class="choice">' +
+        '<label><input type="radio" name="att" value="yes" id="rYes"><span>Joyfully accepts</span></label>' +
+        '<label><input type="radio" name="att" value="no" id="rNo"><span>Regretfully declines</span></label></div></fieldset>' +
+        '<div id="rYesF" hidden style="display:grid;gap:14px">' +
+        '<div class="f"><label for="rCount">Number of guests</label><select id="rCount">' + opts + '</select></div>' +
+        (RS.meals && RS.meals.length ? '<div class="f"><label>Dinner choice</label><div class="meals" id="rMeals"></div></div>' : '') +
+        '<div class="f"><label for="rDiet">Dietary requirements</label><input id="rDiet" maxlength="200" placeholder="Allergies, vegetarian, gluten free…"></div>' +
+        (RS.askSong ? '<div class="f"><label for="rSong">A song to get you dancing</label><input id="rSong" maxlength="120"></div>' : '') +
+        '</div>' +
+        '<div class="f"><label for="rNote">A note for the couple</label><textarea id="rNote" maxlength="600"></textarea></div>' +
+        '<p class="r-msg" id="rMsg" role="status" hidden></p>' +
+        '<button class="btn btn-solid" type="submit" id="rSend">Send my reply</button></form>';
+      var meals = function () {
+        var m = $("#rMeals"); if (!m) return; var n = +$("#rCount").value, prev = $$("#rMeals select").map(function (x) { return x.value; }), h = "";
+        for (var k = 0; k < n; k++) {
+          h += '<select id="rMeal' + k + '" aria-label="Dinner choice for guest ' + (k + 1) + '"><option value="">Guest ' + (k + 1) + ': choose…</option>' +
+            RS.meals.map(function (o) { return '<option' + (prev[k] === o ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join("") + '</select>';
+        }
+        m.innerHTML = h;
+      };
+      $$('#rForm input[name="att"]').forEach(function (r) { r.addEventListener("change", function () { $("#rYesF").hidden = !$("#rYes").checked; if (window.ScrollTrigger) ScrollTrigger.refresh(); }); });
+      $("#rCount").addEventListener("change", meals); meals();
+    };
+    document.addEventListener("click", function (e) { if (e.target.id === "rAgain") { try { localStorage.removeItem(RKEY); } catch (_) {} renderRsvp(); } });
+    document.addEventListener("submit", function (e) {
+      if (e.target.id !== "rForm") return;
+      e.preventDefault();
+      var msg = $("#rMsg"), send = $("#rSend"), yes = $("#rYes").checked, no = $("#rNo").checked;
+      var body = { slug: C.slug, guest: C.guestKey || null, name: $("#rName").value.trim(), attending: yes ? "yes" : no ? "no" : "",
+        count: yes ? +$("#rCount").value : 0, meals: yes ? $$("#rMeals select").map(function (x) { return x.value; }) : [],
+        dietary: yes ? ($("#rDiet").value || "").trim() : "", song: yes && $("#rSong") ? $("#rSong").value.trim() : "", message: $("#rNote").value.trim() };
+      var err = !body.name ? "Please add your name." : !body.attending ? "Please let us know if you can come." : "";
+      if (err) { msg.textContent = err; msg.hidden = false; return; }
+      msg.hidden = true;
+      var done = function () {
+        try { localStorage.setItem(RKEY, JSON.stringify(body)); } catch (_) {}
+        renderRsvp(body);
+        if (yes && typeof popper === "function") popper($("#rsvpBox").getBoundingClientRect());
+      };
+      if (!C.slug) return done();
+      send.disabled = true; send.textContent = "Sending…";
+      fetch("/api/rsvp", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.error || "Your reply didn't send. Please try again."); }); })
+        .then(done, function (x) { msg.textContent = x.message; msg.hidden = false; send.disabled = false; send.textContent = "Send my reply"; });
+    });
+    renderRsvp();
+  } else $("#rsvp").remove();
+
+  /* ---------- music + voice ----------
+     Web Audio is used so the music can dip under the voice on iPhone too
+     (iOS ignores volume changes on normal audio elements). */
+  var mBtn = $("#music"), AC = window.AudioContext || window.webkitAudioContext, actx = null, master = null, musicGain = null, muted = false;
+  function grab(url) { return url ? fetch(url).then(function (r) { if (!r.ok) throw 0; return r.arrayBuffer(); }).catch(function () { return null; }) : Promise.resolve(null); }
+  var musicData = grab(C.music), voiceData = grab(C.voice);
+  function decode(ab) {
+    return new Promise(function (res) {
+      if (!ab || !actx) return res(null);
+      try { var p = actx.decodeAudioData(ab, res, function () { res(null); }); if (p && p.catch) p.catch(function () { res(null); }); } catch (e) { res(null); }
+    });
+  }
+  function showBtn() { mBtn.classList.add("show"); }
+  function htmlFallback() {                       // e.g. file opened from disk: plain audio, no dip
+    if (!C.music) return;
+    if (actx) { try { actx.close(); } catch (e) {} } actx = null; master = null;
+    audio = new Audio(C.music); audio.loop = true; audio.volume = .8;
+    showBtn();
+    if (!muted) audio.play().catch(function () {});
+  }
+  window.__startAudio = function () {
+    if (!AC) return htmlFallback();
+    actx = new AC();
+    var unlock = actx.createBufferSource(); unlock.buffer = actx.createBuffer(1, 1, 22050); unlock.connect(actx.destination); unlock.start(0);
+    if (actx.resume) actx.resume();
+    master = actx.createGain(); master.connect(actx.destination);
+    musicGain = actx.createGain(); musicGain.gain.value = 0; musicGain.connect(master);
+    var t0 = actx.currentTime;
+    musicData.then(decode).then(function (buf) {
+      if (!buf) return htmlFallback();
+      var src = actx.createBufferSource(); src.buffer = buf; src.loop = true; src.connect(musicGain); src.start(0);
+      musicGain.gain.setValueAtTime(0, actx.currentTime);
+      musicGain.gain.linearRampToValueAtTime(.8, actx.currentTime + 2.5);
+      showBtn();
+    });
+    voiceData.then(decode).then(function (vb) { voiceBuf = vb; if (voiceWanted) playVoice(); });
+  };
+  // the timing announcement plays once, when the guest scratches the date
+  var voiceBuf = null, voiceWanted = false, voicePlayed = false;
+  function playVoice() {
+    if (voicePlayed || !opened || !C.voice) return;
+    if (actx && master) {
+      if (!voiceBuf) { voiceWanted = true; return; }
+      voicePlayed = true;
+      if (muted) return;                                                // guest has muted: stay silent
+      var at = actx.currentTime + .9;
+      var vg = actx.createGain(); vg.gain.value = 1.15; vg.connect(master);
+      var v = actx.createBufferSource(); v.buffer = voiceBuf; v.connect(vg); v.start(at);
+      musicGain.gain.cancelScheduledValues(actx.currentTime);
+      musicGain.gain.setTargetAtTime(.18, at - .5, .25);                 // dip the music just before she speaks
+      musicGain.gain.setTargetAtTime(.8, at + voiceBuf.duration + .3, .8); // and bring it back after
+    } else if (audio) {
+      voicePlayed = true; if (muted) return;
+      var hv = new Audio(C.voice); voiceEl = hv; audio.volume = .25;
+      hv.onended = function () { audio.volume = .8; voiceEl = null; };
+      setTimeout(function () { hv.play().catch(function () { audio.volume = .8; }); }, 900);
+    }
+  }
+  var voiceEl = null;
+  mBtn.addEventListener("click", function () {
+    muted = !muted;
+    mBtn.classList.toggle("muted", muted); mBtn.setAttribute("aria-label", muted ? "Play music" : "Pause music");
+    if (actx && master) {
+      var now = actx.currentTime;
+      master.gain.cancelScheduledValues(now);
+      if (muted) { master.gain.setValueAtTime(0, now); actx.suspend(); }   // silence instantly, then pause everything
+      else { actx.resume().then(function () { master.gain.setValueAtTime(1, actx.currentTime); }); master.gain.setValueAtTime(1, now); }
+    }
+    if (audio) { muted ? audio.pause() : audio.play().catch(function () {}); }
+    if (voiceEl) { muted ? voiceEl.pause() : voiceEl.play().catch(function () {}); }
+  });
+  document.addEventListener("visibilitychange", function () {      // go quiet when the guest switches apps
+    if (actx) { if (document.hidden) actx.suspend(); else if (!muted) actx.resume(); }
+    else if (audio) { if (document.hidden) audio.pause(); else if (!muted) audio.play().catch(function () {}); }
+  });
+
+  /* ---------- gold-leaf versions of the envelope paper, rendered once ---------- */
+  (function makeGold() {
+    var img = new Image();
+    img.onload = function () {
+      try {
+        var w = Math.min(720, img.naturalWidth), h = Math.round(img.naturalHeight * w / img.naturalWidth);
+        var c = document.createElement("canvas"); c.width = w; c.height = h;
+        var x = c.getContext("2d"); x.drawImage(img, 0, 0, w, h);
+        var src = x.getImageData(0, 0, w, h), d = src.data, n = w * h, lum = new Float32Array(n), mean = 0;
+        for (var i = 0; i < n; i++) { lum[i] = (d[i * 4] * .3 + d[i * 4 + 1] * .59 + d[i * 4 + 2] * .11) / 255; mean += lum[i]; }
+        mean /= n;
+        var glow = x.createImageData(w, h), q = glow.data;
+        for (var j = 0; j < n; j++) {
+          var hi = Math.max(0, Math.min(1, (lum[j] - mean - .03) * 5)), k = j * 4;   // the raised lines of the pattern
+          q[k] = 214; q[k + 1] = 238; q[k + 2] = 255; q[k + 3] = Math.round(hi * 255);
+        }
+        x.putImageData(glow, 0, 0);
+        // soft bloom: a blurred copy underneath the sharp lines (cheap blur = draw small, scale back up)
+        var sm = document.createElement("canvas"); sm.width = Math.round(w / 6); sm.height = Math.round(h / 6);
+        var sx = sm.getContext("2d"); sx.imageSmoothingQuality = "high"; sx.drawImage(c, 0, 0, sm.width, sm.height);
+        var out = document.createElement("canvas"); out.width = w; out.height = h;
+        var ox = out.getContext("2d"); ox.imageSmoothingQuality = "high";
+        ox.globalAlpha = .55; ox.drawImage(sm, 0, 0, w, h);
+        ox.globalAlpha = 1; ox.globalCompositeOperation = "lighter"; ox.drawImage(c, 0, 0);
+        var glowURL = out.toDataURL("image/png");
+        $$(".door-gold, .door-glow").forEach(function (el) { el.style.backgroundImage = "url(" + glowURL + ")"; });
+      } catch (e) {
+        $("#envelope").classList.add("cssgold");
+        $$(".door-gold, .door-glow").forEach(function (el) { el.style.backgroundImage = "url(assets/envelope.jpg)"; });
+      }
+    };
+    img.src = "assets/envelope.jpg";
+  })();
+
+  /* ---------- countdown ---------- */
+  var cdEls = { d: $("#cdD"), h: $("#cdH"), m: $("#cdM"), s: $("#cdS") };
+  var pad = function (n) { return (n < 10 ? "0" : "") + n; };
+  var counting = false;
+  function parts() {
+    var diff = Math.max(0, START - Date.now());
+    return { d: Math.floor(diff / 864e5), h: Math.floor(diff / 36e5) % 24, m: Math.floor(diff / 6e4) % 60, s: Math.floor(diff / 1e3) % 60, done: diff <= 0 };
+  }
+  function tick() {
+    var p = parts();
+    if (!counting) { cdEls.d.textContent = pad(p.d); cdEls.h.textContent = pad(p.h); cdEls.m.textContent = pad(p.m); cdEls.s.textContent = pad(p.s); }
+    if (p.done && !$(".cd-done")) {
+      var n = document.createElement("p"); n.className = "cd-done"; n.textContent = "Today is the day!";
+      $("#cdGrid").after(n);
+    }
+  }
+  tick(); setInterval(tick, 1000);
+
+  /* ---------- petals ---------- */
+  var petalImgs = ["assets/petal1.png", "assets/petal2.png", "assets/petal3.png"].map(function (src) { var i = new Image(); i.src = src; return i; });
+  var cv = $("#petals"), ctx = cv.getContext("2d"), petals = [], dpr = Math.min(window.devicePixelRatio || 1, 2), pw = 0, ph = 0, running = false;
+  function size() { pw = cv.clientWidth; ph = cv.clientHeight; cv.width = pw * dpr; cv.height = ph * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+  function mk(x, y, burst) {
+    var a = Math.random() * Math.PI * 2, sp = burst ? 2 + Math.random() * 5 : 0;
+    return { x: x, y: y, vx: burst ? Math.cos(a) * sp : (Math.random() - .5) * .4, vy: burst ? Math.sin(a) * sp - 2 : .5 + Math.random() * .8,
+      s: 12 + Math.random() * 12, r: Math.random() * 6.28, vr: (Math.random() - .5) * .05, sw: Math.random() * 6.28,
+      img: petalImgs[(Math.random() * 3) | 0], burst: burst, life: 1 };
+  }
+  function ambient(n) { for (var i = 0; i < n; i++) petals.push(mk(Math.random() * pw, -20 - Math.random() * ph, false)); }
+  function loop() {
+    ctx.clearRect(0, 0, pw, ph);
+    for (var i = petals.length - 1; i >= 0; i--) {
+      var p = petals[i];
+      if (p.burst) { p.vy += .12; p.vx *= .985; p.life -= .006; }
+      p.sw += .02; p.x += p.vx + (p.burst ? 0 : Math.sin(p.sw) * .5); p.y += p.vy; p.r += p.vr;
+      if (p.y > ph + 30 || p.life <= 0) {
+        if (p.burst) { petals.splice(i, 1); continue; }
+        p.y = -30; p.x = Math.random() * pw;
+      }
+      ctx.save(); ctx.globalAlpha = Math.max(0, Math.min(1, p.life)) * .9; ctx.translate(p.x, p.y); ctx.rotate(p.r);
+      ctx.scale(1, .6 + .4 * Math.sin(p.sw * 2));
+      if (p.img.complete) ctx.drawImage(p.img, -p.s / 2, -p.s / 2, p.s, p.s);
+      ctx.restore();
+    }
+    requestAnimationFrame(loop);
+  }
+  function startPetals(burstX, burstY) {
+    if (RM) return;
+    size(); window.addEventListener("resize", size);
+    if (burstX != null) for (var i = 0; i < 28; i++) petals.push(mk(burstX, burstY, true));
+    if (!running) { running = true; requestAnimationFrame(loop); }
+    setTimeout(function () { ambient(14); }, 900);
+  }
+
+  /* ---------- confetti popper ---------- */
+  var pc = $("#popper"), px = pc.getContext("2d"), bits = [], popRunning = false, PW = 0, PH = 0;
+  var popCols = ["#FFFFFF", "#DCE8F6", "#9DBDE3", "#C8D3DF", "#E9D3A0", "#B8955A", "#F3DCE0", "#7E95AA"];
+  function popSize() { PW = pc.clientWidth; PH = pc.clientHeight; pc.width = PW * dpr; pc.height = PH * dpr; px.setTransform(dpr, 0, 0, dpr, 0, 0); }
+  function bit(x, y, ang, spd, kind) {
+    return { x: x, y: y, vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd, kind: kind, col: popCols[(Math.random() * popCols.length) | 0],
+      w: 5 + Math.random() * 4, h: 12 + Math.random() * 12, len: 26 + Math.random() * 30, r: Math.random() * 6.28, vr: (Math.random() - .5) * .3,
+      t: Math.random() * 6.28, s: 14 + Math.random() * 14, img: petalImgs[(Math.random() * 3) | 0], life: 1 };
+  }
+  function popper(cardRect) {
+    if (RM) return;
+    popSize();
+    var kinds = ["strip", "strip", "strip", "curl", "curl", "petal", "petal", "dot"];
+    for (var side = 0; side < 2; side++) {
+      var ox = side ? PW + 10 : -10, oy = PH * .92;
+      for (var i = 0; i < 90; i++) {
+        var base = side ? -Math.PI * .66 : -Math.PI * .34;
+        bits.push(bit(ox, oy, base + (Math.random() - .5) * .6, 16 + Math.random() * 13, kinds[(Math.random() * kinds.length) | 0]));
+      }
+    }
+    if (cardRect) {
+      var cx = cardRect.left - pc.getBoundingClientRect().left + cardRect.width / 2, cy = cardRect.top + cardRect.height / 2;
+      for (var j = 0; j < 50; j++) bits.push(bit(cx, cy, Math.random() * Math.PI * 2, 3 + Math.random() * 8, kinds[(Math.random() * kinds.length) | 0]));
+    }
+    if (!popRunning) { popRunning = true; requestAnimationFrame(popLoop); }
+  }
+  function popLoop() {
+    px.clearRect(0, 0, PW, PH);
+    for (var i = bits.length - 1; i >= 0; i--) {
+      var b = bits[i];
+      b.vy += b.kind === "petal" ? .16 : .28; b.vx *= .985; b.vy *= .985;
+      if (b.vy > 0) { b.vy = Math.min(b.vy, b.kind === "petal" ? 2.2 : 4.5); b.vx += Math.sin(b.t) * .08; }
+      b.x += b.vx; b.y += b.vy; b.r += b.vr; b.t += .12;
+      if (b.y > PH + 40) { bits.splice(i, 1); continue; }
+      px.save(); px.translate(b.x, b.y); px.rotate(b.r);
+      if (b.kind === "strip") {
+        px.scale(1, Math.cos(b.t)); px.fillStyle = b.col; px.fillRect(-b.w / 2, -b.h / 2, b.w, b.h);
+      } else if (b.kind === "curl") {
+        px.strokeStyle = b.col; px.lineWidth = 2.6; px.lineCap = "round"; px.beginPath();
+        for (var k = 0; k <= 14; k++) { var yy = -b.len / 2 + b.len * k / 14, xx = Math.sin(k * .9 + b.t) * 5; k ? px.lineTo(xx, yy) : px.moveTo(xx, yy); }
+        px.stroke();
+      } else if (b.kind === "petal") {
+        px.scale(1, .55 + .45 * Math.sin(b.t)); if (b.img.complete) px.drawImage(b.img, -b.s / 2, -b.s / 2, b.s, b.s);
+      } else { px.fillStyle = b.col; px.beginPath(); px.arc(0, 0, 3.2, 0, 6.28); px.fill(); }
+      px.restore();
+    }
+    if (bits.length) requestAnimationFrame(popLoop); else { popRunning = false; px.clearRect(0, 0, PW, PH); }
+  }
+
+  /* ---------- scratch card ---------- */
+  var sc = $("#scratch"), sctx = sc.getContext("2d"), revealed = false, drawing = false, last = null, moves = 0;
+  var foil = new Image(); foil.src = "assets/envelope.jpg";
+  function paintFoil() {
+    if (revealed) return;
+    var r = sc.getBoundingClientRect(); if (!r.width) return;
+    var d2 = Math.min(window.devicePixelRatio || 1, 2);
+    sc.width = r.width * d2; sc.height = r.height * d2; sctx.setTransform(d2, 0, 0, d2, 0, 0);
+    sctx.globalCompositeOperation = "source-over";
+    if (foil.complete && foil.naturalWidth) {
+      var sw = foil.naturalWidth * .5, sh = sw * r.height / r.width;
+      sctx.drawImage(foil, foil.naturalWidth * .25, foil.naturalHeight * .35, sw, sh, 0, 0, r.width, r.height);
+    } else { sctx.fillStyle = "#8EA3B7"; sctx.fillRect(0, 0, r.width, r.height); }
+    var g = sctx.createLinearGradient(0, 0, r.width, r.height);
+    g.addColorStop(0, "rgba(255,255,255,.10)"); g.addColorStop(.45, "rgba(255,255,255,.42)"); g.addColorStop(.55, "rgba(255,255,255,.18)"); g.addColorStop(1, "rgba(40,60,85,.20)");
+    sctx.fillStyle = g; sctx.fillRect(0, 0, r.width, r.height);
+    sctx.fillStyle = "rgba(255,255,255,.75)";
+    for (var i = 0; i < 90; i++) { sctx.beginPath(); sctx.arc(Math.random() * r.width, Math.random() * r.height, Math.random() * 1.3, 0, 7); sctx.fill(); }
+    sctx.strokeStyle = "rgba(255,255,255,.55)"; sctx.lineWidth = 1; sctx.strokeRect(10.5, 10.5, r.width - 21, r.height - 21);
+    sctx.textAlign = "center"; sctx.shadowColor = "rgba(20,32,48,.6)"; sctx.shadowBlur = 8; sctx.shadowOffsetY = 2;
+    sctx.fillStyle = "#fff"; sctx.font = "52px 'Pinyon Script', cursive"; sctx.fillText("Scratch here", r.width / 2, r.height / 2 + 4);
+    sctx.font = "15px 'Cormorant Garamond', serif"; sctx.fillText("to reveal the date", r.width / 2, r.height / 2 + 34);
+    sctx.shadowColor = "transparent";
+  }
+  function spos(e) { var r = sc.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+  // coverage is tracked on our own grid (not by reading canvas pixels), so it works
+  // everywhere, including when the file is opened straight from disk
+  var GX = 30, GY = 26, grid = new Uint8Array(GX * GY), BR = 25;
+  function mark(x, y) {
+    var r = sc.getBoundingClientRect(), cw = r.width / GX, ch = r.height / GY;
+    var cx0 = Math.max(0, Math.floor((x - BR) / cw)), cx1 = Math.min(GX - 1, Math.floor((x + BR) / cw));
+    var cy0 = Math.max(0, Math.floor((y - BR) / ch)), cy1 = Math.min(GY - 1, Math.floor((y + BR) / ch));
+    for (var gy = cy0; gy <= cy1; gy++) for (var gx = cx0; gx <= cx1; gx++) {
+      var dx = (gx + .5) * cw - x, dy = (gy + .5) * ch - y;
+      if (dx * dx + dy * dy <= BR * BR) grid[gy * GX + gx] = 1;
+    }
+  }
+  function scratchAt(p) {
+    sctx.globalCompositeOperation = "destination-out"; sctx.lineWidth = BR * 2; sctx.lineCap = "round"; sctx.lineJoin = "round";
+    sctx.beginPath(); sctx.moveTo(last.x, last.y); sctx.lineTo(p.x + .1, p.y); sctx.stroke();
+    var dist = Math.hypot(p.x - last.x, p.y - last.y), steps = Math.max(1, Math.ceil(dist / 8));
+    for (var i = 0; i <= steps; i++) mark(last.x + (p.x - last.x) * i / steps, last.y + (p.y - last.y) * i / steps);
+    last = p;
+    if (++moves % 4 === 0) checkScratch();
+  }
+  sc.addEventListener("pointerdown", function (e) {
+    if (revealed) return; drawing = true; last = spos(e); $("#scHint").classList.add("off");
+    try { sc.setPointerCapture(e.pointerId); } catch (_) {} scratchAt(spos(e));
+  });
+  sc.addEventListener("pointermove", function (e) { if (drawing && !revealed) scratchAt(spos(e)); });
+  ["pointerup", "pointercancel"].forEach(function (t) { sc.addEventListener(t, function () { drawing = false; checkScratch(); }); });
+  sc.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); revealDate(); } });
+  // only the centre of the card counts: ~55% of the middle area scratched reveals the whole date
+  function checkScratch() {
+    if (revealed) return;
+    var x0 = Math.floor(GX * .2), x1 = Math.ceil(GX * .8), y0 = Math.floor(GY * .22), y1 = Math.ceil(GY * .78), hit = 0, total = 0;
+    for (var gy = y0; gy < y1; gy++) for (var gx = x0; gx < x1; gx++) { total++; hit += grid[gy * GX + gx]; }
+    if (hit / total > .55) revealDate();
+  }
+  function revealDate() {
+    if (revealed) return; revealed = true;
+    sc.classList.add("gone"); $("#scHint").classList.add("off");
+    setTimeout(function () { sc.style.display = "none"; }, 750);
+    $("#scShine").classList.add("go");
+    if (navigator.vibrate) { try { navigator.vibrate([25, 30, 25]); } catch (_) {} }
+    if (window.gsap && !RM) {
+      gsap.timeline()
+        .to("#scratchWrap", { keyframes: [{ x: -6, rotation: -1 }, { x: 6, rotation: 1 }, { x: -4, rotation: -.6 }, { x: 4, rotation: .6 }, { x: 0, rotation: 0 }], duration: .42, ease: "none" })
+        .add(function () { popper($("#scratchWrap").getBoundingClientRect()); });
+    } else popper($("#scratchWrap").getBoundingClientRect());
+    $("#scAfter").textContent = C.closing || "We can't wait to celebrate with you";
+    // 3s after the reveal, show the same swipe-up hand until the guest scrolls on
+    setTimeout(function () {
+      var y0 = window.pageYOffset, hint = $("#swipeHint");
+      hint.classList.add("solid", "show");
+      function off() { if (Math.abs(window.pageYOffset - y0) > 40) { hint.classList.remove("show"); window.removeEventListener("scroll", off); } }
+      window.addEventListener("scroll", off, { passive: true });
+    }, 3000);
+    $("#countdown").classList.remove("is-locked");
+    document.body.classList.remove("gated");
+    if (typeof playVoice === "function") playVoice();
+    if (window.gsap) {
+      gsap.fromTo("#scratchWrap", { scale: .95 }, { scale: 1, duration: 1.1, ease: "elastic.out(1, .45)", delay: .42 });
+      gsap.from(".sc-under > *", { y: 14, opacity: 0, duration: .8, stagger: .1, ease: "power3.out" });
+      gsap.from("#scAfter", { opacity: 0, y: 12, duration: .8, delay: .4 });
+      if (window.ScrollTrigger) ScrollTrigger.refresh();
+    }
+  }
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(function () { if (foil.complete) paintFoil(); else foil.onload = paintFoil; });
+  window.addEventListener("resize", function () { clearTimeout(window.__rs); window.__rs = setTimeout(paintFoil, 200); });
+
+  /* ---------- no animation library: simple fallback ---------- */
+  if (!window.gsap) {
+    window.__afterOpen = function () { startPetals(); };
+    var env = $("#envelope");
+    env.addEventListener("click", function () { setTimeout(window.__afterOpen, 300); }, { once: true });
+    return;
+  }
+
+  /* =========================================================
+     GSAP
+     ========================================================= */
+  gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.config({ ignoreMobileResize: true });   // stop jumps when the iPhone address bar hides/shows
+
+  /* ---- walk-in frames (image sequence drawn on a canvas, scrubbed by scroll) ---- */
+  var WALK_N = 61, walk = [], wcv = $("#walkCanvas"), wctx = wcv.getContext("2d"), wLast = null, walkState = { f: 0 };
+  function walkSrc(i) { return "assets/walk/f" + ("00" + (i + 1)).slice(-3) + ".webp"; }
+  function loadWalk(i) {
+    var im = new Image(); im.decoding = "async";
+    im.onload = function () { im.ok = true; if (Math.abs(i - walkState.f) < 2 || !wLast) drawWalk(walkState.f, true); };
+    im.src = walkSrc(i); walk[i] = im;
+  }
+  loadWalk(0);                                             // first frame straight away
+  for (var wi = 1; wi < WALK_N; wi++) loadWalk(wi);        // the rest load in the background while the envelope is closed
+  function nearestWalk(i) {
+    for (var k = 0; k < WALK_N; k++) {
+      var a = i - k, b = i + k;
+      if (a >= 0 && walk[a] && walk[a].ok) return walk[a];
+      if (b < WALK_N && walk[b] && walk[b].ok) return walk[b];
+    }
+    return null;
+  }
+  function drawWalk(f, force) {
+    var img = nearestWalk(Math.round(f)); if (!img || (img === wLast && !force)) return; wLast = img;
+    var cw = wcv.width, ch = wcv.height; if (!cw) return;
+    var s = Math.max(cw / img.naturalWidth, ch / img.naturalHeight), w = img.naturalWidth * s, h = img.naturalHeight * s;
+    wctx.drawImage(img, (cw - w) / 2, (ch - h) * .3, w, h);   // same framing as background "center 30% / cover"
+  }
+  function sizeWalk() {
+    var r = wcv.getBoundingClientRect(), d = Math.min(window.devicePixelRatio || 1, 2);
+    wcv.width = Math.round(r.width * d); wcv.height = Math.round(r.height * d); drawWalk(walkState.f, true);
+  }
+  sizeWalk(); window.addEventListener("resize", sizeWalk);
+
+  // split names into characters
+  $$("#heroNames [data-split]").forEach(function (el) {
+    var t = el.textContent; el.textContent = "";
+    t.split("").forEach(function (ch) {
+      var s = document.createElement("span"); s.className = "ch"; s.textContent = ch === " " ? " " : ch; el.appendChild(s);
+    });
+  });
+
+  var heroChars = $$("#heroNames .ch, #heroNames .amp");
+  if (!RM) {
+    gsap.set(heroChars, { opacity: 0, y: 26, rotationX: -70, transformOrigin: "50% 100%", transformPerspective: 400 });
+    gsap.set(".h-in", { opacity: 0, y: 14 });
+    gsap.set("#heroImg", { opacity: 0 });
+  }
+
+  /* ---- envelope opening timeline ---- */
+  window.__playOpen = function () {
+    var env = $("#envelope"), hit = $("#seal");
+    var sr = hit.getBoundingClientRect(), er = env.getBoundingClientRect();
+    if (RM) { gsap.to(env, { opacity: 0, duration: .6, onComplete: finish }); gsap.set("#heroImg", { opacity: 1 }); return; }
+    gsap.killTweensOf([".seal-glow", "#envTitle", "#envTap"]);
+    var cx = sr.left - er.left + sr.width / 2, cy = sr.top - er.top + sr.height / 2;
+    var maxR = Math.hypot(Math.max(cx, er.width - cx), Math.max(cy, er.height - cy)) + 140;
+    var wave = { r: 0 }, sparks = [], spCv = $("#envSpark"), spX = spCv.getContext("2d"), dpr2 = Math.min(window.devicePixelRatio || 1, 2);
+    spCv.width = er.width * dpr2; spCv.height = er.height * dpr2; spX.setTransform(dpr2, 0, 0, dpr2, 0, 0);
+    function sparkTick() {
+      // new sparkles are born on the travelling ring of light
+      if (wave.r > 20 && wave.r < maxR - 140) for (var k = 0; k < 4; k++) {
+        var a = Math.random() * 6.283, rr = wave.r - 20 + Math.random() * 30;
+        sparks.push({ x: cx + Math.cos(a) * rr, y: cy + Math.sin(a) * rr, vx: Math.cos(a) * .4, vy: Math.sin(a) * .4 - .15, l: 1, s: .8 + Math.random() * 1.8 });
+      }
+      spX.clearRect(0, 0, er.width, er.height);
+      for (var i = sparks.length - 1; i >= 0; i--) {
+        var p = sparks[i]; p.x += p.vx; p.y += p.vy; p.l -= .022;
+        if (p.l <= 0) { sparks.splice(i, 1); continue; }
+        spX.globalAlpha = p.l; spX.fillStyle = "#EEF8FF"; spX.shadowColor = "rgba(150,205,255,.95)"; spX.shadowBlur = 6;
+        spX.beginPath(); spX.arc(p.x, p.y, p.s, 0, 6.283); spX.fill();
+      }
+    }
+    gsap.ticker.add(sparkTick);
+    var tl = gsap.timeline({ onComplete: function () { gsap.ticker.remove(sparkTick); finish(); } }); window.__envTL = tl;
+    tl
+      // 1. tap: the seal presses in and glows softly white
+      .to("#seal", { opacity: 0, duration: .3 }, 0)
+      .fromTo(["#sealFx", ".door .seal-img"], { scale: 1 }, { scale: .95, duration: .15, ease: "power2.out", yoyo: true, repeat: 1 }, 0)
+      .to("#envText", { opacity: 0, duration: .5, ease: "power1.out" }, .1)
+      .to("#sealFx .halo", { opacity: 1, scale: 1.1, duration: .45, ease: "power2.out" }, .05)
+      .to("#sealFx .halo", { opacity: .35, scale: 1, duration: .8, ease: "power2.inOut" }, .5)
+      // 2. a thin gold ring traces round the seal
+      .to("#sealFx .ring", { strokeDashoffset: 0, duration: .7, ease: "power2.inOut" }, .2)
+      // 3. a ring of gold light ripples outward through the embossed pattern, leaving it softly lit
+      .set(".door-glow", { opacity: 1 }, .75)
+      .to(".door-gold", { opacity: .3, duration: .6 }, .75)
+      .fromTo(wave, { r: 0 }, { r: maxR, duration: 2.4, ease: "power1.inOut",
+        onUpdate: function () { var v = wave.r + "px"; $$(".door-gold, .door-glow").forEach(function (el) { el.style.setProperty("--r", v); }); } }, .75)
+      .to("#sealFx .ring", { opacity: 0, duration: .6 }, 1.4)
+      // 4. the envelope dissolves into the hero
+      .set("#envBlack", { opacity: 0 }, 2.8)
+      .add(heroIn, 2.8)
+      .add(unlock, 3.0)   // page starts playing as soon as the photo shows
+      .add(function () { startPetals(); }, 3.0)
+      .to(env, { opacity: 0, duration: 1.4, ease: "power1.inOut" }, 2.8);
+  };
+  var unlocked = false;
+  function unlock() {
+    if (unlocked) return; unlocked = true;
+    document.body.classList.remove("locked");
+    ScrollTrigger.refresh();
+    startGuide();
+  }
+  function finish() {
+    var env = $("#envelope"); env.classList.add("done");
+    unlock();
+  }
+
+  /* ---- hero plays itself like a video ----
+     Shortly after the photo and first line appear, the page scrolls slowly on its own:
+     the couple walks in, the names write themselves, and it settles on Save the Date.
+     No hand hint here. Any touch or scroll hands control straight back to the guest. */
+  var guideDone = false, autoTw = null, hintTimer = null, idleTimer = null;
+  var USER_EVENTS = ["touchstart", "wheel", "keydown", "mousedown"];
+  function onUser(e) {
+    if (e && e.target && e.target.closest && e.target.closest("#music")) return;   // tapping mute isn't "scrolling"
+    endGuide();
+  }
+  function endGuide() {
+    if (guideDone) return; guideDone = true;
+    clearTimeout(hintTimer); clearTimeout(idleTimer);
+    if (autoTw) { autoTw.kill(); autoTw = null; }
+    $("#swipeHint").classList.remove("show");
+    USER_EVENTS.forEach(function (ev) { window.removeEventListener(ev, onUser); });
+  }
+  function startGuide() {
+    if (guideDone) return;
+    USER_EVENTS.forEach(function (ev) { window.addEventListener(ev, onUser, { passive: true }); });
+    idleTimer = setTimeout(autoPlay, 0);
+  }
+  function autoPlay() {
+    if (guideDone || RM) return;
+    $("#swipeHint").classList.remove("show");
+    var target = $("#savedate").getBoundingClientRect().top + window.pageYOffset, pos = { y: window.pageYOffset };
+    var SPEED = 130;                       // px per second: lower = slower walk
+    var settle = Math.min(220, target - pos.y), mid = target - settle;
+    var up = function () { window.scrollTo(0, pos.y); };
+    autoTw = gsap.timeline({ onComplete: function () { autoTw = null; endGuide(); } })
+      .to(pos, { y: mid, duration: Math.max(0, mid - pos.y) / SPEED, ease: "none", onUpdate: up })                 // steady, like a video
+      .to(pos, { y: target, duration: 2 * settle / SPEED, ease: "power1.out", onUpdate: up });                    // glides to a stop on Save the Date
+  }
+
+  function heroIn() {
+    if (RM) return;
+    gsap.timeline()
+      .to("#heroImg", { opacity: 1, duration: .9, ease: "power1.out" }, 0);
+  }
+
+  if (RM) return;
+
+  /* ---- hero parallax on scroll ---- */
+  // keep zooming out as the guest scrolls through the hero
+  // hero stays pinned for ~2 screens of scrolling while the couple walks forward, then the page moves on
+  gsap.timeline({ scrollTrigger: { trigger: "#hero", start: "top top", end: "+=170%", pin: true, scrub: .6, anticipatePin: 1 } })
+    .to(walkState, { f: WALK_N - 1, ease: "none", duration: 1, onUpdate: function () { drawWalk(walkState.f); } }, 0)
+    .fromTo(".scroll-cue", { autoAlpha: 1 }, { autoAlpha: 0, ease: "none", duration: .1, immediateRender: false }, 0)
+    // "The Wedding of" fades in first, then the names follow
+    .fromTo(".hero-kicker", { opacity: 0, y: 14 }, { opacity: 1, y: 0, ease: "power1.out", duration: .12, immediateRender: false }, .02)
+    // the names write themselves in while the couple walks (and un-write when scrolling back up)
+    .fromTo(heroChars, { opacity: 0, y: 26, rotationX: -70 }, { opacity: 1, y: 0, rotationX: 0, ease: "back.out(1.4)", duration: .2, stagger: .025, immediateRender: false }, .22)
+    .fromTo(".divider.h-in", { opacity: 0, y: 14 }, { opacity: 1, y: 0, ease: "none", duration: .12, immediateRender: false }, .72)
+    .fromTo(".divider i", { scaleX: 0 }, { scaleX: 1, ease: "power2.out", duration: .18, immediateRender: false }, .72);
+
+  /* ---- generic title reveals ---- */
+  $$(".rv").forEach(function (el) {
+    gsap.fromTo(el, { opacity: 0, y: 26, filter: "blur(6px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 1, ease: "power3.out", clearProps: "filter",
+      scrollTrigger: { trigger: el, start: "top 88%", once: true } });
+  });
+
+  /* ---- countdown ---- */
+  gsap.to("#cdBg", { yPercent: 10, ease: "none", scrollTrigger: { trigger: "#countdown", start: "top bottom", end: "bottom top", scrub: true } });
+  gsap.from(".cd-cell", {
+    opacity: 0, y: 40, rotationX: -60, transformOrigin: "50% 0%", duration: 1, ease: "back.out(1.4)", stagger: { each: .12, grid: [2, 2] },
+    scrollTrigger: { trigger: "#cdGrid", start: "top 85%", once: true },
+    onStart: function () {
+      counting = true;
+      var p = parts(), o = { d: 0, h: 0, m: 0, s: 0 };
+      gsap.to(o, { d: p.d, h: p.h, m: p.m, s: p.s, duration: 1.6, ease: "power3.out",
+        onUpdate: function () { cdEls.d.textContent = pad(Math.round(o.d)); cdEls.h.textContent = pad(Math.round(o.h)); cdEls.m.textContent = pad(Math.round(o.m)); cdEls.s.textContent = pad(Math.round(o.s)); },
+        onComplete: function () { counting = false; tick(); } });
+    }
+  });
+
+  /* ---- invitation frame draws in with scroll ---- */
+  var ft = gsap.timeline({ scrollTrigger: { trigger: "#frame", start: "top 80%", end: "top 25%", scrub: .8 } });
+  ft.from(".fr-c.tl, .fr-c.tr", { opacity: 0, y: 20, duration: .3 }, 0)
+    .fromTo(".fr-t.t", { clipPath: "inset(0 50% 0 50%)" }, { clipPath: "inset(0 0% 0 0%)", duration: .3 }, .1)
+    .fromTo(".fr-s", { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: .6 }, .2)
+    .from(".fr-c.bl, .fr-c.br", { opacity: 0, y: -20, duration: .3 }, .7)
+    .fromTo(".fr-t.b", { clipPath: "inset(0 50% 0 50%)" }, { clipPath: "inset(0 0% 0 0%)", duration: .3 }, .8);
+  gsap.fromTo(".iv", { opacity: 0, y: 22, filter: "blur(5px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 1, ease: "power2.out", stagger: .14, clearProps: "filter",
+    scrollTrigger: { trigger: "#frame", start: "top 70%", once: true } });
+
+  /* ---- venue ---- */
+  $$(".v-card").forEach(function (card) {
+    gsap.from(card, { opacity: 0, y: 60, scale: .96, duration: 1.1, ease: "power3.out", scrollTrigger: { trigger: card, start: "top 88%", once: true } });
+    gsap.from(card.querySelector(".pin"), { y: -40, opacity: 0, duration: .9, ease: "bounce.out", delay: .35, scrollTrigger: { trigger: card, start: "top 88%", once: true } });
+    var mp = card.querySelector(".map");
+    gsap.fromTo(mp, { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: 1.2, ease: "power3.inOut", scrollTrigger: { trigger: mp, start: "top 90%", once: true } });
+  });
+  gsap.from(".know-card, .stay", { opacity: 0, y: 30, duration: .9, ease: "power3.out", stagger: .1, scrollTrigger: { trigger: "#know, #travel", start: "top 80%", once: true } });
+
+  /* ---- order of events: line draws with scroll, each event appears one by one ---- */
+  if ($("#tlFill")) gsap.fromTo("#tlFill", { scaleY: 0 }, { scaleY: 1, ease: "none",
+    scrollTrigger: { trigger: "#tl", start: "top 70%", end: "bottom 70%", scrub: .6 } });
+  // each event is scrubbed by the scroll position: it builds in as you scroll down and un-builds as you scroll back up
+  $$(".tl-item").forEach(function (it) {
+    var ic = it.querySelector(".tl-ic"), tx = it.querySelector(".tl-ic + div");
+    gsap.timeline({ scrollTrigger: { trigger: it, start: "top 92%", end: "top 62%", scrub: .6 } })
+      .fromTo(ic, { scale: 0, opacity: 0, rotation: -90 }, { scale: 1, opacity: 1, rotation: 0, duration: .5, ease: "back.out(2)" })
+      .fromTo(tx, { x: 40, opacity: 0 }, { x: 0, opacity: 1, duration: .6, ease: "power2.out" }, "-=.25");
+  });
+
+  /* ---- gifts ---- */
+  if ($("#giftCard")) gsap.fromTo("#giftCard", { opacity: 0, y: 40, scale: .95 }, { opacity: 1, y: 0, scale: 1, duration: 1, ease: "power3.out",
+    scrollTrigger: { trigger: "#giftCard", start: "top 88%", once: true } });
+
+  /* ---- rsvp ---- */
+  if ($("#rsvpBox")) gsap.from("#rsvpBox", { opacity: 0, y: 40, duration: 1, ease: "power3.out", scrollTrigger: { trigger: "#rsvpBox", start: "top 90%", once: true } });
+
+  /* ---- closing ---- */
+  gsap.from(".cl", { opacity: 0, y: 24, duration: 1, ease: "power2.out", stagger: .18, scrollTrigger: { trigger: "#closing", start: "top 75%", once: true } });
+
+  window.addEventListener("load", function () { ScrollTrigger.refresh(); });
+})();
+</script>
+</body>
+</html>

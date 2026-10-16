@@ -32,3 +32,21 @@ CREATE TABLE IF NOT EXISTS guests (
   created_at      INTEGER NOT NULL,
   PRIMARY KEY (invitation_slug, key)
 );
+
+-- Guest replies to live invitations. A guest may reply more than once; the newest reply counts.
+CREATE TABLE IF NOT EXISTS rsvps (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  invitation_slug TEXT NOT NULL,
+  guest_key       TEXT,
+  name            TEXT NOT NULL,
+  attending       TEXT NOT NULL,      -- yes | no
+  count           INTEGER NOT NULL DEFAULT 0,
+  meals           TEXT,               -- JSON array, one choice per guest
+  dietary         TEXT,
+  song            TEXT,
+  message         TEXT,
+  ip              TEXT,
+  created_at      INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS rsvps_slug ON rsvps (invitation_slug, created_at);
+CREATE INDEX IF NOT EXISTS rsvps_ip_time ON rsvps (ip, created_at);

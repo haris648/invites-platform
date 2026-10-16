@@ -8,18 +8,28 @@
  *   GET  /try/:id                  show a theme filled with that draft (preview mode)
  *   GET  /:slug                    a paid, live invitation
  *   GET  /:slug/:guest             the same invitation for one guest (name, seats, their events)
+ *   POST /api/rsvp                 a guest's reply to a live invitation
  *   *    /api/admin/...            your admin panel's API (needs ADMIN_TOKEN)
  */
 
 // Every theme you sell is registered here. `path` is its folder in /public/themes.
 const THEMES = {
-  jharokha: {
-    name: "Jharokha",
-    path: "/themes/jharokha/",
-    og: "/themes/jharokha/og.png",
+  "noor-mahal": {
+    name: "Noor Mahal",
+    path: "/themes/noor-mahal/",
+    og: "/themes/noor-mahal/og.png",
     events: ["mehndi", "nikkah", "baraat", "walima"],
   },
+  "ever-after": {
+    name: "Ever After",
+    path: "/themes/ever-after/",
+    og: "/themes/ever-after/og.jpg",
+    events: ["welcome", "ceremony", "reception", "brunch"],
+  },
 };
+// Old theme keys that were renamed, so earlier previews keep working.
+const ALIASES = { jharokha: "noor-mahal" };
+const themeFor = (key) => THEMES[ALIASES[key] || key];
 
 const RESERVED = new Set(["api", "try", "templates", "themes", "admin", "assets", "favicon.ico", "robots.txt", "404.html"]);
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -32,6 +42,7 @@ export default {
 
     try {
       if (url.pathname === "/api/try" && req.method === "POST") return await createDraft(req, env, ctx, url);
+      if (url.pathname === "/api/rsvp" && req.method === "POST") return await saveRsvp(req, env);
       if (parts[0] === "api" && parts[1] === "admin") return await admin(req, env, url, parts.slice(2));
       if (req.method === "GET" && parts[0] === "try" && parts.length === 2) return await renderDraft(env, url, parts[1]);
       if (req.method === "GET" && parts.length >= 1 && parts.length <= 2 && !RESERVED.has(parts[0])) {
@@ -42,9 +53,9 @@ export default {
       return json({ error: "Something went wrong on our side. Please try again." }, 500);
     }
     const res = await env.ASSETS.fetch(req);
-       return res.status === 404 ? notFound(env, url) : res;
-     },
-   };
+    return res.status === 404 ? notFound(env, url) : res;
+  },
+};
 
 /* ---------------- try-on ---------------- */
 
@@ -52,7 +63,7 @@ async function createDraft(req, env, ctx, url) {
   const body = await req.json().catch(() => null);
   if (!body) return json({ error: "Send the form as JSON." }, 400);
 
-  const theme = THEMES[body.template];
+  const theme = themeFor(body.template);
   const bride = clean(body.bride, 24);
   const groom = clean(body.groom, 24);
   const email = clean(body.email, 120).toLowerCase();
@@ -86,7 +97,7 @@ async function createDraft(req, env, ctx, url) {
 
 async function renderDraft(env, url, id) {
   const draft = await env.DB.prepare("SELECT * FROM drafts WHERE id = ?").bind(id).first();
-  const theme = draft && THEMES[draft.template];
+  const theme = draft && themeFor(draft.template);
   if (!theme) return notFound(env, url);
 
   const data = JSON.parse(draft.data);
@@ -102,10 +113,10 @@ async function renderDraft(env, url, id) {
 
 async function renderInvitation(env, url, slug, guestKey) {
   const inv = await env.DB.prepare("SELECT * FROM invitations WHERE slug = ? AND status = 'live'").bind(slug).first();
-  const theme = inv && THEMES[inv.template];
+  const theme = inv && themeFor(inv.template);
   if (!theme) return notFound(env, url);
 
-  const config = { guest: null, ...JSON.parse(inv.data) };
+  const config = { guest: null, ...JSON.parse(inv.data), slug, guestKey: guestKey || null };
   let description = "You're invited";
 
   if (guestKey) {
@@ -135,6 +146,9 @@ async function serveTheme(env, url, theme, config, meta) {
   const ogImage = new URL(theme.og, origin(env, url)).href;
 
   const out = new HTMLRewriter()
+    // Themes load their images and music from relative paths like "assets/hero.jpg".
+    // Previews and invitations live at other URLs, so point relative paths back at the theme folder.
+    .on("head", { element: (el) => el.prepend(`<base href="${theme.path}">`, { html: true }) })
     .on("script#invite-data", { element: (el) => el.setInnerContent(safeJson, { html: true }) })
     .on("title", { element: (el) => el.setInnerContent(meta.title) })
     .on('meta[name="description"]', { element: (el) => el.setAttribute("content", meta.description) })
@@ -188,6 +202,7 @@ async function admin(req, env, url, path) {
       if (!draft) return json({ error: "No preview with that ID." }, 404);
       template = draft.template; data = JSON.parse(draft.data); email = draft.email; draftId = draft.id;
     }
+    if (ALIASES[template]) template = ALIASES[template];
     if (!THEMES[template] || typeof data !== "object") return json({ error: "Give a draft_id, or a template and data." }, 400);
 
     const exists = await env.DB.prepare("SELECT 1 FROM invitations WHERE slug = ?").bind(newSlug).first();
@@ -204,10 +219,12 @@ async function admin(req, env, url, path) {
   // GET /api/admin/invitations/:slug
   if (!sub && req.method === "GET") {
     const { results } = await env.DB.prepare("SELECT key, name, seats, events FROM guests WHERE invitation_slug = ? ORDER BY created_at").bind(slug).all();
+    const rsvps = await env.DB.prepare("SELECT guest_key, name, attending, count, meals, dietary, song, message, created_at FROM rsvps WHERE invitation_slug = ? ORDER BY created_at DESC").bind(slug).all();
     return json({
       invitation: { ...inv, data: JSON.parse(inv.data) },
-      events: THEMES[inv.template]?.events || [],
+      events: themeFor(inv.template)?.events || [],
       guests: results.map((g) => ({ ...g, events: g.events ? JSON.parse(g.events) : null })),
+      rsvps: rsvps.results.map((r) => ({ ...r, meals: r.meals ? JSON.parse(r.meals) : [] })),
     });
   }
 
@@ -229,7 +246,7 @@ async function admin(req, env, url, path) {
     const gKey = (clean(body.key, 40) || slugify(name)).toLowerCase();
     if (!SLUG_RE.test(gKey)) return json({ error: "Guest link must be 3+ lowercase letters, numbers or dashes." }, 400);
     const seats = Number.isInteger(+body.seats) && +body.seats > 0 ? +body.seats : null;
-    const valid = THEMES[inv.template]?.events || [];
+    const valid = themeFor(inv.template)?.events || [];
     const events = Array.isArray(body.events) ? body.events.filter((e) => valid.includes(e)) : [];
     try {
       await env.DB.prepare("INSERT INTO guests (invitation_slug, key, name, seats, events, created_at) VALUES (?, ?, ?, ?, ?, ?)")
@@ -247,6 +264,37 @@ async function admin(req, env, url, path) {
   }
 
   return json({ error: "Unknown admin route." }, 404);
+}
+
+/* ---------------- RSVP ---------------- */
+
+async function saveRsvp(req, env) {
+  const body = await req.json().catch(() => null);
+  if (!body) return json({ error: "Send the reply as JSON." }, 400);
+  const slug = clean(body.slug, 60).toLowerCase();
+  const inv = slug && (await env.DB.prepare("SELECT slug FROM invitations WHERE slug = ? AND status = 'live'").bind(slug).first());
+  if (!inv) return json({ error: "This invitation isn't accepting replies." }, 404);
+
+  let guestKey = clean(body.guest, 40).toLowerCase() || null, max = 10;
+  if (guestKey) {
+    const g = await env.DB.prepare("SELECT seats FROM guests WHERE invitation_slug = ? AND key = ?").bind(slug, guestKey).first();
+    if (!g) guestKey = null; else if (g.seats) max = g.seats;
+  }
+  const name = clean(body.name, 80);
+  const attending = body.attending === "yes" ? "yes" : body.attending === "no" ? "no" : "";
+  if (!name) return json({ error: "Please add your name." }, 400);
+  if (!attending) return json({ error: "Please let the couple know if you can come." }, 400);
+  const count = attending === "yes" ? Math.min(Math.max(parseInt(body.count, 10) || 1, 1), max) : 0;
+  const meals = attending === "yes" && Array.isArray(body.meals) ? body.meals.slice(0, count).map((m) => clean(m, 60)) : [];
+
+  const ip = req.headers.get("CF-Connecting-IP") || "unknown";
+  const recent = await env.DB.prepare("SELECT COUNT(*) AS n FROM rsvps WHERE ip = ? AND created_at > ?").bind(ip, Date.now() - 3600e3).first();
+  if (recent.n >= 20) return json({ error: "Too many replies from this connection. Please try again later." }, 429);
+
+  await env.DB.prepare("INSERT INTO rsvps (invitation_slug, guest_key, name, attending, count, meals, dietary, song, message, ip, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+    .bind(slug, guestKey, name, attending, count, JSON.stringify(meals), clean(body.dietary, 200), clean(body.song, 120), clean(body.message, 600), ip, Date.now())
+    .run();
+  return json({ ok: true }, 201);
 }
 
 /* ---------------- email ---------------- */
