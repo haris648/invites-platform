@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Dawat Invites · Digital wedding invitations</title>
+<meta name="description" content="Animated digital wedding invitations for every function. Try any design with your names, free.">
+<meta property="og:title" content="Dawat Invites">
+<meta property="og:description" content="Animated digital wedding invitations. Try any design with your names, free.">
+<meta property="og:image" content="/themes/jharokha/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Corinthia&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Marcellus+SC&display=swap">
+<link rel="stylesheet" href="/assets/shop.css">
+<style>
+.hero{padding-block:72px 40px;display:grid;gap:18px;max-width:640px}
+.hero h1{font-family:var(--f-script);font-weight:400;font-size:clamp(68px,13vw,120px);line-height:.85}
+.hero p{margin:0;font-size:22px;color:var(--ivory-soft)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px}
+.tile{display:grid;gap:12px;text-decoration:none;color:inherit}
+.tile .shot{aspect-ratio:9/16;max-height:460px;border-radius:22px;border:1px solid var(--line);overflow:hidden;background:var(--night-2)}
+.tile .shot iframe{width:100%;height:100%;border:0;pointer-events:none}
+.tile h2{font-family:var(--f-script);font-weight:400;font-size:52px;line-height:.9}
+.tile .meta{display:flex;justify-content:space-between;align-items:baseline;color:var(--ivory-soft)}
+.tile .price{font-family:var(--f-label);letter-spacing:.1em;color:var(--sand)}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/">Dawat</a>
+  <nav><a href="/#designs">Designs</a><a href="https://wa.me/923001234567" target="_blank" rel="noopener">WhatsApp</a></nav>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <span class="label">Digital wedding invitations</span>
+    <h1>One link for every function</h1>
+    <p>Mehndi, Nikkah, Baraat and Walima, each on its own card. Try any design with your names first, free.</p>
+  </section>
+
+  <!-- Add one tile per theme. -->
+  <section class="grid" id="designs" aria-label="Designs">
+    <a class="tile" href="/templates/jharokha/">
+      <div class="shot"><iframe src="/themes/jharokha/" title="Jharokha preview" loading="lazy" tabindex="-1"></iframe></div>
+      <div><h2>Jharokha</h2>
+        <div class="meta"><span>Carved windows that open onto each function</span><span class="price">$50</span></div></div>
+    </a>
+  </section>
+</main>
+
+<footer class="foot"><div class="wrap"><span>© 2026 Dawat Invites</span><span>One-time payment · no subscription</span></div></footer>
+</body>
+</html>

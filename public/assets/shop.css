@@ -1,0 +1,52 @@
+/* Shop + admin styles. Brand palette shared with the themes. */
+:root{
+  --night:#0e2426; --night-2:#163638; --panel:#122f31;
+  --sand:#e6cd9f; --brass:#c8a04f; --marigold:#e9963a;
+  --ivory:#f6eedf; --ivory-soft:rgba(246,238,223,.72); --line:rgba(200,160,79,.38);
+  --error:#f0a37a; --ok:#9fd3a3;
+  --f-script:"Corinthia","Great Vibes",cursive;
+  --f-body:"Cormorant Garamond",Garamond,"Times New Roman",serif;
+  --f-label:"Marcellus SC","Trajan Pro",Georgia,serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--night);color:var(--ivory);font-family:var(--f-body);font-size:19px;line-height:1.5}
+a{color:var(--sand)}
+img{max-width:100%;display:block}
+:focus-visible{outline:2px solid var(--marigold);outline-offset:3px}
+
+.wrap{max-width:1100px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.label{font-family:var(--f-label);letter-spacing:.2em;font-size:12px;text-transform:uppercase;color:var(--sand)}
+.script{font-family:var(--f-script);font-weight:400;line-height:.9}
+h1,h2,h3{text-wrap:balance;margin:0}
+
+.top{border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:16px}
+.brand{font-family:var(--f-script);font-size:38px;color:var(--ivory);text-decoration:none;line-height:1}
+.top nav{display:flex;gap:20px}
+.top nav a{font-family:var(--f-label);font-size:12px;letter-spacing:.16em;text-decoration:none;color:var(--ivory-soft)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:999px;font-family:var(--f-label);font-size:12px;letter-spacing:.14em;text-decoration:none;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--ivory)}
+.btn.solid{background:linear-gradient(180deg,#e2c27a,#b88f3e);color:#241806;border-color:transparent}
+.btn:disabled{opacity:.6;cursor:progress}
+.btn:hover{filter:brightness(1.08)}
+
+.field{display:grid;gap:6px;min-width:0}
+.field input,.field textarea,.field select{width:100%;min-height:48px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:#0b2122;color:var(--ivory);font:inherit;font-size:18px}
+.field textarea{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;line-height:1.5;min-height:320px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{cursor:pointer;position:relative}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chips span{display:inline-block;padding:9px 15px;border-radius:999px;border:1px solid var(--line);font-family:var(--f-label);font-size:12px;letter-spacing:.12em;color:var(--ivory-soft)}
+.chips input:checked+span{background:var(--brass);border-color:var(--brass);color:#241806}
+.chips input:focus-visible+span{outline:2px solid var(--marigold);outline-offset:2px}
+.msg{margin:0;font-size:16px}
+.msg.err{color:var(--error)}
+.msg.ok{color:var(--ok)}
+
+.foot{border-top:1px solid var(--line);margin-top:72px}
+.foot .wrap{padding-block:28px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;color:var(--ivory-soft);font-size:16px}
+
+@media (max-width:560px){ .pair{grid-template-columns:1fr} .top nav{display:none} }

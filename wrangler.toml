@@ -1,0 +1,27 @@
+name = "invites-platform"
+main = "src/worker.js"
+compatibility_date = "2025-09-01"
+
+# Shop pages, themes and admin are plain files served straight from Cloudflare.
+[assets]
+directory = "./public"
+binding = "ASSETS"
+not_found_handling = "404-page"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "invites"
+database_id = "bdc8bc9c-b25e-4352-9e7a-9964b9974935"   #printed by: npx wrangler d1 create invites
+
+[vars]
+SITE_NAME = "Dawat Invites"
+# Until you verify your own domain in Resend, onboarding@resend.dev only delivers to your own Resend login email.
+FROM_EMAIL = "Dawat Invites <onboarding@resend.dev>"
+# Your WhatsApp number, digits only with country code. Used for the "Buy" buttons.
+WHATSAPP_NUMBER = "971501767643"
+# Optional: your custom domain once connected, e.g. "https://dawatinvites.com"
+# SITE_URL = ""
+
+# Secrets (never put these in this file):
+#   npx wrangler secret put RESEND_API_KEY
+#   npx wrangler secret put ADMIN_TOKEN
