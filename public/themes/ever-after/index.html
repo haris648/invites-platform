@@ -20,7 +20,7 @@
 <link rel="preload" as="image" href="assets/hero.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Pinyon+Script&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Corinthia:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Marcellus+SC&display=swap" rel="stylesheet">
 
 <style>
 :root{
@@ -33,8 +33,8 @@
   --gold-hi:#E9D3A0;
   --silver:#8C98A5;
   --serif:'Cormorant Garamond', Georgia, serif;
-  --caps:'Cinzel', Georgia, serif;
-  --script:'Pinyon Script', cursive;
+  --caps:'Marcellus SC', Georgia, serif;
+  --script:'Corinthia', cursive;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%;background:#C9D4DF}
@@ -43,7 +43,7 @@ body{font-family:var(--serif);color:var(--ink);background:#C9D4DF;-webkit-font-s
 img{display:block;max-width:100%}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--gold);outline-offset:3px}
-.app{position:relative;max-width:480px;margin:0 auto;background:var(--pearl);overflow:hidden;box-shadow:0 0 60px rgba(30,45,65,.25)}
+.app{position:relative;max-width:480px;margin:0 auto;background:var(--pearl);overflow:hidden;overflow:clip;box-shadow:0 0 60px rgba(30,45,65,.25)}
 
 /* =========================================================
    ENVELOPE
@@ -89,7 +89,7 @@ a{color:inherit}
 .seal-hit{position:absolute;left:50%;top:50%;width:38%;max-width:170px;aspect-ratio:1;transform:translate(-50%,-50%);z-index:5;pointer-events:none}
 .seal-glow{position:absolute;inset:-18%;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.45),rgba(255,255,255,0) 62%);animation:glow 2.8s ease-in-out infinite}
 @keyframes glow{50%{transform:scale(1.12);opacity:.55}}
-.env-title{position:absolute;left:0;right:0;top:64%;text-align:center;font-family:var(--script);font-size:clamp(54px,16vw,74px);line-height:1;
+.env-title{position:absolute;left:0;right:0;top:64%;text-align:center;font-family:var(--script);font-size:clamp(72px,21vw,100px);line-height:1;
   background:linear-gradient(100deg,#9C7B45 0%,#E9D3A0 30%,#B8955A 45%,#F6E7C1 58%,#A9874F 75%,#E2C892 100%);background-size:220% 100%;
   -webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 1px 0 rgba(255,250,235,.35)) drop-shadow(0 3px 5px rgba(20,32,48,.75));animation:shimmer 5s linear infinite}
 .env-shade{position:absolute;left:0;right:0;top:56%;bottom:0;background:radial-gradient(120% 70% at 50% 40%,rgba(40,58,80,.42),rgba(40,58,80,0) 70%);pointer-events:none}
@@ -129,7 +129,7 @@ a{color:inherit}
 .hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:16%;background:linear-gradient(180deg,rgba(246,248,251,0),rgba(140,158,176,.35))}
 .hero-copy{position:absolute;left:0;right:0;top:11%;text-align:center;padding:0 18px;z-index:2;text-shadow:0 2px 14px rgba(30,50,80,.35)}
 .hero-kicker{font-family:var(--serif);font-size:17px;letter-spacing:.06em;opacity:.95}
-.hero-names{font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(34px,11.6vw,54px);line-height:1.1;margin:8px 0 14px;white-space:nowrap}
+.hero-names{font-family:var(--script);font-weight:400;font-size:clamp(62px,19vw,92px);line-height:1;margin:4px 0 10px;white-space:nowrap}
 .hero-names .amp{display:inline-block;color:var(--gold-hi);font-weight:400;padding:0 .08em}
 .hero-names .ch{display:inline-block}
 .divider{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 auto 12px;width:min(260px,72%)}
@@ -244,9 +244,9 @@ a{color:inherit}
 .fr-t.t{top:4px}.fr-t.b{bottom:4px;transform:scaleY(-1)}
 .blessing{font-family:var(--caps);font-size:12px;letter-spacing:.2em;color:var(--slate);margin-top:14px}
 .person{margin-top:22px}
-.person .nm{font-family:var(--serif);font-weight:600;font-size:31px;line-height:1.15;color:var(--ink)}
+.person .nm{font-family:var(--script);font-weight:400;font-size:clamp(44px,12.5vw,56px);line-height:1;color:var(--ink);text-wrap:balance}
 .person .of{font-style:italic;font-size:17px;color:var(--slate);margin-top:2px}
-.and{font-family:var(--script);font-size:40px;line-height:1;color:var(--gold);margin-top:16px}
+.and{font-family:var(--script);font-size:58px;line-height:1;color:var(--gold);margin-top:16px}
 .cordial{font-style:italic;font-size:19px;line-height:1.45;color:var(--slate);margin:26px auto 0;max-width:15em}
 .when{font-family:var(--serif);font-weight:600;font-size:22px;color:var(--gold);margin-top:14px}
 .when-time{font-size:18px;color:var(--ink);margin-top:2px}
@@ -283,8 +283,44 @@ a{color:inherit}
 .v-list .v-card{margin:0 auto;width:100%}
 .v-label{font-family:var(--caps);font-size:11px;letter-spacing:.24em;color:var(--gold);margin-top:12px}
 .v-name{margin-top:4px}
-.v-title{font-family:var(--script);font-size:46px;line-height:1.05;color:var(--ink);margin-top:6px}
+.v-title{font-family:var(--script);font-size:66px;line-height:1;color:var(--ink);margin-top:6px}
 .v-note{font-style:italic;font-size:16.5px;line-height:1.45;color:var(--slate);margin:10px auto 0;max-width:22em}
+
+/* =========================================================
+   FULL-SCREEN SECTIONS: after the hero, each swipe lands on one whole section
+   ========================================================= */
+html.snap{scroll-snap-type:y mandatory}
+#snapHero{position:absolute;left:0;top:0;width:1px;height:1px;scroll-snap-align:start;pointer-events:none}
+.page{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center;scroll-snap-align:start;scroll-snap-stop:always;position:relative}
+.app .page.has-next{padding-bottom:108px}
+.app .page > .next{position:absolute;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);display:grid;justify-items:center;gap:6px;background:none;border:0;padding:0;cursor:pointer;z-index:3}
+.next .orb{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--slate);color:#fff;border:1px solid rgba(255,255,255,.6);
+  box-shadow:0 0 0 6px rgba(126,149,170,.2),0 8px 18px rgba(30,45,65,.25);animation:bob 2.4s ease-in-out infinite}
+.next .l{font-family:var(--caps);font-size:10.5px;letter-spacing:.24em;color:var(--slate)}
+.countdown .next .l{color:#fff}
+@keyframes bob{50%{transform:translateY(5px)}}
+.js body.gated #savedate .next{display:none}
+.ev-page{padding:26px 16px 26px}
+.ev-page .v-card{padding:18px 16px 14px}
+.ev-page .v-title{font-size:58px}
+.ev-page .v-addr{font-size:16px}
+.ev-page .v-when{margin:10px 0 2px}
+.ev-page .v-note{font-size:16px;margin-top:6px}
+.ev-page .btn{min-height:46px}
+.ev-page .btn-solid{margin-top:12px}
+.ev-page .btn-line{margin-top:8px}
+.app .ev-page.has-next{padding-bottom:96px}
+.events.page{padding-top:40px}
+.events .ev-list{margin-top:18px}
+.events .tl-item{padding:8px 0}
+.events .tl-ic{width:50px;height:50px}
+.events .tl-line{left:25px}
+.events .tl-desc{margin-top:2px;font-size:16px}
+.v-kicker{font-family:var(--caps);font-size:11.5px;letter-spacing:.24em;color:var(--gold);margin-bottom:14px;text-align:center}
+.ev-page .v-card{padding-top:20px}
+.ev-page .map{height:clamp(96px,15vh,150px);margin-top:12px}
+body.is-preview .ev-page{padding-top:62px}
+.credit{font-size:13px;opacity:.75;margin-top:26px}
 
 /* =========================================================
    GOOD TO KNOW + TRAVEL
@@ -296,7 +332,7 @@ a{color:inherit}
 .know-card b{display:block;font-family:var(--serif);font-weight:600;font-size:20px;line-height:1.15;color:var(--ink);margin-top:6px}
 .know-card p{font-size:15.5px;line-height:1.4;color:var(--slate);margin-top:4px}
 @media (max-width:360px){.know-grid{grid-template-columns:1fr}}
-.travel{padding:20px 20px 60px;text-align:center;background:linear-gradient(180deg,#E8EEF5,#EEF3F8)}
+.travel{padding:58px 20px 60px;text-align:center;background:linear-gradient(180deg,#E8EEF5,#EEF3F8)}
 .stays{display:grid;gap:12px;max-width:380px;margin:24px auto 0;text-align:left}
 .stay{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#fff;border-radius:8px;padding:14px 16px;box-shadow:0 12px 26px -16px rgba(40,60,85,.35)}
 .stay b{display:block;font-family:var(--serif);font-weight:600;font-size:19px;color:var(--ink)}
@@ -358,7 +394,7 @@ a{color:inherit}
 .r-msg{color:#9A3B2F;font-size:16px}
 .rsvp-form .btn-solid{margin-top:4px;border:0;cursor:pointer;width:100%}
 .thanks{max-width:380px;margin:24px auto 0;background:#fff;border-radius:12px;padding:28px 20px;box-shadow:0 20px 40px -18px rgba(40,60,85,.35)}
-.thanks .t-big{font-family:var(--script);font-size:54px;line-height:1.1;color:var(--ink)}
+.thanks .t-big{font-family:var(--script);font-size:72px;line-height:1.1;color:var(--ink)}
 .thanks p{font-size:18px;color:var(--slate);margin-top:6px}
 .thanks small{display:block;font-family:var(--caps);font-size:10.5px;letter-spacing:.16em;color:var(--dusty);margin-top:12px}
 .thanks .btn-line{max-width:220px;margin:16px auto 0;background:none;cursor:pointer;width:100%}
@@ -386,7 +422,7 @@ a{color:inherit}
 .closing > *:not(.closing-bg){position:relative;z-index:2}
 .quote{font-family:var(--serif);font-style:italic;font-size:22px;line-height:1.5;color:var(--gold-hi);max-width:18em;margin:0 auto}
 .quote-by{font-family:var(--caps);font-size:11px;letter-spacing:.2em;opacity:.85;margin-top:12px}
-.sign{font-family:var(--script);font-size:44px;line-height:1.2;margin-top:34px}
+.sign{font-family:var(--script);font-size:clamp(64px,18vw,82px);line-height:1;margin-top:34px}
 .tag{font-family:var(--caps);font-size:14px;letter-spacing:.14em;color:var(--gold-hi);margin-top:10px}
 .foot{font-size:14px;opacity:.7;margin-top:30px;font-style:italic}
 
@@ -447,6 +483,7 @@ a{color:inherit}
 <div class="previewbar" id="previewbar" hidden>PREVIEW <a id="buyLink" href="#" target="_blank" rel="noopener">Buy this design</a></div>
 
 <div class="app">
+  <i id="snapHero" aria-hidden="true"></i>
 
   <!-- ============ HERO ============ -->
   <section class="hero" id="hero">
@@ -462,7 +499,7 @@ a{color:inherit}
   </section>
 
   <!-- ============ SAVE THE DATE (scratch) ============ -->
-  <section class="savedate" id="savedate">
+  <section class="savedate page" id="savedate">
     <h2 class="sec-title rv">Save the Date</h2>
     <p class="sec-sub rv">Scratch the card to reveal our special day</p>
     <div class="scratch" id="scratchWrap">
@@ -480,7 +517,7 @@ a{color:inherit}
   </section>
 
   <!-- ============ COUNTDOWN (appears after the date is revealed) ============ -->
-  <section class="countdown is-locked after-gate" id="countdown">
+  <section class="countdown page is-locked after-gate" id="countdown">
     <div class="cd-bg" id="cdBg"></div>
     <h2 class="sec-title rv">Countdown</h2>
     <p class="sec-sub rv">Until we say "I do"</p>
@@ -493,7 +530,7 @@ a{color:inherit}
   </section>
 
   <!-- ============ INVITATION ============ -->
-  <section class="invite after-gate" id="invite">
+  <section class="invite page after-gate" id="invite">
     <div class="frame" id="frame">
       <i class="fr fr-c tl"></i><i class="fr fr-c tr"></i><i class="fr fr-c bl"></i><i class="fr fr-c br"></i>
       <i class="fr fr-s l"></i><i class="fr fr-s r"></i><i class="fr fr-t t"></i><i class="fr fr-t b"></i>
@@ -517,15 +554,8 @@ a{color:inherit}
     </div>
   </section>
 
-  <!-- ============ VENUE ============ -->
-  <section class="venue after-gate" id="venue">
-    <h2 class="sec-title rv">The Celebrations</h2>
-    <p class="sec-sub rv">Where and when we'll celebrate</p>
-    <div class="v-list" id="vList"></div>
-  </section>
-
   <!-- ============ ORDER OF EVENTS ============ -->
-  <section class="events after-gate" id="events">
+  <section class="events page after-gate" id="events">
     <h2 class="sec-title rv">Order of the Day</h2>
     <p class="sec-sub rv">How the day will unfold</p>
     <div class="ev-list" id="tl">
@@ -534,14 +564,14 @@ a{color:inherit}
   </section>
 
   <!-- ============ GOOD TO KNOW ============ -->
-  <section class="know after-gate" id="know">
+  <section class="know page after-gate" id="know">
     <h2 class="sec-title rv">Good to Know</h2>
     <p class="sec-sub rv">A few details for the day</p>
     <div class="know-grid" id="knowGrid"></div>
   </section>
 
   <!-- ============ TRAVEL ============ -->
-  <section class="travel after-gate" id="travel">
+  <section class="travel page after-gate" id="travel">
     <h2 class="sec-title rv">Travel &amp; Stay</h2>
     <p class="sec-sub rv">Getting there and places to rest</p>
     <div class="stays" id="stays"></div>
@@ -549,7 +579,7 @@ a{color:inherit}
   </section>
 
   <!-- ============ GIFTS ============ -->
-  <section class="gifts after-gate" id="gifts">
+  <section class="gifts page after-gate" id="gifts">
     <svg class="gift-ic rv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="8" width="17" height="4" rx="1"/><path d="M5 12v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8M12 8v13"/><path d="M12 8C10 4 6.5 4.5 7 6.5S12 8 12 8zM12 8c2-4 5.5-3.5 5-1.5S12 8 12 8z"/></svg>
     <h2 class="sec-title rv">Gifts</h2>
     <div class="gift-card" id="giftCard">
@@ -560,7 +590,7 @@ a{color:inherit}
   </section>
 
   <!-- ============ RSVP ============ -->
-  <section class="rsvp after-gate" id="rsvp">
+  <section class="rsvp page after-gate" id="rsvp">
     <h2 class="sec-title rv">Will you join us?</h2>
     <p class="sec-sub rv">Kindly reply below</p>
     <p class="deadline rv" id="deadline" hidden></p>
@@ -568,16 +598,14 @@ a{color:inherit}
   </section>
 
   <!-- ============ CLOSING ============ -->
-  <section class="closing after-gate" id="closing">
+  <section class="closing page after-gate" id="closing">
     <div class="closing-bg"></div>
     <p class="quote cl" id="quote"></p>
     <p class="quote-by cl" id="quoteBy"></p>
     <p class="sign cl" id="sign"></p>
     <p class="tag cl" id="hashtag"></p>
     <p class="foot cl" id="closingLine"></p>
-  </section>
-  <section class="footer after-gate" id="footer">
-    <p>Made with love by Moving Invites</p>
+    <p class="credit cl">Made with love by Moving Invites</p>
   </section>
 </div>
 
@@ -739,7 +767,7 @@ function openInvite() {
   var CAL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
   var CLK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
   var EXT = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
-  $("#vList").innerHTML = EVS.map(function (e, i) {
+  $("#invite").insertAdjacentHTML("afterend", EVS.map(function (e, i) {
     var p = dparts(e.start), where = e.venue + ", " + e.address;
     var maps = e.map || "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(where);
     var title = e.title + " · " + A + " & " + B, cal;
@@ -751,9 +779,9 @@ function openInvite() {
       cal = 'href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(title) + "&dates=" + gfmt(e.start) + "/" + gfmt(e.end) +
         "&location=" + encodeURIComponent(where) + "&ctz=" + encodeURIComponent(C.timeZone) + '" target="_blank" rel="noopener"';
     }
-    return '<div class="v-card">' +
+    return '<section class="venue page after-gate ev-page"><p class="v-kicker">The Celebrations' + (EVS.length > 1 ? ' · ' + (i + 1) + ' of ' + EVS.length : '') + '</p>' +
+      '<div class="v-card">' +
       '<div class="pin">' + PIN + '</div>' +
-      (EVS.length > 1 ? '<p class="v-label">' + (i + 1) + ' of ' + EVS.length + '</p>' : '') +
       '<p class="v-title">' + esc(e.title) + '</p>' +
       '<p class="v-name">' + esc(e.venue) + '</p><p class="v-addr">' + esc(e.address) + '</p>' +
       '<div class="v-when"><span>' + CAL + p.weekday.slice(0, 3) + ', ' + p.day + ' ' + p.month.slice(0, 3) + '</span><span>' + CLK + clock12(p.hour, p.minute) + '</span></div>' +
@@ -761,8 +789,8 @@ function openInvite() {
       '<div class="map"><iframe title="Map to ' + esc(e.venue) + '" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=' + encodeURIComponent(where) + '&z=15&output=embed"></iframe>' +
       '<a class="map-open" href="' + esc(maps) + '" target="_blank" rel="noopener">Open in Maps ' + EXT + '</a></div>' +
       '<a class="btn btn-solid" href="' + esc(maps) + '" target="_blank" rel="noopener">' + PIN + 'Directions</a>' +
-      '<a class="btn btn-line" ' + cal + '>' + CAL + 'Add to calendar</a></div>';
-  }).join("");
+      '<a class="btn btn-line" ' + cal + '>' + CAL + 'Add to calendar</a></div></section>';
+  }).join(""));
 
   /* order of the day */
   var ICONS = {
@@ -807,8 +835,33 @@ function openInvite() {
   setText("#hashtag", C.hashtag);
   setText("#closingLine", C.closing);
 
+  /* the couple's names always fit the hero on one line */
+  function fitNames() {
+    var el = $("#heroNames"); if (!el) return;
+    el.style.fontSize = "";
+    var max = el.parentNode.clientWidth - 8, size = parseFloat(getComputedStyle(el).fontSize);
+    while (el.scrollWidth > max && size > 34) { size -= 2; el.style.fontSize = size + "px"; }
+  }
+  fitNames();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitNames);
+  window.addEventListener("resize", fitNames);
+
+  /* a scroll button at the bottom of every screen but the last */
+  var CHEV = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 9l6 6 6-6"/></svg>';
+  var PAGES = $$(".page");
+  PAGES.forEach(function (pg, i) {
+    if (i === PAGES.length - 1) return;
+    pg.classList.add("has-next");
+    pg.insertAdjacentHTML("beforeend", '<button class="next" type="button" aria-label="Next section"><span class="orb">' + CHEV + '</span><span class="l">SCROLL</span></button>');
+  });
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest(".next"); if (!b) return;
+    var list = $$(".page").filter(function (p) { return p.offsetHeight > 0; }), i = list.indexOf(b.closest(".page")), nx = list[i + 1];
+    if (nx) window.scrollTo({ top: nx.getBoundingClientRect().top + window.pageYOffset, behavior: "smooth" });
+  });
+
   /* preview mode */
-  if (C.preview) { $("#previewbar").hidden = false; if (C.buyUrl) $("#buyLink").href = C.buyUrl; else $("#buyLink").hidden = true; }
+  if (C.preview) { document.body.classList.add("is-preview"); $("#previewbar").hidden = false; if (C.buyUrl) $("#buyLink").href = C.buyUrl; else $("#buyLink").hidden = true; }
 
   /* ---------- the seal carries the couple's initials ---------- */
   (function makeSeal() {
@@ -819,7 +872,7 @@ function openInvite() {
           var c = document.createElement("canvas"); c.width = base.naturalWidth; c.height = base.naturalHeight;
           var x = c.getContext("2d"); x.drawImage(base, 0, 0);
           var txt = (A.charAt(0) + "&" + B.charAt(0)).toUpperCase().replace("&", "&");
-          x.textAlign = "center"; x.textBaseline = "middle"; x.font = Math.round(c.width * .23) + "px 'Pinyon Script', cursive";
+          x.textAlign = "center"; x.textBaseline = "middle"; x.font = "700 " + Math.round(c.width * .3) + "px 'Corinthia', cursive";
           var cx = c.width * .504, cy = c.height * .51;
           x.fillStyle = "rgba(255,255,255,.7)"; x.fillText(txt, cx + 1, cy + 2);       // pressed-in highlight
           x.fillStyle = "#23262B"; x.fillText(txt, cx, cy);
@@ -827,7 +880,7 @@ function openInvite() {
           $$(".seal-img").forEach(function (im) { im.src = url; });
         } catch (e) {}
       };
-      if (document.fonts && document.fonts.load) document.fonts.load("80px 'Pinyon Script'").then(draw, draw); else draw();
+      if (document.fonts && document.fonts.load) document.fonts.load("700 80px 'Corinthia'").then(draw, draw); else draw();
     };
     base.src = "assets/seal-blank.png";
   })();
@@ -1131,7 +1184,7 @@ function openInvite() {
     for (var i = 0; i < 90; i++) { sctx.beginPath(); sctx.arc(Math.random() * r.width, Math.random() * r.height, Math.random() * 1.3, 0, 7); sctx.fill(); }
     sctx.strokeStyle = "rgba(255,255,255,.55)"; sctx.lineWidth = 1; sctx.strokeRect(10.5, 10.5, r.width - 21, r.height - 21);
     sctx.textAlign = "center"; sctx.shadowColor = "rgba(20,32,48,.6)"; sctx.shadowBlur = 8; sctx.shadowOffsetY = 2;
-    sctx.fillStyle = "#fff"; sctx.font = "52px 'Pinyon Script', cursive"; sctx.fillText("Scratch here", r.width / 2, r.height / 2 + 4);
+    sctx.fillStyle = "#fff"; sctx.font = "68px 'Corinthia', cursive"; sctx.fillText("Scratch here", r.width / 2, r.height / 2 + 4);
     sctx.font = "15px 'Cormorant Garamond', serif"; sctx.fillText("to reveal the date", r.width / 2, r.height / 2 + 34);
     sctx.shadowColor = "transparent";
   }
@@ -1333,6 +1386,7 @@ function openInvite() {
   }
   function endGuide() {
     if (guideDone) return; guideDone = true;
+    setTimeout(trySnap, 50);
     clearTimeout(hintTimer); clearTimeout(idleTimer);
     if (autoTw) { autoTw.kill(); autoTw = null; }
     $("#swipeHint").classList.remove("show");
@@ -1360,6 +1414,22 @@ function openInvite() {
     gsap.timeline()
       .to("#heroImg", { opacity: 1, duration: .9, ease: "power1.out" }, 0);
   }
+
+  /* ---- after the hero, every section snaps into place ----
+     The hero keeps its slow scroll-driven walk. Snapping starts once the guest reaches its last frame,
+     and from then on each swipe lands on one whole section. */
+  var snapOn = false, marker = $("#snapHero");
+  function placeMarker() {
+    var sd = $("#savedate"), app = $(".app");
+    marker.style.top = Math.max(0, sd.getBoundingClientRect().top - app.getBoundingClientRect().top - window.innerHeight) + "px";
+  }
+  function trySnap() {
+    if (snapOn || !guideDone) return;
+    if (window.pageYOffset >= marker.getBoundingClientRect().top + window.pageYOffset - 2) { snapOn = true; document.documentElement.classList.add("snap"); }
+  }
+  ScrollTrigger.addEventListener("refresh", placeMarker);
+  placeMarker();
+  window.addEventListener("scroll", trySnap, { passive: true });
 
   if (RM) return;
 
@@ -1413,15 +1483,16 @@ function openInvite() {
     var mp = card.querySelector(".map");
     gsap.fromTo(mp, { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: 1.2, ease: "power3.inOut", scrollTrigger: { trigger: mp, start: "top 90%", once: true } });
   });
-  gsap.from(".know-card, .stay", { opacity: 0, y: 30, duration: .9, ease: "power3.out", stagger: .1, scrollTrigger: { trigger: "#know, #travel", start: "top 80%", once: true } });
+  if ($(".know-card")) gsap.from(".know-card", { opacity: 0, y: 30, duration: .9, ease: "power3.out", stagger: .1, scrollTrigger: { trigger: "#know", start: "top 70%", once: true } });
+  if ($(".stay")) gsap.from(".stay", { opacity: 0, y: 30, duration: .9, ease: "power3.out", stagger: .12, scrollTrigger: { trigger: "#travel", start: "top 70%", once: true } });
 
   /* ---- order of events: line draws with scroll, each event appears one by one ---- */
-  if ($("#tlFill")) gsap.fromTo("#tlFill", { scaleY: 0 }, { scaleY: 1, ease: "none",
-    scrollTrigger: { trigger: "#tl", start: "top 70%", end: "bottom 70%", scrub: .6 } });
+  if ($("#tlFill")) gsap.fromTo("#tlFill", { scaleY: 0 }, { scaleY: 1, ease: "power1.inOut", duration: 2.2,
+    scrollTrigger: { trigger: "#events", start: "top 60%", once: true } });
   // each event is scrubbed by the scroll position: it builds in as you scroll down and un-builds as you scroll back up
-  $$(".tl-item").forEach(function (it) {
+  $$(".tl-item").forEach(function (it, n) {
     var ic = it.querySelector(".tl-ic"), tx = it.querySelector(".tl-ic + div");
-    gsap.timeline({ scrollTrigger: { trigger: it, start: "top 92%", end: "top 62%", scrub: .6 } })
+    gsap.timeline({ delay: .25 + n * .28, scrollTrigger: { trigger: "#events", start: "top 60%", once: true } })
       .fromTo(ic, { scale: 0, opacity: 0, rotation: -90 }, { scale: 1, opacity: 1, rotation: 0, duration: .5, ease: "back.out(2)" })
       .fromTo(tx, { x: 40, opacity: 0 }, { x: 0, opacity: 1, duration: .6, ease: "power2.out" }, "-=.25");
   });
