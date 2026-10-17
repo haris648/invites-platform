@@ -300,26 +300,55 @@ html.snap{scroll-snap-type:y mandatory}
 .countdown .next .l{color:#fff}
 @keyframes bob{50%{transform:translateY(5px)}}
 .js body.gated #savedate .next{display:none}
-.ev-page{padding:26px 16px 26px}
-.ev-page .v-card{padding:18px 16px 14px}
-.ev-page .v-title{font-size:58px}
-.ev-page .v-addr{font-size:16px}
-.ev-page .v-when{margin:10px 0 2px}
-.ev-page .v-note{font-size:16px;margin-top:6px}
-.ev-page .btn{min-height:46px}
-.ev-page .btn-solid{margin-top:12px}
-.ev-page .btn-line{margin-top:8px}
-.app .ev-page.has-next{padding-bottom:96px}
-.events.page{padding-top:40px}
-.events .ev-list{margin-top:18px}
-.events .tl-item{padding:8px 0}
-.events .tl-ic{width:50px;height:50px}
-.events .tl-line{left:25px}
-.events .tl-desc{margin-top:2px;font-size:16px}
-.v-kicker{font-family:var(--caps);font-size:11.5px;letter-spacing:.24em;color:var(--gold);margin-bottom:14px;text-align:center}
-.ev-page .v-card{padding-top:20px}
-.ev-page .map{height:clamp(96px,15vh,150px);margin-top:12px}
-body.is-preview .ev-page{padding-top:62px}
+/* event screens: one glass card per event over the embossed paper */
+.ev-page{padding:28px 16px 28px;color:#fff;overflow:hidden;justify-content:center}
+.app .ev-page.has-next{padding-bottom:104px}
+.ev-bg{position:absolute;inset:0;background:url(assets/envelope.jpg) center/cover}
+.ev-bg::after{content:"";position:absolute;inset:0;background:
+  radial-gradient(90% 45% at 50% 0%,rgba(233,211,160,.28),rgba(233,211,160,0) 70%),
+  linear-gradient(180deg,rgba(30,44,62,.35),rgba(22,32,46,.72))}
+.ev-page:nth-of-type(even) .ev-bg{background-position:30% 70%}
+.ec{position:relative;z-index:1;width:100%;max-width:420px;margin:0 auto;padding:20px 20px 18px;border-radius:24px;
+  background:linear-gradient(180deg,rgba(38,54,74,.78),rgba(26,38,54,.86));border:1px solid rgba(233,211,160,.42);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 30px 60px rgba(8,14,24,.45),inset 0 1px 0 rgba(255,255,255,.08);
+  display:grid;gap:11px;text-align:left}
+.ec::before{content:"";position:absolute;inset:6px;border-radius:19px;border:1px solid rgba(233,211,160,.14);pointer-events:none}
+.ec-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ec-count{font-family:var(--caps);font-size:14px;letter-spacing:.22em;color:var(--gold-hi);font-variant-numeric:tabular-nums}
+.ec-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;border:1px solid rgba(233,211,160,.45);
+  font-family:var(--caps);font-size:11px;letter-spacing:.14em;color:var(--gold-hi);white-space:nowrap}
+.ec-pill svg{width:13px;height:13px}
+.ec-title{font-family:var(--script);font-weight:400;font-size:clamp(56px,16vw,74px);line-height:.95;color:#FBF7EE;margin-top:4px;white-space:nowrap}
+.ec-sub{font-style:italic;font-size:19px;color:rgba(246,240,228,.78);margin-top:-6px}
+.ec-rule{display:block;width:84px;height:1px;background:linear-gradient(90deg,var(--gold-hi),rgba(233,211,160,0))}
+.ec-row{display:grid;grid-template-columns:20px 1fr;gap:12px;align-items:start}
+.ec-row svg{width:19px;height:19px;color:var(--gold-hi);margin-top:4px}
+.ec-row b{display:block;font-family:var(--serif);font-weight:600;font-size:20px;line-height:1.2;color:#FBF7EE}
+.ec-row span{display:block;font-size:16.5px;line-height:1.35;color:rgba(246,240,228,.72)}
+.ec-note{font-style:italic;font-size:16px;line-height:1.4;color:rgba(246,240,228,.75);padding-top:10px;border-top:1px solid rgba(233,211,160,.18)}
+.ec-map{height:clamp(90px,13vh,130px);border-radius:12px;overflow:hidden;border:1px solid rgba(233,211,160,.25);background:rgba(255,255,255,.06)}
+.ec-map iframe{width:100%;height:100%;border:0;filter:saturate(.6) contrast(.95)}
+.ec-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:2px}
+.ec-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 10px;border-radius:999px;text-decoration:none;
+  font-family:var(--caps);font-size:12px;letter-spacing:.14em;transition:transform .15s ease,filter .15s}
+.ec-btn svg{width:17px;height:17px}
+.ec-btn.gold{background:linear-gradient(180deg,#EBD6A6,#B8955A);color:#2A2010;box-shadow:0 8px 18px -8px rgba(184,149,90,.8)}
+.ec-btn.line{border:1px solid rgba(246,240,228,.55);color:#FBF7EE}
+.ec-btn:active{transform:scale(.97)}
+.ec-btn:hover{filter:brightness(1.07)}
+.ev-page .next .l{color:#fff}
+.ev-page .next .orb{background:rgba(246,240,228,.12);border-color:rgba(233,211,160,.6);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+body.is-preview .ev-page{padding-top:70px}
+@media (max-height:720px){
+  .ec{gap:8px;padding:16px 16px 14px}
+  .ec-title{font-size:52px}
+  .ec-row b{font-size:18px}.ec-row span{font-size:15px}
+  .ec-note{display:none}
+  .ec-map{height:84px}
+  .ec-btn{min-height:44px}
+  .app .ev-page.has-next{padding-bottom:92px}
+  body.is-preview .ev-page{padding-top:58px}
+}
 .credit{font-size:13px;opacity:.75;margin-top:26px}
 
 /* =========================================================
@@ -626,10 +655,10 @@ var DEFAULTS = {
   guest: { name: "The Harrison Family", seats: 3 },          // set per guest link by the server
   selectedEvents: ["ceremony", "reception"],
   events: {
-    welcome:   { title: "Welcome Drinks", start: "2027-06-18T19:00:00+01:00", hours: 3, venue: "The Willow Inn", address: "Mill Lane, Bibury, Gloucestershire GL7 5NW", note: "Relaxed drinks by the river the evening before. Come as you are." },
-    ceremony:  { title: "The Ceremony", start: "2027-06-19T14:00:00+01:00", hours: 1, venue: "Ashcombe Gardens", address: "Ashcombe Lane, Cirencester, Gloucestershire GL7 6AB", note: "We marry outdoors beneath the old oak. Please be seated by 1:40 pm." },
-    reception: { title: "The Reception", start: "2027-06-19T16:30:00+01:00", hours: 7.5, venue: "The Garden Marquee", address: "Ashcombe Gardens, Cirencester, Gloucestershire GL7 6AB", note: "Dinner, speeches and dancing until late." },
-    brunch:    { title: "Farewell Brunch", start: "2027-06-20T10:30:00+01:00", hours: 2, venue: "The Orangery", address: "Ashcombe Gardens, Cirencester, Gloucestershire GL7 6AB", note: "Coffee, pastries and one last goodbye." }
+    welcome:   { title: "Welcome Drinks", sub: "The evening before", start: "2027-06-18T19:00:00+01:00", hours: 3, venue: "The Willow Inn", address: "Mill Lane, Bibury, Gloucestershire GL7 5NW", note: "Relaxed drinks by the river the evening before. Come as you are." },
+    ceremony:  { title: "The Ceremony", sub: "Beneath the old oak", start: "2027-06-19T14:00:00+01:00", hours: 1, venue: "Ashcombe Gardens", address: "Ashcombe Lane, Cirencester, Gloucestershire GL7 6AB", note: "We marry outdoors beneath the old oak. Please be seated by 1:40 pm." },
+    reception: { title: "The Reception", sub: "Dinner, toasts and dancing", start: "2027-06-19T16:30:00+01:00", hours: 7.5, venue: "The Garden Marquee", address: "Ashcombe Gardens, Cirencester, Gloucestershire GL7 6AB", note: "Long tables, speeches and dancing beneath the festoon lights." },
+    brunch:    { title: "Farewell Brunch", sub: "One last toast", start: "2027-06-20T10:30:00+01:00", hours: 2, venue: "The Orangery", address: "Ashcombe Gardens, Cirencester, Gloucestershire GL7 6AB", note: "Coffee, pastries and one last goodbye." }
   },
   timeline: [
     { time: "1:30 PM", title: "Guests Arrive", note: "Welcome to the garden", icon: "arrive" },
@@ -737,7 +766,7 @@ function openInvite() {
   /* ---------- which events, and the main one ---------- */
   var EVS = ORDER.filter(function (k) { return C.selectedEvents.indexOf(k) > -1; }).map(function (k) {
     var e = C.events[k], st = new Date(e.start);
-    return { key: k, title: e.title, venue: e.venue, address: e.address, note: e.note, map: e.map, start: st, end: new Date(st.getTime() + (e.hours || 3) * 36e5) };
+    return { key: k, title: e.title, sub: e.sub, venue: e.venue, address: e.address, note: e.note, map: e.map, start: st, end: new Date(st.getTime() + (e.hours || 3) * 36e5) };
   });
   var MAIN = EVS.filter(function (e) { return e.key === "ceremony"; })[0] || EVS[0] || { start: new Date(), end: new Date() };
   var START = MAIN.start, END = MAIN.end, MP = dparts(START);
@@ -766,6 +795,10 @@ function openInvite() {
   var PIN = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>';
   var CAL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
   var CLK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+  var PIN_O = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>';
+  var CAL_ADD = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/></svg>';
+  var USER = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>';
+  var RING = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="14" r="5"/><circle cx="15" cy="14" r="5"/></svg>';
   var EXT = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
   $("#invite").insertAdjacentHTML("afterend", EVS.map(function (e, i) {
     var p = dparts(e.start), where = e.venue + ", " + e.address;
@@ -779,17 +812,21 @@ function openInvite() {
       cal = 'href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(title) + "&dates=" + gfmt(e.start) + "/" + gfmt(e.end) +
         "&location=" + encodeURIComponent(where) + "&ctz=" + encodeURIComponent(C.timeZone) + '" target="_blank" rel="noopener"';
     }
-    return '<section class="venue page after-gate ev-page"><p class="v-kicker">The Celebrations' + (EVS.length > 1 ? ' · ' + (i + 1) + ' of ' + EVS.length : '') + '</p>' +
-      '<div class="v-card">' +
-      '<div class="pin">' + PIN + '</div>' +
-      '<p class="v-title">' + esc(e.title) + '</p>' +
-      '<p class="v-name">' + esc(e.venue) + '</p><p class="v-addr">' + esc(e.address) + '</p>' +
-      '<div class="v-when"><span>' + CAL + p.weekday.slice(0, 3) + ', ' + p.day + ' ' + p.month.slice(0, 3) + '</span><span>' + CLK + clock12(p.hour, p.minute) + '</span></div>' +
-      (e.note ? '<p class="v-note">' + esc(e.note) + '</p>' : '') +
-      '<div class="map"><iframe title="Map to ' + esc(e.venue) + '" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=' + encodeURIComponent(where) + '&z=15&output=embed"></iframe>' +
-      '<a class="map-open" href="' + esc(maps) + '" target="_blank" rel="noopener">Open in Maps ' + EXT + '</a></div>' +
-      '<a class="btn btn-solid" href="' + esc(maps) + '" target="_blank" rel="noopener">' + PIN + 'Directions</a>' +
-      '<a class="btn btn-line" ' + cal + '>' + CAL + 'Add to calendar</a></div></section>';
+    var seats = C.guest && C.guest.seats;
+    return '<section class="page after-gate ev-page"><div class="ev-bg"></div>' +
+      '<article class="ec">' +
+      '<div class="ec-top"><span class="ec-count">' + pad(i + 1) + ' / ' + pad(EVS.length) + '</span>' +
+        (seats ? '<span class="ec-pill">' + USER + seats + ' ' + (seats > 1 ? 'guests' : 'guest') + ' invited</span>' : '<span class="ec-pill">' + RING + 'The Celebrations</span>') + '</div>' +
+      '<h2 class="ec-title">' + esc(e.title) + '</h2>' +
+      (e.sub ? '<p class="ec-sub">' + esc(e.sub) + '</p>' : '') +
+      '<i class="ec-rule"></i>' +
+      '<div class="ec-row">' + CAL + '<div><b>' + p.weekday + ', ' + p.day + ' ' + p.month + ' ' + p.year + '</b><span>' + clock12(p.hour, p.minute) + ' onwards</span></div></div>' +
+      '<div class="ec-row">' + PIN_O + '<div><b>' + esc(e.venue) + '</b><span>' + esc(e.address) + '</span></div></div>' +
+      (e.note ? '<p class="ec-note">' + esc(e.note) + '</p>' : '') +
+      '<div class="ec-map"><iframe title="Map to ' + esc(e.venue) + '" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=' + encodeURIComponent(where) + '&z=15&output=embed"></iframe></div>' +
+      '<div class="ec-actions"><a class="ec-btn gold" href="' + esc(maps) + '" target="_blank" rel="noopener">' + PIN_O + 'Directions</a>' +
+      '<a class="ec-btn line" ' + cal + '>' + CAL_ADD + 'Calendar</a></div>' +
+      '</article></section>';
   }).join(""));
 
   /* order of the day */
@@ -837,14 +874,23 @@ function openInvite() {
 
   /* the couple's names always fit the hero on one line */
   function fitNames() {
-    var el = $("#heroNames"); if (!el) return;
+    var el = $("#heroNames"); if (!el || !el.offsetWidth) return;
     el.style.fontSize = "";
     var max = el.parentNode.clientWidth - 8, size = parseFloat(getComputedStyle(el).fontSize);
     while (el.scrollWidth > max && size > 34) { size -= 2; el.style.fontSize = size + "px"; }
   }
-  fitNames();
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitNames);
-  window.addEventListener("resize", fitNames);
+  function fitTitles() {
+    $$(".ec-title").forEach(function (el) {
+      if (!el.offsetWidth) return;
+      el.style.fontSize = "";
+      var size = parseFloat(getComputedStyle(el).fontSize);
+      while (el.scrollWidth > el.clientWidth + 1 && size > 34) { size -= 2; el.style.fontSize = size + "px"; }
+    });
+  }
+  function fitAll() { fitNames(); fitTitles(); }
+  fitAll();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitAll);
+  window.addEventListener("resize", fitAll);
 
   /* a scroll button at the bottom of every screen but the last */
   var CHEV = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 9l6 6 6-6"/></svg>';
@@ -1244,6 +1290,7 @@ function openInvite() {
     }, 3000);
     $("#countdown").classList.remove("is-locked");
     document.body.classList.remove("gated");
+    fitAll();
     if (typeof playVoice === "function") playVoice();
     if (window.gsap) {
       gsap.fromTo("#scratchWrap", { scale: .95 }, { scale: 1, duration: 1.1, ease: "elastic.out(1, .45)", delay: .42 });
@@ -1477,11 +1524,13 @@ function openInvite() {
     scrollTrigger: { trigger: "#frame", start: "top 70%", once: true } });
 
   /* ---- venue ---- */
-  $$(".v-card").forEach(function (card) {
-    gsap.from(card, { opacity: 0, y: 60, scale: .96, duration: 1.1, ease: "power3.out", scrollTrigger: { trigger: card, start: "top 88%", once: true } });
-    gsap.from(card.querySelector(".pin"), { y: -40, opacity: 0, duration: .9, ease: "bounce.out", delay: .35, scrollTrigger: { trigger: card, start: "top 88%", once: true } });
-    var mp = card.querySelector(".map");
-    gsap.fromTo(mp, { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: 1.2, ease: "power3.inOut", scrollTrigger: { trigger: mp, start: "top 90%", once: true } });
+  $$(".ec").forEach(function (card) {
+    var pg = card.closest(".ev-page");
+    gsap.timeline({ scrollTrigger: { trigger: pg, start: "top 55%", once: true } })
+      .from(card, { opacity: 0, y: 60, scale: .96, duration: 1, ease: "power3.out" })
+      .from(card.querySelectorAll(".ec-top, .ec-title, .ec-sub, .ec-rule, .ec-row, .ec-note, .ec-map, .ec-actions"), { opacity: 0, y: 16, duration: .6, ease: "power2.out", stagger: .07 }, .25)
+      .fromTo(card.querySelector(".ec-rule"), { scaleX: 0, transformOrigin: "0 50%" }, { scaleX: 1, duration: .8, ease: "power2.out" }, .5);
+    gsap.fromTo(pg.querySelector(".ev-bg"), { scale: 1.12 }, { scale: 1, ease: "none", scrollTrigger: { trigger: pg, start: "top bottom", end: "top top", scrub: true } });
   });
   if ($(".know-card")) gsap.from(".know-card", { opacity: 0, y: 30, duration: .9, ease: "power3.out", stagger: .1, scrollTrigger: { trigger: "#know", start: "top 70%", once: true } });
   if ($(".stay")) gsap.from(".stay", { opacity: 0, y: 30, duration: .9, ease: "power3.out", stagger: .12, scrollTrigger: { trigger: "#travel", start: "top 70%", once: true } });
