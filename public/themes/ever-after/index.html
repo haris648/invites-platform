@@ -774,7 +774,7 @@ function openInvite() {
   /* ---------- fill the page ---------- */
   var A = C.couple.bride, B = C.couple.groom;
   $("#heroNames").innerHTML = '<span data-split>' + esc(A) + '</span> <span class="amp">&amp;</span> <span data-split>' + esc(B) + '</span>';
-  if (C.guest && C.guest.name) setText("#envFor", "For " + C.guest.name);
+  // if (C.guest && C.guest.name) setText("#envFor", "For " + C.guest.name);
   $("#scDow").textContent = MP.weekday.toUpperCase();
   $("#scDay").textContent = MP.day;
   $("#scMonth").textContent = MP.month + " " + MP.year;
