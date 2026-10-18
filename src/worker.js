@@ -61,6 +61,7 @@ export default {
     const parts = url.pathname.split("/").filter(Boolean).map(decodeURIComponent);
 
     try {
+      await ensureTables(env);
       if (url.pathname === "/api/try" && req.method === "POST") return await createDraft(req, env, ctx, url);
       if (url.pathname === "/api/rsvp" && req.method === "POST") return await saveRsvp(req, env);
       if (url.pathname === "/api/pricing" && req.method === "GET") return pricing(req, url);
@@ -311,6 +312,18 @@ async function admin(req, env, url, path) {
 }
 
 /* ---------------- couple panel ---------------- */
+
+// Newer tables are created on first use, so a deploy works even if schema.sql wasn't re-run.
+let tablesReady = null;
+function ensureTables(env) {
+  if (!tablesReady) {
+    tablesReady = env.DB.batch([
+      env.DB.prepare("CREATE TABLE IF NOT EXISTS invitation_access (invitation_slug TEXT PRIMARY KEY, token TEXT NOT NULL UNIQUE, tier TEXT NOT NULL DEFAULT 'basic', created_at INTEGER NOT NULL)"),
+      env.DB.prepare("CREATE TABLE IF NOT EXISTS guest_views (invitation_slug TEXT NOT NULL, key TEXT NOT NULL, first_at INTEGER NOT NULL, last_at INTEGER NOT NULL, views INTEGER NOT NULL DEFAULT 1, PRIMARY KEY (invitation_slug, key))"),
+    ]).catch((err) => { tablesReady = null; throw err; });
+  }
+  return tablesReady;
+}
 
 // Each live invitation has a private panel link (/manage/<token>) and a tier.
 async function accessFor(env, slug, tierIfNew = "basic") {

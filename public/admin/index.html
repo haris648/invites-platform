@@ -240,7 +240,7 @@ document.addEventListener("click", async (e) => {
   if (t.id === "rsvpCopy") return copyRsvps(t);
   if (t.dataset.live) return makeLive(t.dataset.live, t.dataset.names);
   if (t.dataset.confirm) return confirmLive(t.dataset.confirm, t.closest(".row").querySelector("input"));
-  if (t.dataset.edit) return openEditor(t.dataset.edit);
+  if (t.dataset.edit) return openEditor(t.dataset.edit).catch((e) => alert(e.message));
   if (t.dataset.del) { await api(`invitations/${current.invitation.slug}/guests/${encodeURIComponent(t.dataset.del)}`, { method: "DELETE" }); return openEditor(current.invitation.slug); }
   if (t.dataset.copy) {
     try { const was = t.textContent; await navigator.clipboard.writeText(t.dataset.copy); t.textContent = "Copied"; setTimeout(() => { t.textContent = was; }, 1200); }
