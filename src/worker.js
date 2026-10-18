@@ -19,12 +19,20 @@ const THEMES = {
     path: "/themes/noor-mahal/",
     og: "/themes/noor-mahal/og.png",
     events: ["mehndi", "nikkah", "baraat", "walima"],
+    titles: { mehndi: "Mehndi", nikkah: "Nikkah", baraat: "Baraat", walima: "Walima" },
+    timeZone: "Asia/Karachi",
+    rsvpOnPage: false,   // guests reply on WhatsApp
+    shareMessage: "Assalam o Alaikum {guest}! With great joy, {couple} invite you to celebrate their wedding with them. Please open your invitation: {link}",
   },
   "ever-after": {
     name: "Ever After",
     path: "/themes/ever-after/",
     og: "/themes/ever-after/og.jpg",
     events: ["welcome", "ceremony", "reception", "brunch"],
+    titles: { welcome: "Welcome Drinks", ceremony: "The Ceremony", reception: "The Reception", brunch: "Farewell Brunch" },
+    timeZone: "Europe/London",
+    rsvpOnPage: true,
+    shareMessage: "Dear {guest}, {couple} would love you to join them as they celebrate their wedding. Your invitation is here: {link}",
   },
 };
 // Old theme keys that were renamed, so earlier previews keep working.
@@ -42,7 +50,8 @@ const PRICING = {
 // To end it early or run a new one, change the date (or set percent to 0).
 const SALE = { percent: 20, label: "Launch offer", ends: "2026-10-28T23:59:59+05:00" };
 
-const RESERVED = new Set(["api", "try", "templates", "themes", "admin", "assets", "favicon.ico", "robots.txt", "404.html"]);
+const RESERVED = new Set(["api", "try", "templates", "themes", "admin", "manage", "assets", "favicon.ico", "robots.txt", "404.html"]);
+const TIERS = ["basic", "guests"];   // basic = Invitation, guests = Invitation + Guest list
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const SLUG_RE = /^[a-z0-9](?:[a-z0-9-]{1,58}[a-z0-9])$/;
 
@@ -56,9 +65,11 @@ export default {
       if (url.pathname === "/api/rsvp" && req.method === "POST") return await saveRsvp(req, env);
       if (url.pathname === "/api/pricing" && req.method === "GET") return pricing(req, url);
       if (parts[0] === "api" && parts[1] === "admin") return await admin(req, env, url, parts.slice(2));
+      if (parts[0] === "api" && parts[1] === "couple" && parts[2]) return await couple(req, env, url, parts[2], parts.slice(3));
+      if (req.method === "GET" && parts[0] === "manage" && parts.length === 2) return await couplePage(env, url);
       if (req.method === "GET" && parts[0] === "try" && parts.length === 2) return await renderDraft(env, url, parts[1]);
       if (req.method === "GET" && parts.length >= 1 && parts.length <= 2 && !RESERVED.has(parts[0])) {
-        return await renderInvitation(env, url, parts[0].toLowerCase(), parts[1]?.toLowerCase());
+        return await renderInvitation(req, env, ctx, url, parts[0].toLowerCase(), parts[1]?.toLowerCase());
       }
     } catch (err) {
       console.error(err);
@@ -123,7 +134,7 @@ async function renderDraft(env, url, id) {
 
 /* ---------------- live invitations ---------------- */
 
-async function renderInvitation(env, url, slug, guestKey) {
+async function renderInvitation(req, env, ctx, url, slug, guestKey) {
   const inv = await env.DB.prepare("SELECT * FROM invitations WHERE slug = ? AND status = 'live'").bind(slug).first();
   const theme = inv && themeFor(inv.template);
   if (!theme) return notFound(env, url);
@@ -138,6 +149,15 @@ async function renderInvitation(env, url, slug, guestKey) {
     const allowed = guest.events ? JSON.parse(guest.events) : null;
     if (allowed?.length) config.selectedEvents = (config.selectedEvents || theme.events).filter((e) => allowed.includes(e));
     description = `${guest.name}, you're invited`;
+    // Remember that this guest opened their invitation (ignore link-preview bots and the couple checking it)
+    const ua = req.headers.get("user-agent") || "";
+    if (!url.searchParams.has("check") && !/bot|crawler|spider|preview|whatsapp|facebookexternalhit|telegram|slack|discord|skype/i.test(ua)) {
+      const now = Date.now();
+      ctx.waitUntil(env.DB.prepare(
+        "INSERT INTO guest_views (invitation_slug, key, first_at, last_at, views) VALUES (?, ?, ?, ?, 1) " +
+        "ON CONFLICT(invitation_slug, key) DO UPDATE SET last_at = excluded.last_at, views = views + 1"
+      ).bind(slug, guestKey, now, now).run().catch(() => {}));
+    }
   }
 
   const c = config.couple || {};
@@ -222,7 +242,8 @@ async function admin(req, env, url, path) {
 
     await env.DB.prepare("INSERT INTO invitations (slug, template, data, status, draft_id, email, created_at, updated_at) VALUES (?, ?, ?, 'live', ?, ?, ?, ?)")
       .bind(newSlug, template, JSON.stringify(data), draftId, email, now, now).run();
-    return json({ slug: newSlug, url: `${origin(env, url)}/${newSlug}` }, 201);
+    const acc = await accessFor(env, newSlug, TIERS.includes(body.tier) ? body.tier : "basic");
+    return json({ slug: newSlug, url: `${origin(env, url)}/${newSlug}`, manageUrl: `${origin(env, url)}/manage/${acc.token}`, tier: acc.tier }, 201);
   }
 
   const inv = await env.DB.prepare("SELECT * FROM invitations WHERE slug = ?").bind(slug).first();
@@ -234,6 +255,7 @@ async function admin(req, env, url, path) {
     const rsvps = await env.DB.prepare("SELECT guest_key, name, attending, count, meals, dietary, song, message, created_at FROM rsvps WHERE invitation_slug = ? ORDER BY created_at DESC").bind(slug).all();
     return json({
       invitation: { ...inv, data: JSON.parse(inv.data) },
+      access: await accessFor(env, slug).then((a) => ({ tier: a.tier, manageUrl: `${origin(env, url)}/manage/${a.token}` })),
       events: themeFor(inv.template)?.events || [],
       guests: results.map((g) => ({ ...g, events: g.events ? JSON.parse(g.events) : null })),
       rsvps: rsvps.results.map((r) => ({ ...r, meals: r.meals ? JSON.parse(r.meals) : [] })),
@@ -248,6 +270,16 @@ async function admin(req, env, url, path) {
     if (typeof data !== "object" || !["live", "hidden"].includes(status)) return json({ error: "Data must be an object and status live or hidden." }, 400);
     await env.DB.prepare("UPDATE invitations SET data = ?, status = ?, updated_at = ? WHERE slug = ?").bind(JSON.stringify(data), status, now, slug).run();
     return json({ ok: true });
+  }
+
+  // PUT /api/admin/invitations/:slug/access  { tier?, regenerate? }
+  if (sub === "access" && req.method === "PUT") {
+    const body = await req.json().catch(() => ({}));
+    const acc = await accessFor(env, slug);
+    const tier = TIERS.includes(body.tier) ? body.tier : acc.tier;
+    const token = body.regenerate ? randomId(24) : acc.token;
+    await env.DB.prepare("UPDATE invitation_access SET tier = ?, token = ? WHERE invitation_slug = ?").bind(tier, token, slug).run();
+    return json({ tier, manageUrl: `${origin(env, url)}/manage/${token}` });
   }
 
   // POST /api/admin/invitations/:slug/guests  { name, key?, seats?, events? }
@@ -276,6 +308,186 @@ async function admin(req, env, url, path) {
   }
 
   return json({ error: "Unknown admin route." }, 404);
+}
+
+/* ---------------- couple panel ---------------- */
+
+// Each live invitation has a private panel link (/manage/<token>) and a tier.
+async function accessFor(env, slug, tierIfNew = "basic") {
+  let a = await env.DB.prepare("SELECT * FROM invitation_access WHERE invitation_slug = ?").bind(slug).first();
+  if (!a) {
+    a = { invitation_slug: slug, token: randomId(24), tier: tierIfNew, created_at: Date.now() };
+    await env.DB.prepare("INSERT INTO invitation_access (invitation_slug, token, tier, created_at) VALUES (?, ?, ?, ?)")
+      .bind(a.invitation_slug, a.token, a.tier, a.created_at).run();
+  }
+  return a;
+}
+
+async function couplePage(env, url) {
+  const res = await env.ASSETS.fetch(new Request(new URL("/manage/", url.origin)));
+  return new Response(res.body, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex", "referrer-policy": "no-referrer" } });
+}
+
+const MAX_GUESTS = 1500;
+const GUEST_KEY_RE = /^[a-z0-9](?:[a-z0-9-]{0,38}[a-z0-9])?$/;
+
+async function couple(req, env, url, token, path) {
+  if (!/^[a-z0-9]{20,40}$/.test(token)) return json({ error: "This panel link isn't valid." }, 404);
+  const acc = await env.DB.prepare("SELECT * FROM invitation_access WHERE token = ?").bind(token).first();
+  if (!acc) return json({ error: "This panel link isn't valid any more. Please ask us for a new one." }, 404);
+  const slug = acc.invitation_slug;
+  const inv = await env.DB.prepare("SELECT * FROM invitations WHERE slug = ?").bind(slug).first();
+  if (!inv) return json({ error: "This invitation no longer exists." }, 404);
+  const theme = themeFor(inv.template);
+  const data = JSON.parse(inv.data);
+  const base = origin(env, url);
+  const [section, key] = path;
+  const guestsAllowed = acc.tier === "guests";
+
+  // GET /api/couple/:token
+  if (!section && req.method === "GET") {
+    const [guests, views, rsvps] = await Promise.all([
+      env.DB.prepare("SELECT key, name, seats, events, created_at FROM guests WHERE invitation_slug = ? ORDER BY created_at").bind(slug).all(),
+      env.DB.prepare("SELECT key, first_at, views FROM guest_views WHERE invitation_slug = ?").bind(slug).all(),
+      env.DB.prepare("SELECT guest_key, name, attending, count, meals, dietary, song, message, created_at FROM rsvps WHERE invitation_slug = ? ORDER BY created_at DESC").bind(slug).all(),
+    ]);
+    const seen = Object.fromEntries(views.results.map((v) => [v.key, v]));
+    return json({
+      slug, url: `${base}/${slug}`, status: inv.status, tier: acc.tier,
+      theme: { key: ALIASES[inv.template] || inv.template, name: theme.name, events: theme.events, titles: theme.titles, timeZone: theme.timeZone, rsvpOnPage: theme.rsvpOnPage, shareMessage: theme.shareMessage },
+      data,
+      guests: guestsAllowed ? guests.results.map((g) => ({ ...g, events: g.events ? JSON.parse(g.events) : null, url: `${base}/${slug}/${g.key}`,
+        openedAt: seen[g.key]?.first_at || null, views: seen[g.key]?.views || 0 })) : [],
+      rsvps: rsvps.results.map((r) => ({ ...r, meals: r.meals ? JSON.parse(r.meals) : [] })),
+      support: env.WHATSAPP_NUMBER || null,
+    });
+  }
+
+  // PUT /api/couple/:token/details  — only the fields couples are allowed to change
+  if (section === "details" && req.method === "PUT") {
+    const body = await req.json().catch(() => null);
+    if (!body || typeof body !== "object") return json({ error: "Send the details as JSON." }, 400);
+    const next = applyCoupleDetails(data, body, theme);
+    if (!next.couple?.bride || !next.couple?.groom) return json({ error: "Both names are needed." }, 400);
+    if (!next.selectedEvents?.length) return json({ error: "Keep at least one function on the invitation." }, 400);
+    const text = JSON.stringify(next);
+    if (text.length > 60000) return json({ error: "That's too much text. Please shorten some fields." }, 400);
+    await env.DB.prepare("UPDATE invitations SET data = ?, updated_at = ? WHERE slug = ?").bind(text, Date.now(), slug).run();
+    return json({ ok: true, data: next });
+  }
+
+  if (section !== "guests") return json({ error: "Unknown request." }, 404);
+  if (!guestsAllowed) return json({ error: "Personal guest links come with the Invitation + Guest list package." }, 403);
+  const eventsOf = (v) => (Array.isArray(v) ? [...new Set(v)].filter((e) => theme.events.includes(e)) : []);
+  const seatsOf = (v) => { const n = parseInt(v, 10); return n > 0 && n < 100 ? n : null; };
+  const count = async () => (await env.DB.prepare("SELECT COUNT(*) AS n FROM guests WHERE invitation_slug = ?").bind(slug).first()).n;
+  const uniqueKey = async (name) => {
+    const stem = slugify(name).slice(0, 34) || "guest";
+    for (let i = 0; i < 50; i++) {
+      const k = i ? `${stem}-${i + 1}` : stem;
+      const hit = await env.DB.prepare("SELECT 1 FROM guests WHERE invitation_slug = ? AND key = ?").bind(slug, k).first();
+      if (!hit) return k;
+    }
+    return `${stem}-${randomId(4)}`;
+  };
+
+  // POST /api/couple/:token/guests  { name, seats, events }   or   { bulk: "Name, 3\nName, 2", seats, events }
+  if (!key && req.method === "POST") {
+    const body = await req.json().catch(() => ({}));
+    const rows = typeof body.bulk === "string"
+      ? body.bulk.split(/\r?\n/).map((l) => l.trim()).filter(Boolean).map((l) => {
+          const m = l.match(/^(.*?)[,\t;]\s*(\d{1,2})\s*$/);
+          return m ? { name: m[1], seats: m[2] } : { name: l, seats: body.seats };
+        })
+      : [{ name: body.name, seats: body.seats }];
+    const events = eventsOf(body.events);
+    const already = await count();
+    if (already + rows.length > MAX_GUESTS) return json({ error: `You can have up to ${MAX_GUESTS} guests.` }, 400);
+    const added = [];
+    for (const r of rows.slice(0, 500)) {
+      const name = clean(r.name, 60);
+      if (!name) continue;
+      const k = await uniqueKey(name);
+      await env.DB.prepare("INSERT INTO guests (invitation_slug, key, name, seats, events, created_at) VALUES (?, ?, ?, ?, ?, ?)")
+        .bind(slug, k, name, seatsOf(r.seats), events.length && events.length < theme.events.length ? JSON.stringify(events) : null, Date.now() + added.length).run();
+      added.push({ key: k, name, url: `${base}/${slug}/${k}` });
+    }
+    if (!added.length) return json({ error: "Add at least one guest name." }, 400);
+    return json({ added }, 201);
+  }
+
+  if (!key || !GUEST_KEY_RE.test(key)) return json({ error: "Unknown guest." }, 404);
+  const guest = await env.DB.prepare("SELECT * FROM guests WHERE invitation_slug = ? AND key = ?").bind(slug, key).first();
+  if (!guest) return json({ error: "That guest isn't on your list." }, 404);
+
+  // PUT /api/couple/:token/guests/:key  { name?, seats?, events? }
+  if (req.method === "PUT") {
+    const body = await req.json().catch(() => ({}));
+    const name = body.name !== undefined ? clean(body.name, 60) : guest.name;
+    if (!name) return json({ error: "The guest needs a name." }, 400);
+    const seats = body.seats !== undefined ? seatsOf(body.seats) : guest.seats;
+    let events = guest.events;
+    if (body.events !== undefined) { const ev = eventsOf(body.events); events = ev.length && ev.length < theme.events.length ? JSON.stringify(ev) : null; }
+    await env.DB.prepare("UPDATE guests SET name = ?, seats = ?, events = ? WHERE invitation_slug = ? AND key = ?").bind(name, seats, events, slug, key).run();
+    return json({ ok: true });
+  }
+
+  // DELETE /api/couple/:token/guests/:key
+  if (req.method === "DELETE") {
+    await env.DB.prepare("DELETE FROM guests WHERE invitation_slug = ? AND key = ?").bind(slug, key).run();
+    await env.DB.prepare("DELETE FROM guest_views WHERE invitation_slug = ? AND key = ?").bind(slug, key).run();
+    return json({ ok: true });
+  }
+  return json({ error: "Unknown request." }, 404);
+}
+
+// Copies only the fields a couple may edit from `body` onto the saved invitation data.
+function applyCoupleDetails(data, body, theme) {
+  const out = JSON.parse(JSON.stringify(data));
+  const str = (v, max = 300) => (typeof v === "string" ? clean(v, max) : undefined);
+  const set = (obj, k, v) => { if (v !== undefined) obj[k] = v; };
+  if (body.couple) { out.couple = out.couple || {}; set(out.couple, "bride", str(body.couple.bride, 30)); set(out.couple, "groom", str(body.couple.groom, 30)); }
+  if (body.fullNames) { out.fullNames = out.fullNames || {}; set(out.fullNames, "bride", str(body.fullNames.bride, 80)); set(out.fullNames, "groom", str(body.fullNames.groom, 80)); }
+  if (body.parents) {
+    out.parents = out.parents || {};
+    for (const side of ["bride", "groom"]) {
+      const v = body.parents[side];
+      if (typeof v === "string") out.parents[side] = clean(v, 120);
+      else if (v && typeof v === "object") out.parents[side] = { line: str(v.line, 40) || "", names: str(v.names, 120) || "" };
+    }
+  }
+  for (const k of ["hosts", "request", "place", "hashtag", "closing", "opening"]) set(out, k, str(body[k], 200));
+  set(out, "message", str(body.message, 900));
+  set(out, "shareMessage", str(body.shareMessage, 600));
+  if (typeof body.timeZone === "string" && /^[A-Za-z_]+\/[A-Za-z_\/-]+$/.test(body.timeZone)) out.timeZone = body.timeZone;
+  if (Array.isArray(body.selectedEvents)) out.selectedEvents = [...new Set(body.selectedEvents)].filter((e) => theme.events.includes(e));
+  if (body.events && typeof body.events === "object") {
+    out.events = out.events || {};
+    for (const k of theme.events) {
+      const e = body.events[k]; if (!e || typeof e !== "object") continue;
+      const t = (out.events[k] = out.events[k] || {});
+      for (const f of ["title", "sub", "venue", "note"]) set(t, f, str(e[f], 160));
+      set(t, "address", str(e.address, 240));
+      if (typeof e.map === "string" && (e.map === "" || /^https:\/\//.test(e.map))) t.map = clean(e.map, 400);
+      if (typeof e.start === "string" && !isNaN(Date.parse(e.start))) t.start = clean(e.start, 40);
+      if (e.hours !== undefined) { const h = Number(e.hours); if (h > 0 && h <= 24) t.hours = h; }
+    }
+  }
+  if (body.rsvp && typeof body.rsvp === "object") {
+    out.rsvp = out.rsvp || {};
+    if (typeof body.rsvp.deadline === "string" && (body.rsvp.deadline === "" || /^\d{4}-\d{2}-\d{2}$/.test(body.rsvp.deadline))) out.rsvp.deadline = body.rsvp.deadline;
+    set(out.rsvp, "phone", str(body.rsvp.phone, 30));
+    if (typeof body.rsvp.whatsapp === "string") out.rsvp.whatsapp = body.rsvp.whatsapp.replace(/\D/g, "").slice(0, 15);
+    if (Array.isArray(body.rsvp.meals)) out.rsvp.meals = body.rsvp.meals.map((m) => clean(String(m), 60)).filter(Boolean).slice(0, 8);
+    if (typeof body.rsvp.askSong === "boolean") out.rsvp.askSong = body.rsvp.askSong;
+  }
+  if (body.gifts && typeof body.gifts === "object") {
+    out.gifts = out.gifts || {};
+    set(out.gifts, "text", str(body.gifts.text, 500));
+    set(out.gifts, "label", str(body.gifts.label, 40));
+    if (typeof body.gifts.url === "string" && (body.gifts.url === "" || /^https:\/\//.test(body.gifts.url))) out.gifts.url = clean(body.gifts.url, 400);
+  }
+  return out;
 }
 
 /* ---------------- regional prices ---------------- */

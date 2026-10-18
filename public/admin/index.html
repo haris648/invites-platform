@@ -55,6 +55,19 @@ td .btn{min-height:36px;padding:0 14px;font-size:11px}
 
     <section class="card" id="editor" hidden>
       <h2 id="edTitle">Edit</h2>
+      <div class="card" style="background:#0b2122;gap:12px">
+        <span class="label">Couple panel</span>
+        <p class="muted" style="margin:0">Send this private link to the couple after payment. They can edit their details, see replies and, with the guest list package, manage their guests. Anyone with the link can edit, so only share it with the couple.</p>
+        <div class="row">
+          <div class="field" style="flex:0 1 260px"><label class="label" for="accTier">Package</label>
+            <select id="accTier"><option value="basic">Invitation</option><option value="guests">Invitation + Guest list</option></select></div>
+          <button class="btn" type="button" id="accRegen">Make a new link</button>
+        </div>
+        <div class="row"><button class="copy mono" type="button" id="accLink"></button>
+          <a class="btn" id="accOpen" href="#" target="_blank" rel="noopener">Open panel</a>
+          <a class="btn solid" id="accWa" href="#" target="_blank" rel="noopener">Send to couple on WhatsApp</a></div>
+        <p class="msg" id="accMsg" hidden></p>
+      </div>
       <p class="muted" style="margin:0">Only include what differs from the design's sample: names, parents, message, RSVP number, and each function's date, venue and address. Dates use the format 2026-12-13T19:00:00+05:00.</p>
       <div class="field"><label class="label" for="edData">Invitation content (JSON)</label><textarea id="edData" spellcheck="false"></textarea></div>
       <div class="row">
@@ -127,15 +140,31 @@ async function makeLive(id, suggested) {
   const slug = suggested.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   const row = document.querySelector(`[data-live="${id}"]`).closest("td");
   row.innerHTML = `<div class="row"><div class="field" style="flex:1 1 160px"><input value="${esc(slug)}" aria-label="Invitation link"></div>
+    <div class="field" style="flex:0 1 190px"><select aria-label="Package"><option value="basic">Invitation</option><option value="guests">Invitation + Guest list</option></select></div>
     <button class="btn solid" type="button" data-confirm="${esc(id)}">Create</button></div>`;
 }
 async function confirmLive(id, input) {
   try {
-    const { slug } = await api("invitations", { method: "POST", body: JSON.stringify({ draft_id: id, slug: input.value.trim() }) });
+    const tier = input.closest(".row").querySelector("select").value;
+    const { slug } = await api("invitations", { method: "POST", body: JSON.stringify({ draft_id: id, slug: input.value.trim(), tier }) });
     await loadAll(); openEditor(slug);
   } catch (e) { input.setCustomValidity(e.message); input.reportValidity(); input.addEventListener("input", () => input.setCustomValidity(""), { once: true }); }
 }
 
+function showAccess(a) {
+  current.access = a;
+  $("#accTier").value = a.tier;
+  $("#accLink").textContent = a.manageUrl; $("#accLink").dataset.copy = a.manageUrl;
+  $("#accOpen").href = a.manageUrl;
+  const names = current.invitation.data.couple ? current.invitation.data.couple.bride + " & " + current.invitation.data.couple.groom : "";
+  const msg = `Congratulations ${names}! Your invitation is live: ${location.origin}/${current.invitation.slug}\n\nManage your invitation here (please keep this link private): ${a.manageUrl}`;
+  $("#accWa").href = "https://wa.me/?text=" + encodeURIComponent(msg);
+  $("#accMsg").hidden = true;
+}
+async function updateAccess(body) {
+  try { showAccess(await api(`invitations/${current.invitation.slug}/access`, { method: "PUT", body: JSON.stringify(body) })); say($("#accMsg"), body.regenerate ? "New link made. The old link no longer works." : "Package updated.", true); }
+  catch (e) { say($("#accMsg"), e.message); }
+}
 async function openEditor(slug) {
   const data = await api("invitations/" + encodeURIComponent(slug));
   current = data;
@@ -144,6 +173,7 @@ async function openEditor(slug) {
   $("#edData").value = JSON.stringify(data.invitation.data, null, 2);
   $("#edStatus").value = data.invitation.status;
   $("#edOpen").href = "/" + slug;
+  showAccess(data.access);
   $("#edMsg").hidden = true; $("#gMsg").hidden = true;
   $("#gEvents").innerHTML = data.events.map((e) => `<label><input type="checkbox" value="${esc(e)}" checked><span>${esc(e)}</span></label>`).join("");
   renderGuests(); renderRsvps();
@@ -206,16 +236,18 @@ document.addEventListener("click", async (e) => {
   if (t.id === "signin") return signIn();
   if (t.id === "edSave") return save();
   if (t.id === "gAdd") return addGuest();
+  if (t.id === "accRegen") return updateAccess({ regenerate: true });
   if (t.id === "rsvpCopy") return copyRsvps(t);
   if (t.dataset.live) return makeLive(t.dataset.live, t.dataset.names);
   if (t.dataset.confirm) return confirmLive(t.dataset.confirm, t.closest(".row").querySelector("input"));
   if (t.dataset.edit) return openEditor(t.dataset.edit);
   if (t.dataset.del) { await api(`invitations/${current.invitation.slug}/guests/${encodeURIComponent(t.dataset.del)}`, { method: "DELETE" }); return openEditor(current.invitation.slug); }
   if (t.dataset.copy) {
-    try { await navigator.clipboard.writeText(t.dataset.copy); t.textContent = "Copied"; setTimeout(() => loadAll().then(() => current && renderGuests()), 900); }
+    try { const was = t.textContent; await navigator.clipboard.writeText(t.dataset.copy); t.textContent = "Copied"; setTimeout(() => { t.textContent = was; }, 1200); }
     catch { window.getSelection().selectAllChildren(t); }
   }
 });
+$("#accTier").addEventListener("change", (e) => updateAccess({ tier: e.target.value }));
 $("#token").addEventListener("keydown", (e) => { if (e.key === "Enter") signIn(); });
 if (TOKEN) signIn();
 </script>

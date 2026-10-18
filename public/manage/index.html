@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/brand/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
+<meta name="theme-color" content="#0E2426">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>Your invitation · The Invitary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Corinthia&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marcellus+SC&display=swap">
+<link rel="stylesheet" href="/assets/shop.css">
+<style>
+body{font-size:18px}
+main{padding-block:24px 120px;display:grid;gap:18px;max-width:760px}
+.top .wrap{max-width:760px}
+.who{display:grid;gap:6px;padding-top:6px}
+.who h1{font-family:var(--f-script);font-weight:400;font-size:clamp(52px,14vw,76px);line-height:.95}
+.who p{margin:0;color:var(--ivory-soft);font-size:17px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;border:1px solid var(--line);font-family:var(--f-label);font-size:11px;letter-spacing:.14em;color:var(--sand);text-transform:uppercase}
+.pill.ok{border-color:rgba(159,211,163,.5);color:var(--ok)}
+.pill.warn{border-color:rgba(240,163,122,.5);color:var(--error)}
+
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:6px;border-radius:999px;background:rgba(10,28,30,.92);border:1px solid var(--line);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:21;background:var(--night)}
+.tabs button{min-height:42px;border:0;border-radius:999px;background:transparent;color:var(--ivory-soft);font-family:var(--f-label);font-size:12px;letter-spacing:.1em;cursor:pointer;padding:0 4px}
+.tabs button[aria-selected="true"]{background:linear-gradient(180deg,#e2c27a,#b88f3e);color:#241806}
+
+.card{border:1px solid var(--line);border-radius:18px;background:var(--panel);padding:18px;display:grid;gap:14px;min-width:0}
+.card h2{font-family:var(--f-script);font-weight:400;font-size:40px;line-height:1}
+.card h3{margin:0;font-family:var(--f-label);font-weight:400;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--sand)}
+.muted{color:var(--ivory-soft);font-size:16px;margin:0}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn.sm{min-height:40px;padding:0 14px;font-size:11px}
+.btn.wa{background:#1f8f4e;border-color:#1f8f4e;color:#fff}
+.btn.danger{border-color:rgba(240,163,122,.6);color:var(--error)}
+.link{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;color:var(--sand);word-break:break-all;background:#0b2122;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.stat{border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:2px;background:rgba(255,255,255,.02)}
+.stat b{font-size:30px;font-weight:500;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{font-family:var(--f-label);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ivory-soft)}
+@media (max-width:560px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.check{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.check li{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start;font-size:17px}
+.check i{width:20px;height:20px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-style:normal;font-size:12px;margin-top:3px}
+.check li.done i{background:var(--ok);border-color:var(--ok);color:#0e2426}
+.check li.done span{color:var(--ivory-soft)}
+
+.field{display:grid;gap:6px;min-width:0}
+.field label,.field legend{font-family:var(--f-label);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--sand);padding:0}
+.field input,.field select,.field textarea{width:100%;min-height:46px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0b2122;color:var(--ivory);font:inherit;font-size:17px}
+.field textarea{min-height:96px;resize:vertical;line-height:1.45}
+.field small{color:var(--ivory-soft);font-size:14px}
+fieldset{border:0;margin:0;padding:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+@media (max-width:560px){.grid2,.grid3{grid-template-columns:1fr}}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{cursor:pointer;position:relative}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chips span{display:inline-block;padding:8px 14px;border-radius:999px;border:1px solid var(--line);font-family:var(--f-label);font-size:12px;letter-spacing:.1em;color:var(--ivory-soft)}
+.chips input:checked+span{background:var(--brass);border-color:var(--brass);color:#241806}
+.chips input:focus-visible+span{outline:2px solid var(--marigold);outline-offset:2px}
+
+.guest{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:10px;background:rgba(255,255,255,.02)}
+.g-top{display:flex;justify-content:space-between;gap:10px;align-items:start}
+.g-name{font-size:21px;font-weight:600;line-height:1.2}
+.g-meta{color:var(--ivory-soft);font-size:15px}
+.g-status{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+.g-actions{display:flex;flex-wrap:wrap;gap:8px}
+.toolbar{display:grid;grid-template-columns:1fr auto;gap:10px}
+.empty{text-align:center;padding:24px 10px;color:var(--ivory-soft)}
+
+.ev{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:12px}
+.ev h4{margin:0;font-family:var(--f-script);font-weight:400;font-size:34px;line-height:1}
+.savebar{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+  background:rgba(10,28,30,.95);border-top:1px solid var(--line);display:flex;justify-content:center;gap:12px;align-items:center;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.savebar .msg{max-width:46ch}
+.lock{text-align:center;justify-items:center}
+.lock .seal{width:64px;height:64px}
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:40;padding:10px 18px;border-radius:999px;background:var(--ivory);color:#0e2426;font-size:16px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+table{width:100%;border-collapse:collapse;font-size:15px}
+.r-card{border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;gap:4px}
+.r-card b{font-size:19px}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/" aria-label="The Invitary home"><img src="/assets/brand/logo-light.svg" alt="The Invitary"></a>
+  <span class="label">Your invitation</span>
+</div></header>
+
+<main class="wrap" id="app">
+  <section class="card" id="loading"><p class="muted">Opening your invitation…</p></section>
+</main>
+<div class="savebar" id="savebar" hidden><p class="msg" id="saveMsg" role="status"></p><button class="btn solid" type="button" id="saveBtn">Save changes</button></div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function () {
+  "use strict";
+  var TOKEN = location.pathname.split("/").filter(Boolean)[1] || "";
+  var API = "/api/couple/" + encodeURIComponent(TOKEN);
+  var S = null, tab = "overview", dirty = {}, editKey = null, confirmKey = null, query = "";
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var esc = function (v) { return String(v == null ? "" : v).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+  var pad = function (n) { return (n < 10 ? "0" : "") + n; };
+  try { tab = sessionStorage.getItem("mi-tab") || tab; } catch (e) {}
+
+  function api(path, opts) {
+    return fetch(API + (path || ""), Object.assign({ headers: { "content-type": "application/json" } }, opts || {}))
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.error || "Something went wrong. Please try again."); return d; }); });
+  }
+  function toast(t) { var el = $("#toast"); el.textContent = t; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function () { el.hidden = true; }, 2200); }
+  function copy(text, btn) {
+    var done = function () { toast("Link copied"); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () { prompt("Copy this link", text); });
+    else prompt("Copy this link", text);
+  }
+
+  /* ---------- helpers about the invitation ---------- */
+  var isEA = function () { return S.theme.key === "ever-after"; };
+  var tz = function () { return S.data.timeZone || S.theme.timeZone; };
+  var titleOf = function (k) { var e = (S.data.events || {})[k] || {}; return e.title || S.theme.titles[k] || k; };
+  var selected = function () { return (S.data.selectedEvents || []).filter(function (k) { return S.theme.events.indexOf(k) > -1; }); };
+  var coupleNames = function () { var c = S.data.couple || {}; return (c.bride || "") + " & " + (c.groom || ""); };
+  function shareText(guestName, link) {
+    var t = S.data.shareMessage || S.theme.shareMessage;
+    return t.replace(/\{guest\}/g, guestName || (isEA() ? "friends" : "everyone")).replace(/\{couple\}/g, coupleNames()).replace(/\{link\}/g, link);
+  }
+  var waLink = function (text) { return "https://wa.me/?text=" + encodeURIComponent(text); };
+  function latestReplies() {
+    var seen = {}; return S.rsvps.filter(function (r) { var k = r.guest_key || "name:" + r.name.toLowerCase(); if (seen[k]) return false; seen[k] = 1; return true; });
+  }
+  function replyFor(key) { return latestReplies().filter(function (r) { return r.guest_key === key; })[0] || null; }
+  var when = function (t) { return new Date(t).toLocaleDateString("en-GB", { day: "numeric", month: "short" }); };
+
+  /* time zone helpers: event times are saved with their offset so every guest sees the right time */
+  function tzOffset(date, zone) {
+    var p = {}; new Intl.DateTimeFormat("en-US", { timeZone: zone, hourCycle: "h23", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" })
+      .formatToParts(date).forEach(function (x) { p[x.type] = x.value; });
+    return (Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour % 24, +p.minute, +p.second) - date.getTime()) / 60000;
+  }
+  function toLocalInput(iso, zone) {
+    if (!iso) return ""; var d = new Date(iso); if (isNaN(d)) return "";
+    var p = {}; new Intl.DateTimeFormat("en-US", { timeZone: zone, hourCycle: "h23", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })
+      .formatToParts(d).forEach(function (x) { p[x.type] = x.value; });
+    return p.year + "-" + p.month + "-" + p.day + "T" + pad(+p.hour % 24) + ":" + p.minute;
+  }
+  function fromLocalInput(local, zone) {
+    if (!local) return "";
+    var a = local.split("T"), d = a[0].split("-").map(Number), t = a[1].split(":").map(Number);
+    var guess = Date.UTC(d[0], d[1] - 1, d[2], t[0], t[1]);
+    var off = tzOffset(new Date(guess), zone); off = tzOffset(new Date(guess - off * 60000), zone);
+    var s = off >= 0 ? "+" : "-", ab = Math.abs(off);
+    return a[0] + "T" + pad(t[0]) + ":" + pad(t[1]) + ":00" + s + pad(Math.floor(ab / 60)) + ":" + pad(ab % 60);
+  }
+
+  /* ---------- load ---------- */
+  function load() {
+    return api("").then(function (d) { S = d; render(); }).catch(function (e) {
+      $("#app").innerHTML = '<section class="card"><h2>We couldn\'t open this</h2><p class="muted">' + esc(e.message) + '</p></section>';
+    });
+  }
+
+  function render() {
+    var c = S.data.couple || {};
+    var tabs = [["overview", "Overview"], ["guests", "Guests"], ["replies", "Replies"], ["details", "Details"]];
+    $("#app").innerHTML =
+      '<section class="who"><span class="label">' + esc(S.theme.name) + ' · ' + (S.tier === "guests" ? "Invitation + Guest list" : "Invitation") + '</span>' +
+      '<h1>' + esc(c.bride) + ' &amp; ' + esc(c.groom) + '</h1>' +
+      '<p>' + (S.status === "live" ? '<span class="pill ok">Live</span>' : '<span class="pill warn">Hidden</span>') + '</p></section>' +
+      '<nav class="tabs" role="tablist">' + tabs.map(function (t) { return '<button type="button" role="tab" data-tab="' + t[0] + '" aria-selected="' + (tab === t[0]) + '">' + t[1] + '</button>'; }).join("") + '</nav>' +
+      '<div id="pane"></div>';
+    renderPane();
+  }
+  function renderPane() {
+    $$(".tabs button").forEach(function (b) { b.setAttribute("aria-selected", String(b.getAttribute("data-tab") === tab)); });
+    var pane = $("#pane");
+    pane.innerHTML = tab === "overview" ? overview() : tab === "guests" ? guests() : tab === "replies" ? replies() : details();
+    $("#savebar").hidden = tab !== "details";
+    if (tab === "details") { dirty = {}; $("#saveMsg").textContent = ""; }
+  }
+
+  /* ---------- overview ---------- */
+  function overview() {
+    var g = S.guests, rep = latestReplies(), yes = rep.filter(function (r) { return r.attending === "yes"; });
+    var coming = yes.reduce(function (n, r) { return n + (r.count || 0); }, 0);
+    var seats = g.reduce(function (n, x) { return n + (x.seats || 1); }, 0);
+    var opened = g.filter(function (x) { return x.openedAt; }).length;
+    var firstEv = selected().map(function (k) { return (S.data.events || {})[k] && S.data.events[k].start; }).filter(Boolean).sort()[0];
+    var days = firstEv ? Math.max(0, Math.ceil((Date.parse(firstEv) - Date.now()) / 864e5)) : null;
+    var ev = S.data.events || {};
+    var todo = [
+      ["Your names", !!(S.data.couple && S.data.couple.bride && S.data.couple.groom)]
+    ].concat(selected().map(function (k) { var e = ev[k] || {}; return [titleOf(k) + ": date, time and venue", !!(e.start && e.venue && e.address)]; }))
+     .concat([[isEA() ? "RSVP deadline" : "RSVP contact number", isEA() ? !!(S.data.rsvp && S.data.rsvp.deadline) : !!(S.data.rsvp && S.data.rsvp.whatsapp)]]);
+    var left = todo.filter(function (t) { return !t[1]; }).length;
+    return '<div style="display:grid;gap:18px">' +
+      '<section class="card"><h3>Your invitation link</h3><div class="link">' + esc(S.url) + '</div>' +
+      '<div class="row"><a class="btn wa sm" href="' + esc(waLink(shareText("", S.url))) + '" target="_blank" rel="noopener">Share on WhatsApp</a>' +
+      '<button class="btn sm" type="button" data-copy="' + esc(S.url) + '">Copy link</button>' +
+      '<a class="btn sm" href="' + esc(S.url) + '?check" target="_blank" rel="noopener">Open</a></div>' +
+      '<p class="muted">' + (S.tier === "guests" ? "Use this link for groups or social media. For each guest, send their personal link from the Guests tab." : "Send this link to all your guests.") + '</p></section>' +
+      '<section class="stats">' +
+        stat(S.tier === "guests" ? g.length : "–", "Guests") + stat(S.tier === "guests" ? seats : "–", "Seats invited") +
+        stat(S.tier === "guests" ? opened : "–", "Opened") + stat(coming, "Coming") + '</section>' +
+      (days !== null ? '<p class="muted" style="text-align:center">' + (days === 0 ? "Your celebrations begin today" : days + (days === 1 ? " day" : " days") + " until your first function") + '</p>' : '') +
+      '<section class="card"><h3>' + (left ? "Finish your invitation" : "Your invitation is ready") + '</h3>' +
+      '<ul class="check">' + todo.map(function (t) { return '<li class="' + (t[1] ? "done" : "") + '"><i>' + (t[1] ? "✓" : "") + '</i><span>' + esc(t[0]) + '</span></li>'; }).join("") + '</ul>' +
+      (left ? '<div class="row"><button class="btn solid sm" type="button" data-go="details">Add details</button></div><p class="muted">Until you add them, your invitation shows sample details.</p>' : '') + '</section>' +
+      '</div>';
+  }
+  function stat(n, l) { return '<div class="stat"><b>' + esc(n) + '</b><span>' + l + '</span></div>'; }
+
+  /* ---------- guests ---------- */
+  function eventChips(name, chosen) {
+    return '<div class="chips">' + selected().map(function (k) {
+      return '<label><input type="checkbox" name="' + name + '" value="' + k + '"' + (!chosen || chosen.indexOf(k) > -1 ? " checked" : "") + '><span>' + esc(titleOf(k)) + '</span></label>';
+    }).join("") + '</div>';
+  }
+  function guests() {
+    if (S.tier !== "guests") {
+      return '<section class="card lock"><img class="seal" src="/assets/brand/mark.svg" alt=""><h2>Personal guest links</h2>' +
+        '<p class="muted">Greet every guest by name on their own envelope, choose which functions they see and how many seats they have, and see who has opened their invitation.</p>' +
+        '<p class="muted">This comes with the <b>Invitation + Guest list</b> package.</p>' +
+        (S.support ? '<a class="btn solid" target="_blank" rel="noopener" href="https://wa.me/' + esc(S.support) + '?text=' + encodeURIComponent("Hi! I'd like to upgrade " + coupleNames() + "'s invitation to include the guest list.") + '">Upgrade on WhatsApp</a>' : '') + '</section>';
+    }
+    var list = S.guests.filter(function (g) { return !query || g.name.toLowerCase().indexOf(query) > -1; });
+    return '<div style="display:grid;gap:18px">' +
+      '<section class="card"><h3>Add a guest</h3>' +
+        '<form id="addOne" class="grid3" novalidate><div class="field"><label for="gName">Name on the invitation</label><input id="gName" maxlength="60" placeholder="' + (isEA() ? "The Harrison Family" : "Chachu family") + '" autocomplete="off"></div>' +
+        '<div class="field"><label for="gSeats">Seats</label><input id="gSeats" type="number" min="1" max="99" inputmode="numeric" placeholder="2"></div></form>' +
+        '<fieldset class="field"><legend>Functions they\'re invited to</legend>' + eventChips("addEv") + '</fieldset>' +
+        '<div class="row"><button class="btn solid" type="button" id="addBtn">Add guest</button><button class="btn sm" type="button" id="bulkToggle">Add many at once</button></div>' +
+        '<div id="bulkBox" hidden style="display:grid;gap:10px"><div class="field"><label for="bulk">One guest per line, with seats after a comma</label>' +
+        '<textarea id="bulk" placeholder="' + (isEA() ? "The Harrison Family, 3&#10;Emma Wilson, 1&#10;Uncle Peter and Aunt Jane, 2" : "Chachu family, 4&#10;Khala Rubina, 2&#10;Ali Raza, 1") + '"></textarea>' +
+        '<small>They all get the functions ticked above. You can change anyone afterwards.</small></div>' +
+        '<div class="row"><button class="btn solid" type="button" id="bulkBtn">Add all</button></div></div>' +
+        '<p class="msg err" id="addMsg" hidden></p></section>' +
+      '<section class="card"><div class="toolbar"><div class="field"><label for="q">Find a guest</label><input id="q" type="search" value="' + esc(query) + '" placeholder="Search names"></div>' +
+        '<div class="field"><label>&nbsp;</label><span class="pill">' + S.guests.length + ' guests</span></div></div>' +
+        (list.length ? list.map(guestCard).join("") : '<div class="empty">' + (S.guests.length ? "No guest matches your search." : "Your guest list is empty. Add your first guest above.") + '</div>') +
+      '</section></div>';
+  }
+  function guestCard(g) {
+    var r = replyFor(g.key), evs = g.events ? g.events.map(titleOf).join(", ") : "All functions";
+    if (editKey === g.key) {
+      return '<div class="guest" data-key="' + g.key + '"><div class="grid3"><div class="field"><label>Name</label><input data-f="name" maxlength="60" value="' + esc(g.name) + '"></div>' +
+        '<div class="field"><label>Seats</label><input data-f="seats" type="number" min="1" max="99" value="' + esc(g.seats || "") + '"></div></div>' +
+        '<fieldset class="field"><legend>Functions</legend>' + eventChips("ev-" + g.key, g.events) + '</fieldset>' +
+        '<div class="g-actions"><button class="btn solid sm" type="button" data-act="save">Save</button><button class="btn sm" type="button" data-act="cancel">Cancel</button></div></div>';
+    }
+    var status = (g.openedAt ? '<span class="pill ok">Opened ' + when(g.openedAt) + '</span>' : '<span class="pill">Not opened</span>') +
+      (r ? (r.attending === "yes" ? '<span class="pill ok">Coming · ' + r.count + '</span>' : '<span class="pill warn">Not coming</span>') : (S.theme.rsvpOnPage ? '<span class="pill">No reply</span>' : ''));
+    return '<div class="guest" data-key="' + g.key + '"><div class="g-top"><div><div class="g-name">' + esc(g.name) + '</div>' +
+      '<div class="g-meta">' + (g.seats ? g.seats + (g.seats > 1 ? " seats" : " seat") + " · " : "") + esc(evs) + '</div></div>' +
+      '<div class="g-status">' + status + '</div></div>' +
+      (confirmKey === g.key
+        ? '<div class="g-actions"><span class="muted">Remove ' + esc(g.name) + '? Their link will stop working.</span><button class="btn danger sm" type="button" data-act="remove-yes">Remove</button><button class="btn sm" type="button" data-act="remove-no">Keep</button></div>'
+        : '<div class="g-actions"><a class="btn wa sm" href="' + esc(waLink(shareText(g.name, g.url))) + '" target="_blank" rel="noopener">Send on WhatsApp</a>' +
+          '<button class="btn sm" type="button" data-copy="' + esc(g.url) + '">Copy link</button>' +
+          '<a class="btn sm" href="' + esc(g.url) + '?check" target="_blank" rel="noopener">Preview</a>' +
+          '<button class="btn sm" type="button" data-act="edit">Edit</button><button class="btn sm danger" type="button" data-act="remove">Remove</button></div>') +
+      '</div>';
+  }
+  function chosenEvents(name) { return $$('input[name="' + name + '"]:checked').map(function (i) { return i.value; }); }
+  function addGuests(body, btn) {
+    var msg = $("#addMsg"); msg.hidden = true; btn.disabled = true;
+    api("/guests", { method: "POST", body: JSON.stringify(body) }).then(function (d) {
+      toast(d.added.length === 1 ? d.added[0].name + " added" : d.added.length + " guests added");
+      return load();
+    }).catch(function (e) { msg.textContent = e.message; msg.hidden = false; btn.disabled = false; });
+  }
+
+  /* ---------- replies ---------- */
+  function replies() {
+    var rep = latestReplies(), yes = rep.filter(function (r) { return r.attending === "yes"; }), no = rep.filter(function (r) { return r.attending === "no"; });
+    var coming = yes.reduce(function (n, r) { return n + (r.count || 0); }, 0);
+    var meals = {}; yes.forEach(function (r) { (r.meals || []).forEach(function (m) { if (m) meals[m] = (meals[m] || 0) + 1; }); });
+    var waiting = S.tier === "guests" && S.theme.rsvpOnPage ? S.guests.filter(function (g) { return !replyFor(g.key); }) : [];
+    return '<div style="display:grid;gap:18px">' +
+      (!S.theme.rsvpOnPage ? '<section class="card"><p class="muted">With ' + esc(S.theme.name) + ', guests confirm on WhatsApp' + (S.data.rsvp && S.data.rsvp.phone ? " at " + esc(S.data.rsvp.phone) : "") + '. You can change the number in Details.</p></section>' : '') +
+      '<section class="stats">' + stat(coming, "Coming") + stat(yes.length, "Accepted") + stat(no.length, "Declined") + stat(S.tier === "guests" && S.theme.rsvpOnPage ? waiting.length : "–", "No reply yet") + '</section>' +
+      (Object.keys(meals).length ? '<section class="card"><h3>Dinner choices</h3><p class="muted">' + Object.keys(meals).map(function (m) { return meals[m] + " × " + esc(m); }).join(" · ") + '</p></section>' : '') +
+      '<section class="card"><div class="row" style="justify-content:space-between"><h3>Replies</h3>' + (rep.length ? '<button class="btn sm" type="button" id="csv">Download spreadsheet</button>' : '') + '</div>' +
+      (rep.length ? rep.map(function (r) {
+        return '<div class="r-card"><div class="g-top"><b>' + esc(r.name) + '</b>' + (r.attending === "yes" ? '<span class="pill ok">Coming · ' + r.count + '</span>' : '<span class="pill warn">Not coming</span>') + '</div>' +
+          ((r.meals || []).filter(Boolean).length ? '<span class="g-meta">Dinner: ' + esc(r.meals.filter(Boolean).join(", ")) + '</span>' : '') +
+          (r.dietary ? '<span class="g-meta">Dietary: ' + esc(r.dietary) + '</span>' : '') +
+          (r.song ? '<span class="g-meta">Song: ' + esc(r.song) + '</span>' : '') +
+          (r.message ? '<span class="g-meta">“' + esc(r.message) + '”</span>' : '') +
+          '<span class="g-meta">' + when(r.created_at) + '</span></div>';
+      }).join("") : '<div class="empty">No replies yet. They appear here as soon as guests reply on your invitation.</div>') + '</section>' +
+      (waiting.length ? '<section class="card"><h3>Still to reply</h3><p class="muted">' + waiting.map(function (g) { return esc(g.name); }).join(", ") + '</p></section>' : '') +
+      '</div>';
+  }
+  function downloadCsv() {
+    var cell = function (v) { return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"'; };
+    var rows = [["Name", "Reply", "Guests", "Dinner", "Dietary", "Song", "Note", "Received"]].concat(latestReplies().map(function (r) {
+      return [r.name, r.attending === "yes" ? "Coming" : "Not coming", r.count, (r.meals || []).join("; "), r.dietary, r.song, r.message, new Date(r.created_at).toLocaleString("en-GB")];
+    }));
+    var blob = new Blob(["﻿" + rows.map(function (r) { return r.map(cell).join(","); }).join("\r\n")], { type: "text/csv" });
+    var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "rsvp-replies.csv"; document.body.appendChild(a); a.click(); a.remove();
+  }
+
+  /* ---------- details ---------- */
+  function inp(path, label, value, opts) {
+    opts = opts || {};
+    var id = "f-" + path.replace(/[^a-z0-9]/gi, "-");
+    var common = 'id="' + id + '" data-path="' + path + '"' + (opts.max ? ' maxlength="' + opts.max + '"' : "") + (opts.placeholder ? ' placeholder="' + esc(opts.placeholder) + '"' : "");
+    var control = opts.area ? '<textarea ' + common + '>' + esc(value) + '</textarea>'
+      : '<input ' + common + ' type="' + (opts.type || "text") + '" value="' + esc(value) + '">';
+    return '<div class="field"><label for="' + id + '">' + label + '</label>' + control + (opts.hint ? '<small>' + opts.hint + '</small>' : "") + '</div>';
+  }
+  function details() {
+    var d = S.data, c = d.couple || {}, p = d.parents || {}, ev = d.events || {}, r = d.rsvp || {}, zone = tz();
+    var zones = ["Asia/Karachi", "Asia/Dubai", "Asia/Riyadh", "Asia/Qatar", "Asia/Kolkata", "Europe/London", "Europe/Paris", "America/New_York", "America/Chicago", "America/Los_Angeles", "America/Toronto", "Australia/Sydney", "Australia/Melbourne", "Australia/Brisbane", "Australia/Perth", "Pacific/Auckland"];
+    if (zones.indexOf(zone) < 0) zones.unshift(zone);
+    var parentField = function (side, label) {
+      var v = p[side];
+      if (isEA()) return inp("parents." + side, label, typeof v === "string" ? v : "", { max: 120, placeholder: side === "bride" ? "daughter of Thomas & Anne Bennett" : "son of Robert & Mary Carter", hint: "Optional" });
+      v = v && typeof v === "object" ? v : {};
+      return '<div class="grid3">' + inp("parents." + side + ".names", label, v.names || "", { max: 120, placeholder: side === "bride" ? "Mr. & Mrs. Tariq Mahmood" : "Mr. & Mrs. Imran Qureshi" }) +
+        inp("parents." + side + ".line", "Shown as", v.line || (side === "bride" ? "Daughter of" : "Son of"), { max: 40 }) + '</div>';
+    };
+    return '<div style="display:grid;gap:18px">' +
+      '<section class="card"><h3>Your names</h3><div class="grid2">' +
+        inp("couple.bride", isEA() ? "First name" : "Bride", c.bride, { max: 30 }) + inp("couple.groom", isEA() ? "Partner's first name" : "Groom", c.groom, { max: 30 }) + '</div>' +
+        (isEA() ? '<div class="grid2">' + inp("fullNames.bride", "Full name", (d.fullNames || {}).bride || "", { max: 80 }) + inp("fullNames.groom", "Partner's full name", (d.fullNames || {}).groom || "", { max: 80 }) + '</div>' : '') +
+        parentField("bride", isEA() ? "Your parents" : "Bride's parents") + parentField("groom", isEA() ? "Partner's parents" : "Groom's parents") + '</section>' +
+      '<section class="card"><h3>Your message</h3>' +
+        inp("message", isEA() ? "A note to your guests" : "Invitation message", d.message || "", { area: true, max: 900, placeholder: isEA() ? "We have chosen a summer garden…" : "With the blessings of Allah and the love of our families…" }) +
+        (isEA() ? '<div class="grid2">' + inp("place", "Place shown on the card", d.place || "", { max: 120, placeholder: "Ashcombe Gardens · The Cotswolds" }) + inp("hashtag", "Wedding hashtag", d.hashtag || "", { max: 60, placeholder: "#EmmaAndNoah" }) + '</div>' : '') + '</section>' +
+      '<section class="card"><h3>Your functions</h3>' +
+        '<fieldset class="field"><legend>Shown on the invitation</legend><div class="chips">' + S.theme.events.map(function (k) {
+          return '<label><input type="checkbox" data-sel value="' + k + '"' + (selected().indexOf(k) > -1 ? " checked" : "") + '><span>' + esc(titleOf(k)) + '</span></label>'; }).join("") + '</div></fieldset>' +
+        '<div class="field"><label for="tz">Time zone of the wedding</label><select id="tz" data-path="timeZone">' + zones.map(function (z) { return '<option' + (z === zone ? " selected" : "") + '>' + z + '</option>'; }).join("") + '</select>' +
+        '<small>Times show correctly for guests anywhere in the world.</small></div>' +
+        S.theme.events.map(function (k) {
+          var e = ev[k] || {}, show = selected().indexOf(k) > -1;
+          return '<div class="ev" data-ev="' + k + '"' + (show ? "" : " hidden") + '><h4>' + esc(titleOf(k)) + '</h4>' +
+            '<div class="grid2">' + inp("events." + k + ".start", "Date and time", toLocalInput(e.start, zone), { type: "datetime-local" }) + inp("events." + k + ".hours", "Lasts (hours)", e.hours || "", { type: "number", placeholder: "4" }) + '</div>' +
+            inp("events." + k + ".venue", "Venue", e.venue || "", { max: 160, placeholder: isEA() ? "Ashcombe Gardens" : "Royal Sapphire Banquet" }) +
+            inp("events." + k + ".address", "Address", e.address || "", { max: 240 }) +
+            inp("events." + k + ".map", "Google Maps link", e.map || "", { type: "url", max: 400, placeholder: "https://maps.app.goo.gl/…", hint: "Optional. Paste the venue's link from Google Maps for an exact pin." }) +
+            '<div class="grid2">' + inp("events." + k + ".title", "Title", e.title || "", { max: 60, placeholder: S.theme.titles[k] }) + inp("events." + k + ".sub", "Line under the title", e.sub || "", { max: 120 }) + '</div>' +
+            (isEA() ? inp("events." + k + ".note", "Note for guests", e.note || "", { max: 160, placeholder: "Please be seated by 1:40 pm" }) : '') + '</div>';
+        }).join("") + '</section>' +
+      '<section class="card"><h3>Replies</h3>' + (isEA()
+        ? '<div class="grid2">' + inp("rsvp.deadline", "Reply by", r.deadline || "", { type: "date" }) + inp("rsvp.meals", "Dinner choices", (r.meals || []).join(", "), { max: 300, placeholder: "Lamb, Salmon, Risotto (v)", hint: "Separate with commas. Leave empty to skip." }) + '</div>' +
+          '<label class="row" style="gap:8px;cursor:pointer"><input type="checkbox" data-path="rsvp.askSong"' + (r.askSong !== false ? " checked" : "") + '> <span>Ask guests for a song request</span></label>'
+        : '<div class="grid2">' + inp("rsvp.phone", "Number shown to guests", r.phone || "", { max: 30, placeholder: "+92 300 1234567" }) + inp("rsvp.whatsapp", "WhatsApp number for replies", r.whatsapp || "", { type: "tel", max: 20, placeholder: "923001234567", hint: "With country code, digits only." }) + '</div>') + '</section>' +
+      (isEA() ? '<section class="card"><h3>Gifts</h3>' + inp("gifts.text", "Gift message", (d.gifts || {}).text || "", { area: true, max: 500 }) +
+        inp("gifts.url", "Registry link", (d.gifts || {}).url || "", { type: "url", max: 400, placeholder: "https://…", hint: "Optional" }) + '</section>' : '') +
+      '<section class="card"><h3>WhatsApp message to guests</h3>' + inp("shareMessage", "Message", d.shareMessage || S.theme.shareMessage, { area: true, max: 600, hint: "{guest} becomes each guest's name, {couple} your names and {link} their invitation link." }) + '</section>' +
+      '</div>';
+  }
+  function setPath(obj, path, val) {
+    var ks = path.split("."), o = obj;
+    for (var i = 0; i < ks.length - 1; i++) { o[ks[i]] = o[ks[i]] && typeof o[ks[i]] === "object" ? o[ks[i]] : {}; o = o[ks[i]]; }
+    o[ks[ks.length - 1]] = val;
+  }
+  function saveDetails() {
+    var body = {}, zone = $("#tz").value, msg = $("#saveMsg"), btn = $("#saveBtn");
+    Object.keys(dirty).forEach(function (path) {
+      var el = $('[data-path="' + path + '"]'); if (!el) return;
+      var v = el.type === "checkbox" ? el.checked : el.value.trim();
+      if (/^events\.[a-z]+\.start$/.test(path)) v = fromLocalInput(v, zone);
+      if (/^events\.[a-z]+\.hours$/.test(path)) v = v === "" ? undefined : Number(v);
+      if (path === "rsvp.meals") v = v ? v.split(",").map(function (x) { return x.trim(); }).filter(Boolean) : [];
+      if (v !== undefined) setPath(body, path, v);
+    });
+    // a changed time zone re-saves every time so they keep the clock time the couple typed
+    if (dirty.timeZone) $$('[data-path$=".start"]').forEach(function (el) { if (el.value) setPath(body, el.getAttribute("data-path"), fromLocalInput(el.value, zone)); });
+    if (dirty.selected) body.selectedEvents = $$("[data-sel]:checked").map(function (i) { return i.value; });
+    if (!Object.keys(body).length) { msg.textContent = "Nothing has changed yet."; msg.className = "msg"; return; }
+    btn.disabled = true; msg.className = "msg"; msg.textContent = "Saving…";
+    api("/details", { method: "PUT", body: JSON.stringify(body) }).then(function (d) {
+      S.data = d.data; dirty = {}; msg.className = "msg ok"; msg.textContent = "Saved. Your invitation is updated for everyone.";
+      btn.disabled = false; var h = $(".who h1"); if (h) h.innerHTML = esc(S.data.couple.bride) + " &amp; " + esc(S.data.couple.groom);
+    }).catch(function (e) { msg.className = "msg err"; msg.textContent = e.message; btn.disabled = false; });
+  }
+
+  /* ---------- events ---------- */
+  document.addEventListener("click", function (e) {
+    var t = e.target.closest("button, a"); if (!t) return;
+    if (t.hasAttribute("data-tab")) { tab = t.getAttribute("data-tab"); try { sessionStorage.setItem("mi-tab", tab); } catch (x) {} editKey = confirmKey = null; renderPane(); window.scrollTo({ top: 0 }); return; }
+    if (t.hasAttribute("data-go")) { tab = t.getAttribute("data-go"); renderPane(); window.scrollTo({ top: 0 }); return; }
+    if (t.hasAttribute("data-copy")) { copy(t.getAttribute("data-copy")); return; }
+    if (t.id === "saveBtn") return saveDetails();
+    if (t.id === "csv") return downloadCsv();
+    if (t.id === "bulkToggle") { $("#bulkBox").hidden = !$("#bulkBox").hidden; return; }
+    if (t.id === "addBtn") {
+      var name = $("#gName").value.trim();
+      if (!name) { $("#addMsg").textContent = "Add the guest's name."; $("#addMsg").hidden = false; return; }
+      return addGuests({ name: name, seats: $("#gSeats").value, events: chosenEvents("addEv") }, t);
+    }
+    if (t.id === "bulkBtn") {
+      if (!$("#bulk").value.trim()) { $("#addMsg").textContent = "Type at least one name, one per line."; $("#addMsg").hidden = false; return; }
+      return addGuests({ bulk: $("#bulk").value, seats: $("#gSeats").value, events: chosenEvents("addEv") }, t);
+    }
+    var act = t.getAttribute("data-act"); if (!act) return;
+    var card = t.closest("[data-key]"), key = card && card.getAttribute("data-key");
+    if (act === "edit") { editKey = key; confirmKey = null; renderPane(); return; }
+    if (act === "cancel") { editKey = null; renderPane(); return; }
+    if (act === "remove") { confirmKey = key; editKey = null; renderPane(); return; }
+    if (act === "remove-no") { confirmKey = null; renderPane(); return; }
+    if (act === "remove-yes") { t.disabled = true; api("/guests/" + key, { method: "DELETE" }).then(function () { confirmKey = null; toast("Guest removed"); return load(); }).catch(function (x) { toast(x.message); }); return; }
+    if (act === "save") {
+      t.disabled = true;
+      api("/guests/" + key, { method: "PUT", body: JSON.stringify({ name: $('[data-f="name"]', card).value, seats: $('[data-f="seats"]', card).value, events: chosenEvents("ev-" + key) }) })
+        .then(function () { editKey = null; toast("Saved"); return load(); }).catch(function (x) { toast(x.message); t.disabled = false; });
+    }
+  });
+  document.addEventListener("input", function (e) {
+    var el = e.target;
+    if (el.id === "q") { query = el.value.trim().toLowerCase(); var pos = el.selectionStart; renderPane(); var q = $("#q"); q.focus(); q.setSelectionRange(pos, pos); return; }
+    if (el.hasAttribute("data-path")) { dirty[el.getAttribute("data-path")] = 1; $("#saveMsg").textContent = "You have unsaved changes."; $("#saveMsg").className = "msg"; }
+  });
+  document.addEventListener("change", function (e) {
+    var el = e.target;
+    if (el.hasAttribute("data-sel")) { dirty.selected = 1; var box = $('[data-ev="' + el.value + '"]'); if (box) box.hidden = !el.checked; $("#saveMsg").textContent = "You have unsaved changes."; }
+    if (el.hasAttribute("data-path") && (el.type === "checkbox" || el.tagName === "SELECT")) { dirty[el.getAttribute("data-path")] = 1; $("#saveMsg").textContent = "You have unsaved changes."; }
+  });
+  document.addEventListener("submit", function (e) { if (e.target.id === "addOne") { e.preventDefault(); $("#addBtn").click(); } });
+  window.addEventListener("beforeunload", function (e) { if (Object.keys(dirty).length) { e.preventDefault(); e.returnValue = ""; } });
+
+  if (!TOKEN) { $("#app").innerHTML = '<section class="card"><h2>Link incomplete</h2><p class="muted">Please open the full link we sent you.</p></section>'; return; }
+  load();
+})();
+</script>
+</body>
+</html>

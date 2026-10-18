@@ -286,7 +286,7 @@ function render(){
   evs.forEach((e,i) => {
     const end = new Date(e.date.getTime() + e.hours*3600e3);
     const where = `${e.venue}, ${e.address}`;
-    const maps = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(where);
+    const maps = e.map || "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(where);
     const cal = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(`${e.title} · ${c.couple.bride} & ${c.couple.groom}`)
       + "&dates=" + gcal(e.date) + "/" + gcal(end) + "&location=" + encodeURIComponent(where) + "&ctz=" + encodeURIComponent(c.timeZone);
     frames.push(`<section class="frame event" data-name="${esc(e.title)}" style="--accent:${e.accent}">

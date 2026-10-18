@@ -50,3 +50,21 @@ CREATE TABLE IF NOT EXISTS rsvps (
 );
 CREATE INDEX IF NOT EXISTS rsvps_slug ON rsvps (invitation_slug, created_at);
 CREATE INDEX IF NOT EXISTS rsvps_ip_time ON rsvps (ip, created_at);
+
+-- Each live invitation's private couple-panel link and package.
+CREATE TABLE IF NOT EXISTS invitation_access (
+  invitation_slug TEXT PRIMARY KEY,
+  token           TEXT NOT NULL UNIQUE,
+  tier            TEXT NOT NULL DEFAULT 'basic',   -- basic | guests
+  created_at      INTEGER NOT NULL
+);
+
+-- When each guest first opened their personal link.
+CREATE TABLE IF NOT EXISTS guest_views (
+  invitation_slug TEXT NOT NULL,
+  key             TEXT NOT NULL,
+  first_at        INTEGER NOT NULL,
+  last_at         INTEGER NOT NULL,
+  views           INTEGER NOT NULL DEFAULT 1,
+  PRIMARY KEY (invitation_slug, key)
+);

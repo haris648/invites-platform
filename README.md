@@ -107,3 +107,13 @@ Workers: 100,000 requests/day. D1: 500 MB per database (each invitation is a few
 - Built from the Haris & Filza valima design: envelope with gold ripple, aisle walk-in (61 frames in `assets/walk/`), scratch card, countdown, framed card.
 - The wax seal is `assets/seal-blank.png`; each couple's initials are drawn on it in the browser.
 - Content the couple can change (via the admin editor JSON): `couple`, `fullNames`, `parents`, `hosts`, `request`, `place`, `events.<key>` (title, start, hours, venue, address, note, map), `timeline` (time, title, note, icon: arrive, rings, drinks, photo, dinner, cake, dance, car, heart), `details`, `travel`, `gifts`, `rsvp` (deadline, meals, askSong), `quote`, `hashtag`, `closing`, `music`.
+
+## Couple panel
+
+Every live invitation has a private panel at `/manage/<token>` where the couple can edit their names, dates, venues and message, and (on the **Invitation + Guest list** package) add guests, send personal links on WhatsApp, see who opened them, and read RSVP replies.
+
+- Choose the package when you make an invitation live, or change it later in the admin editor's **Couple panel** box.
+- Send the link with **Send to couple on WhatsApp**. **Make a new link** turns off the old one.
+- Invitations that were live before this update get a link (Invitation package) the first time you open them in admin.
+- Opens are not counted for link-preview bots or for `?check` previews from the panel.
+- Timeline, "Good to know" and travel still edit through the admin JSON.
