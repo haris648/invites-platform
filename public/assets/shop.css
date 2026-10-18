@@ -10,6 +10,7 @@
   color-scheme:dark;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--night);color:var(--ivory);font-family:var(--f-body);font-size:19px;line-height:1.5}
 a{color:var(--sand)}
@@ -52,3 +53,10 @@ h1,h2,h3{text-wrap:balance;margin:0}
 .foot .wrap{padding-block:28px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;color:var(--ivory-soft);font-size:16px}
 
 @media (max-width:560px){ .pair{grid-template-columns:1fr} .top nav{display:none} }
+
+/* sale banner */
+.sale{justify-self:start;display:inline-flex;align-items:center;gap:10px;margin:0;padding:8px 16px 8px 12px;border-radius:999px;
+  border:1px solid var(--brass);background:rgba(200,160,79,.12);font-family:var(--f-label);font-size:12px;letter-spacing:.12em;color:var(--sand);text-transform:uppercase}
+.sale::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--marigold);box-shadow:0 0 0 4px rgba(233,150,58,.25)}
+.tile .price s{color:var(--ivory-soft);opacity:.7;margin-right:4px;font-size:.9em}
+.hero p.sale{font-size:12px;color:var(--sand);line-height:1.4}

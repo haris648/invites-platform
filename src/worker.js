@@ -31,6 +31,17 @@ const THEMES = {
 const ALIASES = { jharokha: "noor-mahal" };
 const themeFor = (key) => THEMES[ALIASES[key] || key];
 
+// Regular prices per region. Visitors are matched by the country Cloudflare detects; anyone not listed gets DEFAULT.
+const PRICING = {
+  DEFAULT: { currency: "USD", invitation: 100,  guestlist: 130 },
+  AE:      { currency: "AED", invitation: 300,  guestlist: 400 },
+  AU:      { currency: "AUD", invitation: 100,  guestlist: 130 },
+  PK:      { currency: "PKR", invitation: 8000, guestlist: 10000 },
+};
+// Sale for every region. While it runs, the regular price is shown crossed out.
+// To end it early or run a new one, change the date (or set percent to 0).
+const SALE = { percent: 20, label: "Launch offer", ends: "2026-10-28T23:59:59+05:00" };
+
 const RESERVED = new Set(["api", "try", "templates", "themes", "admin", "assets", "favicon.ico", "robots.txt", "404.html"]);
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const SLUG_RE = /^[a-z0-9](?:[a-z0-9-]{1,58}[a-z0-9])$/;
@@ -43,6 +54,7 @@ export default {
     try {
       if (url.pathname === "/api/try" && req.method === "POST") return await createDraft(req, env, ctx, url);
       if (url.pathname === "/api/rsvp" && req.method === "POST") return await saveRsvp(req, env);
+      if (url.pathname === "/api/pricing" && req.method === "GET") return pricing(req, url);
       if (parts[0] === "api" && parts[1] === "admin") return await admin(req, env, url, parts.slice(2));
       if (req.method === "GET" && parts[0] === "try" && parts.length === 2) return await renderDraft(env, url, parts[1]);
       if (req.method === "GET" && parts.length >= 1 && parts.length <= 2 && !RESERVED.has(parts[0])) {
@@ -264,6 +276,22 @@ async function admin(req, env, url, path) {
   }
 
   return json({ error: "Unknown admin route." }, 404);
+}
+
+/* ---------------- regional prices ---------------- */
+
+function pricing(req, url) {
+  // ?cc=AE lets you preview another region's prices
+  const test = (url.searchParams.get("cc") || "").toUpperCase();
+  const country = /^[A-Z]{2}$/.test(test) ? test : (req.cf && req.cf.country) || "";
+  const p = PRICING[country] || PRICING.DEFAULT;
+  const onSale = SALE.percent > 0 && Date.now() < Date.parse(SALE.ends);
+  const tier = (regular) => (onSale ? { now: Math.round(regular * (100 - SALE.percent) / 100), was: regular } : { now: regular });
+  return new Response(JSON.stringify({
+    country, currency: p.currency,
+    invitation: tier(p.invitation), guestlist: tier(p.guestlist),
+    sale: onSale ? { percent: SALE.percent, label: SALE.label, ends: SALE.ends } : null,
+  }), { headers: { "content-type": "application/json; charset=utf-8", "cache-control": "private, no-store" } });
 }
 
 /* ---------------- RSVP ---------------- */

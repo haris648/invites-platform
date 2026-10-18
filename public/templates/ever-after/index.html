@@ -71,11 +71,12 @@
       <li>Online RSVP with meal choices, dietary needs and song requests</li>
     </ul>
 
-    <!-- PRICES: edit here -->
+    <!-- Prices come from src/worker.js (PRICING and SALE) -->
+    <p class="sale" data-sale hidden></p>
     <div class="tiers">
-      <div class="tier"><span class="name">Invitation</span><span class="amt">$50<s>$75</s></span>
+      <div class="tier"><span class="name">Invitation</span><span class="amt"><span data-price="invitation">$100</span><s data-was="invitation" hidden></s></span>
         <ul><li>One link for the whole wedding</li><li>Online RSVP for everyone</li><li>Edits any time</li></ul></div>
-      <div class="tier"><span class="name">+ Guest list</span><span class="amt">$80<s>$100</s></span>
+      <div class="tier"><span class="name">+ Guest list</span><span class="amt"><span data-price="guestlist">$130</span><s data-was="guestlist" hidden></s></span>
         <ul><li>A personal link per guest, addressed on the envelope</li><li>Choose their events and seats</li></ul></div>
     </div>
 
@@ -133,5 +134,6 @@ form.addEventListener("submit", async (e) => {
   }
 });
 </script>
+<script src="/assets/pricing.js" defer></script>
 </body>
 </html>
