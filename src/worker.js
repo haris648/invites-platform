@@ -304,7 +304,7 @@ async function sendPreviewEmail(env, { email, bride, groom, themeName, link }) {
     console.log(`[email skipped: no RESEND_API_KEY] ${email} → ${link}`);
     return;
   }
-  const site = env.SITE_NAME || "Invites";
+  const site = env.SITE_NAME || "The Invitary";
   const html = `<!doctype html><html><body style="margin:0;background:#0e2426;font-family:Georgia,serif;color:#f6eedf">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#0e2426;padding:32px 16px"><tr><td align="center">
     <table width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;border:1px solid #c8a04f;border-radius:18px;padding:32px 28px;text-align:center">

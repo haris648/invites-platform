@@ -23,7 +23,9 @@ h1,h2,h3{text-wrap:balance;margin:0}
 
 .top{border-bottom:1px solid var(--line)}
 .top .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:16px}
-.brand{font-family:var(--f-script);font-size:38px;color:var(--ivory);text-decoration:none;line-height:1}
+.brand{display:block;line-height:0}
+.brand img{height:46px;width:auto}
+@media (max-width:560px){.brand img{height:38px}}
 .top nav{display:flex;gap:20px}
 .top nav a{font-family:var(--f-label);font-size:12px;letter-spacing:.16em;text-decoration:none;color:var(--ivory-soft)}
 

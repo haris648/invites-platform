@@ -89,13 +89,13 @@ a{color:inherit}
 .seal-hit{position:absolute;left:50%;top:50%;width:38%;max-width:170px;aspect-ratio:1;transform:translate(-50%,-50%);z-index:5;pointer-events:none}
 .seal-glow{position:absolute;inset:-18%;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.45),rgba(255,255,255,0) 62%);animation:glow 2.8s ease-in-out infinite}
 @keyframes glow{50%{transform:scale(1.12);opacity:.55}}
-.env-title{position:absolute;left:0;right:0;top:64%;text-align:center;font-family:var(--script);font-size:clamp(72px,21vw,100px);line-height:1;
+.env-title{position:absolute;left:0;right:0;top:60%;text-align:center;font-family:var(--script);font-size:clamp(72px,21vw,100px);line-height:1;
   background:linear-gradient(100deg,#9C7B45 0%,#E9D3A0 30%,#B8955A 45%,#F6E7C1 58%,#A9874F 75%,#E2C892 100%);background-size:220% 100%;
   -webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 1px 0 rgba(255,250,235,.35)) drop-shadow(0 3px 5px rgba(20,32,48,.75));animation:shimmer 5s linear infinite}
 .env-shade{position:absolute;left:0;right:0;top:56%;bottom:0;background:radial-gradient(120% 70% at 50% 40%,rgba(40,58,80,.42),rgba(40,58,80,0) 70%);pointer-events:none}
 @keyframes shimmer{to{background-position:-220% 0}}
-.env-for{position:absolute;left:0;right:0;top:71.5%;text-align:center;font-family:var(--caps);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#fff;text-shadow:0 1px 3px rgba(20,35,55,.7)}
-.env-tap{position:absolute;left:0;right:0;top:76%;text-align:center;font-style:italic;font-size:22px;letter-spacing:.02em;color:#fff;
+.env-for{position:absolute;left:0;right:0;top:72.5%;text-align:center;font-family:var(--caps);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#fff;text-shadow:0 1px 3px rgba(20,35,55,.7)}
+.env-tap{position:absolute;left:0;right:0;top:77.5%;text-align:center;font-style:italic;font-size:22px;letter-spacing:.02em;color:#fff;
   text-shadow:0 1px 3px rgba(20,35,55,.7),0 0 14px rgba(20,35,55,.45);animation:breathe 2.4s ease-in-out infinite}
 @keyframes breathe{50%{opacity:.45}}
 
@@ -634,7 +634,7 @@ body.is-preview .ev-page{padding-top:70px}
     <p class="sign cl" id="sign"></p>
     <p class="tag cl" id="hashtag"></p>
     <p class="foot cl" id="closingLine"></p>
-    <p class="credit cl">Made with love by Moving Invites</p>
+    <p class="credit cl">Made with love by The Invitary</p>
   </section>
 </div>
 
@@ -774,7 +774,7 @@ function openInvite() {
   /* ---------- fill the page ---------- */
   var A = C.couple.bride, B = C.couple.groom;
   $("#heroNames").innerHTML = '<span data-split>' + esc(A) + '</span> <span class="amp">&amp;</span> <span data-split>' + esc(B) + '</span>';
-  // if (C.guest && C.guest.name) setText("#envFor", "For " + C.guest.name);
+  if (C.guest && C.guest.name) setText("#envFor", "For " + C.guest.name);
   $("#scDow").textContent = MP.weekday.toUpperCase();
   $("#scDay").textContent = MP.day;
   $("#scMonth").textContent = MP.month + " " + MP.year;
@@ -805,7 +805,7 @@ function openInvite() {
     var maps = e.map || "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(where);
     var title = e.title + " · " + A + " & " + B, cal;
     if (isIOS) {
-      var ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Moving Invites//EN", "BEGIN:VEVENT", "UID:" + e.key + "-" + e.start.getTime() + "@invite", "DTSTAMP:" + gfmt(new Date()),
+      var ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//The Invitary//EN", "BEGIN:VEVENT", "UID:" + e.key + "-" + e.start.getTime() + "@invite", "DTSTAMP:" + gfmt(new Date()),
         "DTSTART:" + gfmt(e.start), "DTEND:" + gfmt(e.end), "SUMMARY:" + title, "LOCATION:" + where.replace(/,/g, "\\,"), "END:VEVENT", "END:VCALENDAR"].join("\r\n");
       cal = 'href="data:text/calendar;charset=utf-8,' + encodeURIComponent(ics) + '" download="' + e.key + '.ics"';
     } else {
