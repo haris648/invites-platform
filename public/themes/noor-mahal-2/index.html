@@ -113,8 +113,7 @@ a{color:inherit}
 @keyframes dropTail{to{transform:translate(-4cqw,46cqw) rotate(9deg);opacity:0}}
 @keyframes slackL{35%{transform:rotate(7deg)}to{transform:translateY(34cqw) rotate(18deg);opacity:0}}
 @keyframes slackR{35%{transform:rotate(-7deg)}to{transform:translateY(34cqw) rotate(-18deg);opacity:0}}
-/* sample (template page): a clean card, no names */
-.doors.sample .words .top,.doors.sample .words .for{display:none}
+
 .doors.open .door.l{transform:rotateY(-104deg);opacity:0}
 .doors.open .door.r{transform:rotateY(104deg);opacity:0}
 .doors.open .door::after{opacity:1}
@@ -247,8 +246,7 @@ a{color:inherit}
       <img class="p knot" src="assets/bow-knot.webp" alt="">
     </div>
     <div class="words">
-      <div class="top"><span class="lbl">The wedding of</span><span class="nm" id="gBride">Ayesha</span><span class="amp">&amp;</span><span class="nm" id="gGroom">Hamza</span></div>
-      <div class="foot"><span class="for" id="sealFor">You are invited</span><span class="tap">Tap to open</span></div>
+      <div class="foot"><span class="tap">Tap to open</span></div>
     </div>
     <button type="button" class="hit" id="openBtn" aria-label="Untie the ribbon and open the invitation"></button>
   </div>
@@ -421,10 +419,6 @@ function render(){
     </div></section>`);
 
   $("#deck").innerHTML = frames.join("");
-  $("#gBride").textContent = c.couple.bride; $("#gGroom").textContent = c.couple.groom;
-  $("#sealFor").textContent = c.guest ? "For " + c.guest.name : "You are invited";
-  $("#doors").classList.toggle("sample", !INJECTED);
-  fitGateNames();
   buildDots(); observe(); tick();
 }
 
@@ -503,17 +497,6 @@ function step(){
 }
 
 /* ---------- gate ---------- */
-// Long names shrink to fit the plain linen between the vines.
-function fitGateNames(){
-  document.querySelectorAll(".words .nm").forEach(el => {
-    el.style.fontSize = ""; const box = el.parentElement.clientWidth;
-    if(!box) return;
-    let fs = parseFloat(getComputedStyle(el).fontSize);
-    while(el.scrollWidth > box && fs > 8){ fs -= 1; el.style.fontSize = fs + "px"; }
-  });
-}
-addEventListener("resize", fitGateNames);
-if(document.fonts) document.fonts.ready.then(fitGateNames);
 // Preload the gate art so the card never appears half-drawn.
 ["gate","band","bow-tailL","bow-tailR","bow-loopL","bow-loopR","bow-knot"].forEach(n => { const i = new Image(); i.src = "assets/" + n + ".webp"; });
 $("#openBtn").addEventListener("click", () => {
