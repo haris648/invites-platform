@@ -134,6 +134,10 @@ a{color:inherit}
 @keyframes flick{50%{opacity:.55;transform:scale(.85)}}
 .event .motif{position:absolute;left:50%;top:22%;transform:translate(-50%,-50%);width:min(64vw,300px);opacity:.5;pointer-events:none}
 
+/* event with a background video: the video fills the frame, a shade keeps the card readable */
+.frame>.bgv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;transform:translateY(-12%) scale(1.15);transform-origin:50% 0;pointer-events:none}
+.frame>.shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(6,18,19,.35) 0%,rgba(6,18,19,.05) 22%,rgba(6,18,19,.15) 42%,rgba(6,18,19,.72) 100%)}
+.frame.has-video::before,.frame.has-video .hint{display:none}
 .card{width:min(100%,430px);align-self:end;margin-bottom:clamp(64px,11vh,96px);padding:22px 22px 20px;border-radius:26px 26px 18px 18px;background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);box-shadow:0 30px 60px rgba(0,0,0,.35);display:grid;gap:14px}
 .card .top{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .count{font-family:var(--f-label);letter-spacing:.2em;font-size:12px;color:var(--sand);font-variant-numeric:tabular-nums}
@@ -149,7 +153,7 @@ a{color:inherit}
 .btn.solid{background:linear-gradient(180deg,#e2c27a,#b88f3e);color:#241806;border-color:transparent}
 .btn:hover{filter:brightness(1.08)}
 
-.hint{position:absolute;left:50%;bottom:clamp(108px,17vh,150px);transform:translateX(-50%);white-space:nowrap;padding:8px 16px;border-radius:999px;background:var(--glass);border:1px solid var(--line);font-size:16px;color:var(--ivory-soft);pointer-events:none}
+.hint{position:absolute;left:50%;top:clamp(64px,10vh,96px);transform:translateX(-50%);white-space:nowrap;padding:8px 16px;border-radius:999px;background:var(--glass);border:1px solid var(--line);font-size:16px;color:var(--ivory-soft);pointer-events:none}
 
 /* ---------- countdown ---------- */
 .countdown{text-align:center;display:grid;gap:20px;justify-items:center}
@@ -247,7 +251,8 @@ const DEFAULTS = {
     nikkah: { title: "Nikkah", sub: "The solemn vows", start: "2026-12-11T17:00:00+05:00", hours: 2,
               venue: "Masjid-e-Tooba", address: "Phase 2, DHA, Karachi", accent: "#b9a77d", motif: "crescent" },
     baraat: { title: "Baraat", sub: "The groom's procession arrives", start: "2026-12-12T20:00:00+05:00", hours: 4,
-              venue: "Grand Ballroom, Royal Banquet", address: "Main Shahrah-e-Faisal, Karachi", accent: "#b2323b", motif: "lotus" },
+              venue: "Grand Ballroom, Royal Banquet", address: "Main Shahrah-e-Faisal, Karachi", accent: "#b2323b", motif: "lotus",
+              video: "assets/baraat.mp4", poster: "assets/baraat-poster.jpg" },
     walima: { title: "Walima", sub: "A reception to celebrate", start: "2026-12-13T19:00:00+05:00", hours: 4,
               venue: "Hall 1, Topaz Marquee", address: "Block D2, Phase 1, Johar Town, Lahore", accent: "#2f8a84", motif: "lotus" }
   }
@@ -330,8 +335,11 @@ function render(){
     const maps = e.map || "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(where);
     const cal = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(`${e.title} · ${c.couple.bride} & ${c.couple.groom}`)
       + "&dates=" + gcal(e.date) + "/" + gcal(end) + "&location=" + encodeURIComponent(where) + "&ctz=" + encodeURIComponent(c.timeZone);
-    frames.push(`<section class="frame event" data-name="${esc(e.title)}" style="--accent:${e.accent}">
-      ${lights()}<div class="motif">${MOTIF[e.motif]||""}</div><div class="arch"></div>${FINIAL}
+    const media = e.video
+      ? `<video class="bgv" src="${esc(e.video)}"${e.poster ? ` poster="${esc(e.poster)}"` : ""} muted playsinline preload="auto" aria-hidden="true"></video><div class="shade"></div>`
+      : `${lights()}<div class="motif">${MOTIF[e.motif]||""}</div>`;
+    frames.push(`<section class="frame event${e.video ? " has-video" : ""}" data-name="${esc(e.title)}" style="--accent:${e.accent}">
+      ${media}<div class="arch"></div>${FINIAL}
       <article class="card">
         <div class="top rise"><span class="count">${pad(i+1)} / ${pad(evs.length)}</span>
           ${c.guest && c.guest.seats ? `<span class="pill">${ICON.user}${c.guest.seats} ${c.guest.seats>1?"guests":"guest"} invited</span>` : ""}</div>
@@ -394,6 +402,9 @@ function observe(){
       dots.forEach((d,j)=>d.setAttribute("aria-current", j===i ? "true" : "false"));
       en.target.classList.remove("play"); void en.target.offsetWidth; en.target.classList.add("play");
     }
+    // A section's video plays once from the start each time it comes into view, then rests on its last frame.
+    const v = en.target.querySelector(".bgv");
+    if(v){ if(en.isIntersecting){ try { v.currentTime = 0; } catch(_){} v.play().catch(()=>{}); } else v.pause(); }
   }), {root:$("#deck"), threshold:0.6});
   secs.forEach(s=>io.observe(s));
 }
