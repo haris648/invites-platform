@@ -26,6 +26,10 @@ td .btn{min-height:36px;padding:0 14px;font-size:11px}
 .mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
 .copy{cursor:pointer;color:var(--sand);text-decoration:underline;background:none;border:0;padding:0;font:inherit}
 .muted{color:var(--ivory-soft)}
+.pager{display:flex;align-items:center;gap:12px;justify-content:flex-end}
+.pager .btn{min-height:36px;padding:0 14px;font-size:11px}
+td .btn.danger{color:var(--error);border-color:rgba(240,163,122,.5)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
 </style>
 </head>
 <body>
@@ -46,6 +50,7 @@ td .btn{min-height:36px;padding:0 14px;font-size:11px}
       <h2>Previews</h2>
       <p class="muted" style="margin:0">Every try-on. When a customer pays, give their invitation a link and make it live.</p>
       <div class="tbl"><table><thead><tr><th>When</th><th>Couple</th><th>Email</th><th>Design</th><th></th></tr></thead><tbody id="drafts"></tbody></table></div>
+      <div class="pager" id="draftPager" hidden><span class="muted" id="draftPage"></span><button class="btn" type="button" id="draftPrev">Previous</button><button class="btn" type="button" id="draftNext">Next</button></div>
     </section>
 
     <section class="card">
@@ -102,6 +107,8 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 let TOKEN = "";
 try { TOKEN = sessionStorage.getItem("adminToken") || ""; } catch {}
 let current = null;
+let drafts = [], draftPage = 0;
+const PER_PAGE = 10;
 
 async function api(path, opts = {}) {
   const res = await fetch("/api/admin/" + path, { ...opts, headers: { authorization: "Bearer " + TOKEN, "content-type": "application/json" } });
@@ -122,18 +129,43 @@ async function signIn() {
   } catch (e) { say($("#loginMsg"), e.message); }
 }
 async function loadAll() {
-  const [{ drafts }, { invitations }] = await Promise.all([api("drafts"), api("invitations")]);
-  $("#drafts").innerHTML = drafts.map((d) => `<tr>
+  const [d, { invitations }] = await Promise.all([api("drafts"), api("invitations")]);
+  drafts = d.drafts;
+  renderDrafts();
+  $("#invs").innerHTML = invitations.map((i) => `<tr>
+    <td>${copyBtn(location.origin + "/" + i.slug)}</td><td>${esc(i.template)}</td><td>${esc(i.status)}</td><td>${esc(i.email || "")}</td>
+    <td><div class="actions"><button class="btn" type="button" data-edit="${esc(i.slug)}">Edit</button>
+      <button class="btn danger" type="button" data-remove="${esc(i.slug)}">Delete</button></div></td></tr>`).join("")
+    || `<tr><td colspan="5" class="muted">No live invitations yet.</td></tr>`;
+}
+function renderDrafts() {
+  const pages = Math.max(1, Math.ceil(drafts.length / PER_PAGE));
+  draftPage = Math.min(Math.max(0, draftPage), pages - 1);
+  const rows = drafts.slice(draftPage * PER_PAGE, (draftPage + 1) * PER_PAGE);
+  $("#drafts").innerHTML = rows.map((d) => `<tr>
     <td>${when(d.created_at)}</td>
     <td>${esc(d.data.couple.bride)} &amp; ${esc(d.data.couple.groom)}<div class="muted mono">${esc(d.data.selectedEvents.join(", "))}</div></td>
     <td>${esc(d.email)}</td><td>${esc(d.template)}</td>
     <td><a class="btn" href="/try/${esc(d.id)}" target="_blank" rel="noopener">View</a>
         <button class="btn solid" type="button" data-live="${esc(d.id)}" data-names="${esc(d.data.couple.bride + "-weds-" + d.data.couple.groom)}">Make live</button></td></tr>`).join("")
     || `<tr><td colspan="5" class="muted">No previews yet. They appear here when someone uses "Try with your names".</td></tr>`;
-  $("#invs").innerHTML = invitations.map((i) => `<tr>
-    <td>${copyBtn(location.origin + "/" + i.slug)}</td><td>${esc(i.template)}</td><td>${esc(i.status)}</td><td>${esc(i.email || "")}</td>
-    <td><button class="btn" type="button" data-edit="${esc(i.slug)}">Edit</button></td></tr>`).join("")
-    || `<tr><td colspan="5" class="muted">No live invitations yet.</td></tr>`;
+  $("#draftPager").hidden = pages < 2;
+  $("#draftPage").textContent = `Page ${draftPage + 1} of ${pages} · ${drafts.length} previews`;
+  $("#draftPrev").disabled = draftPage === 0;
+  $("#draftNext").disabled = draftPage >= pages - 1;
+}
+function askRemove(btn) {
+  const slug = btn.dataset.remove;
+  btn.closest(".actions").innerHTML = `<span class="muted">Delete /${esc(slug)}, its guests and replies?</span>
+    <button class="btn danger" type="button" data-remove-yes="${esc(slug)}">Delete for good</button>
+    <button class="btn" type="button" data-remove-no>Keep</button>`;
+}
+async function removeInvitation(slug) {
+  try {
+    await api("invitations/" + encodeURIComponent(slug), { method: "DELETE" });
+    if (current && current.invitation.slug === slug) { current = null; $("#editor").hidden = true; }
+    await loadAll();
+  } catch (e) { alert(e.message); }
 }
 
 async function makeLive(id, suggested) {
@@ -238,6 +270,11 @@ document.addEventListener("click", async (e) => {
   if (t.id === "gAdd") return addGuest();
   if (t.id === "accRegen") return updateAccess({ regenerate: true });
   if (t.id === "rsvpCopy") return copyRsvps(t);
+  if (t.id === "draftPrev") { draftPage--; return renderDrafts(); }
+  if (t.id === "draftNext") { draftPage++; return renderDrafts(); }
+  if (t.dataset.remove) return askRemove(t);
+  if (t.dataset.removeYes) return removeInvitation(t.dataset.removeYes);
+  if (t.hasAttribute("data-remove-no")) return loadAll();
   if (t.dataset.live) return makeLive(t.dataset.live, t.dataset.names);
   if (t.dataset.confirm) return confirmLive(t.dataset.confirm, t.closest(".row").querySelector("input"));
   if (t.dataset.edit) return openEditor(t.dataset.edit).catch((e) => alert(e.message));

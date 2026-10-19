@@ -20,7 +20,7 @@
 <link rel="preload" as="image" href="assets/hero.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Corinthia:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Marcellus+SC&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Corinthia:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Marcellus+SC&family=Rouge+Script&display=swap" rel="stylesheet">
 
 <style>
 :root{
@@ -917,16 +917,27 @@ function openInvite() {
         try {
           var c = document.createElement("canvas"); c.width = base.naturalWidth; c.height = base.naturalHeight;
           var x = c.getContext("2d"); x.drawImage(base, 0, 0);
-          var txt = (A.charAt(0) + "&" + B.charAt(0)).toUpperCase().replace("&", "&");
-          x.textAlign = "center"; x.textBaseline = "middle"; x.font = "700 " + Math.round(c.width * .3) + "px 'Corinthia', cursive";
-          var cx = c.width * .504, cy = c.height * .51;
-          x.fillStyle = "rgba(255,255,255,.7)"; x.fillText(txt, cx + 1, cy + 2);       // pressed-in highlight
-          x.fillStyle = "#23262B"; x.fillText(txt, cx, cy);
+          // Initials in Rouge Script, glossy black, sized to sit inside the seal's inner ring
+          var F = "'Rouge Script', cursive", L = A.charAt(0).toUpperCase(), R = B.charAt(0).toUpperCase();
+          var cx = c.width * .504, cy = c.height * .51, size = c.width * .27, m;
+          var lay = function (sz) { x.font = sz + "px " + F; var wl = x.measureText(L).width, wr = x.measureText(R).width; x.font = (sz * .55) + "px " + F; var wa = x.measureText("&").width; return { wl: wl, wr: wr, wa: wa, tot: wl + wr + wa * .6 }; };
+          m = lay(size); if (m.tot > c.width * .4) { size *= c.width * .4 / m.tot; m = lay(size); }
+          var left = cx - m.tot / 2;
+          var glyphs = [[L, size, left + m.wl / 2, cy], ["&", size * .55, left + m.wl + m.wa * .1, cy + size * .12], [R, size, left + m.wl + m.wa * .6 + m.wr / 2, cy]];
+          x.textAlign = "center"; x.textBaseline = "middle"; x.lineJoin = "round";
+          glyphs.forEach(function (g) { x.font = g[1] + "px " + F; x.fillStyle = "rgba(255,255,255,.8)"; x.fillText(g[0], g[2] + 1.5, g[3] + 2.5); });   // pressed-in highlight
+          glyphs.forEach(function (g) {
+            x.font = g[1] + "px " + F;
+            var gr = x.createLinearGradient(0, g[3] - g[1] * .5, 0, g[3] + g[1] * .5);
+            gr.addColorStop(0, "#2b2f35"); gr.addColorStop(.45, "#121417"); gr.addColorStop(1, "#050607");
+            x.strokeStyle = "#0d0f11"; x.lineWidth = c.width * .007; x.strokeText(g[0], g[2], g[3]);
+            x.fillStyle = gr; x.fillText(g[0], g[2], g[3]);
+          });
           var url = c.toDataURL("image/png");
           $$(".seal-img").forEach(function (im) { im.src = url; });
         } catch (e) {}
       };
-      if (document.fonts && document.fonts.load) document.fonts.load("700 80px 'Corinthia'").then(draw, draw); else draw();
+      if (document.fonts && document.fonts.load) document.fonts.load("80px 'Rouge Script'").then(draw, draw); else draw();
     };
     base.src = "assets/seal-blank.png";
   })();

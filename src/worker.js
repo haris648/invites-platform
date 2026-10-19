@@ -24,6 +24,17 @@ const THEMES = {
     rsvpOnPage: false,   // guests reply on WhatsApp
     shareMessage: "Assalam o Alaikum {guest}! With great joy, {couple} invite you to celebrate their wedding with them. Please open your invitation: {link}",
   },
+  // Copy of Noor Mahal, for building a version with real photos and video without touching the original.
+  "noor-mahal-2": {
+    name: "Noor Mahal 2.0",
+    path: "/themes/noor-mahal-2/",
+    og: "/themes/noor-mahal-2/og.png",
+    events: ["mehndi", "nikkah", "baraat", "walima"],
+    titles: { mehndi: "Mehndi", nikkah: "Nikkah", baraat: "Baraat", walima: "Walima" },
+    timeZone: "Asia/Karachi",
+    rsvpOnPage: false,
+    shareMessage: "Assalam o Alaikum {guest}! With great joy, {couple} invite you to celebrate their wedding with them. Please open your invitation: {link}",
+  },
   "ever-after": {
     name: "Ever After",
     path: "/themes/ever-after/",
@@ -211,7 +222,7 @@ async function admin(req, env, url, path) {
 
   // GET /api/admin/drafts
   if (resource === "drafts" && req.method === "GET") {
-    const { results } = await env.DB.prepare("SELECT id, template, email, data, created_at FROM drafts ORDER BY created_at DESC LIMIT 100").all();
+    const { results } = await env.DB.prepare("SELECT id, template, email, data, created_at FROM drafts ORDER BY created_at DESC LIMIT 500").all();
     return json({ drafts: results.map((d) => ({ ...d, data: JSON.parse(d.data) })) });
   }
 
@@ -270,6 +281,13 @@ async function admin(req, env, url, path) {
     const status = body.status || inv.status;
     if (typeof data !== "object" || !["live", "hidden"].includes(status)) return json({ error: "Data must be an object and status live or hidden." }, 400);
     await env.DB.prepare("UPDATE invitations SET data = ?, status = ?, updated_at = ? WHERE slug = ?").bind(JSON.stringify(data), status, now, slug).run();
+    return json({ ok: true });
+  }
+
+  // DELETE /api/admin/invitations/:slug  removes the invitation, its guests, replies and panel link
+  if (!sub && req.method === "DELETE") {
+    await env.DB.batch(["invitations WHERE slug", "guests WHERE invitation_slug", "rsvps WHERE invitation_slug", "invitation_access WHERE invitation_slug", "guest_views WHERE invitation_slug"]
+      .map((t) => env.DB.prepare(`DELETE FROM ${t} = ?`).bind(slug)));
     return json({ ok: true });
   }
 
