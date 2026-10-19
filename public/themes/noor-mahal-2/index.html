@@ -12,6 +12,8 @@
 <meta property="og:image" content="/themes/noor-mahal-2/og.png">
 <meta property="og:url" content="">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="preload" as="image" href="assets/gate.webp">
+<link rel="preload" as="image" href="assets/bow.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Corinthia:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Marcellus+SC&display=swap">
@@ -60,19 +62,46 @@ a{color:inherit}
 .script{font-family:var(--f-script);font-weight:400;line-height:.9;color:var(--ivory)}
 .rule{width:64px;height:1px;background:linear-gradient(90deg,transparent,var(--brass),transparent);border:0;margin:0}
 
-/* ---------- doors (opening) ---------- */
-.doors{position:fixed;inset:0;z-index:40;display:flex;perspective:1600px;background:#081718}
-.door{flex:1;position:relative;background:var(--jali),linear-gradient(180deg,#123132,#0b2122);background-size:56px 56px,auto;border:1px solid var(--line);transition:transform 1.6s cubic-bezier(.6,.05,.2,1),opacity 1.6s ease}
-.door.l{transform-origin:left center;border-right-color:var(--brass)}
-.door.r{transform-origin:right center;border-left-color:var(--brass)}
-.door::after{content:"";position:absolute;inset:clamp(18px,4vw,36px);border:1px solid rgba(200,160,79,.35);border-radius:40vmin 40vmin 6px 6px/26vmin 26vmin 6px 6px}
-.doors.open .door.l{transform:rotateY(-108deg);opacity:.0}
-.doors.open .door.r{transform:rotateY(108deg);opacity:.0}
-.doors.open .seal{opacity:0;transform:translate(-50%,-50%) scale(.85)}
-.seal{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;display:grid;justify-items:center;gap:14px;text-align:center;transition:opacity .6s,transform .6s}
-.seal button{width:132px;height:132px;border-radius:50%;border:1px solid var(--brass);background:radial-gradient(circle at 35% 30%,#d9b765,#9c7630 70%);box-shadow:0 0 0 6px rgba(200,160,79,.18),0 18px 40px rgba(0,0,0,.45);cursor:pointer;display:grid;place-items:center;color:#2b1e08}
-.seal .ini{font-family:var(--f-script);font-size:52px;line-height:1}
-.seal .label{color:var(--sand)}
+/* ---------- gate (opening) ----------
+   An embroidered gate-fold card tied with a silk ribbon. Tap: the bow slips away, the band pulls apart, the doors swing open.
+   Card art is 768x1376 (ratio .558); every size below is in cqw, a share of the card's width. */
+.doors{position:fixed;inset:0;z-index:40;display:grid;place-items:center}
+.doors .bg{position:absolute;inset:0;background:radial-gradient(120% 80% at 50% 45%,rgba(23,58,59,.0),rgba(4,14,15,.75)),var(--jali),linear-gradient(180deg,#123233,#0a1f20);background-size:auto,56px 56px,auto;transition:opacity 1.4s ease .5s}
+.gate{--cw:min(92vw,calc((100svh - 40px) * .558),520px);position:relative;width:var(--cw);aspect-ratio:768/1376;container-type:inline-size;perspective:1800px;
+  filter:drop-shadow(0 28px 40px rgba(0,0,0,.5))}
+.door{position:absolute;top:0;bottom:0;width:50%;overflow:hidden;background:url(assets/gate.webp) no-repeat;background-size:200% 100%;
+  transition:transform 1.7s cubic-bezier(.55,.06,.2,1),opacity .6s ease 1.25s;backface-visibility:hidden}
+.door.l{left:0;background-position:left center;transform-origin:left center}
+.door.r{right:0;background-position:right center;transform-origin:right center}
+.door::after{content:"";position:absolute;inset:0;opacity:0;transition:opacity 1.7s ease;pointer-events:none}
+.door.l::after{background:linear-gradient(90deg,rgba(0,0,0,0),rgba(0,0,0,.45))}
+.door.r::after{background:linear-gradient(270deg,rgba(0,0,0,0),rgba(0,0,0,.45))}
+.band{position:absolute;top:calc(44% - 8cqw);height:16cqw;width:100%;background:url(assets/band.webp) no-repeat;background-size:200% 100%;
+  filter:drop-shadow(0 2px 2px rgba(60,50,30,.28));transition:transform .85s cubic-bezier(.5,0,.3,1) .2s,opacity .6s ease .4s}
+.door.l .band{left:0;background-position:left center}
+.door.r .band{right:0;background-position:right center}
+.bow{position:absolute;left:50%;top:calc(44% - 10.9cqw);width:50cqw;transform:translateX(-50%);transform-origin:50% 14.6%;z-index:3;pointer-events:none;
+  filter:drop-shadow(0 6px 8px rgba(40,40,25,.3));animation:sway 4s ease-in-out infinite;transition:transform .95s cubic-bezier(.55,0,.7,.2),opacity .6s ease .35s}
+@keyframes sway{0%,100%{rotate:-1.2deg}50%{rotate:1.2deg}}
+.words{position:absolute;inset:0;z-index:2;pointer-events:none;text-align:center;color:#2c4a3f;transition:opacity .5s ease}
+.words .top{position:absolute;left:27%;right:27%;top:11%;display:grid;justify-items:center;gap:1cqw}
+.words .lbl{font-family:var(--f-label);font-size:2.9cqw;letter-spacing:.24em;text-transform:uppercase;color:#7d5f22}
+.words .nm{font-family:var(--f-script);font-weight:700;font-size:13cqw;line-height:.82;white-space:nowrap}
+.words .amp{font-family:var(--f-script);font-weight:700;font-size:9cqw;line-height:.6;color:#7d5f22}
+.words .foot{position:absolute;left:22%;right:22%;top:82.5%;display:grid;justify-items:center;gap:1.6cqw}
+.words .for{font-family:var(--f-body);font-style:italic;font-size:4.6cqw;line-height:1.2;color:#3d5a4f}
+.words .tap{font-family:var(--f-label);font-size:3cqw;letter-spacing:.26em;text-transform:uppercase;color:#7d5f22;animation:breathe 2.6s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.45}}
+.gate .hit{position:absolute;inset:0;z-index:4;border:0;background:none;cursor:pointer;border-radius:6px}
+.doors.untie .bow{transform:translate(-50%,26cqw) rotate(9deg) scale(.9);opacity:0;animation:none}
+.doors.untie .door.l .band{transform:translateX(-75%);opacity:0}
+.doors.untie .door.r .band{transform:translateX(75%);opacity:0}
+.doors.untie .words{opacity:0}
+.doors.open .door.l{transform:rotateY(-104deg);opacity:0}
+.doors.open .door.r{transform:rotateY(104deg);opacity:0}
+.doors.open .door::after{opacity:1}
+.doors.open .bg{opacity:0}
+.doors.open .gate{filter:none}
 .doors.gone{display:none}
 
 /* ---------- cover ---------- */
@@ -155,7 +184,9 @@ a{color:inherit}
 @media (prefers-reduced-motion:reduce){
   .deck{scroll-behavior:auto}
   .frame.play .rise,.down .orb,.event .lights i::after{animation:none}
-  .door{transition:opacity .3s}
+  .door,.band,.bow,.words,.doors .bg{transition:opacity .3s!important}
+  .bow,.words .tap{animation:none}
+  .doors.untie .bow,.doors.untie .door .band,.doors.open .door{transform:none}
 }
 @media (max-height:640px){
   .card{gap:10px;padding:16px 18px;margin-bottom:76px}
@@ -167,11 +198,16 @@ a{color:inherit}
 <body>
 
 <div class="doors" id="doors">
-  <div class="door l"></div><div class="door r"></div>
-  <div class="seal">
-    <span class="label" id="sealFor">You are invited</span>
-    <button type="button" id="openBtn" aria-label="Open the invitation"><span class="ini" id="ini">A&amp;H</span></button>
-    <span class="label">Tap to open</span>
+  <div class="bg"></div>
+  <div class="gate">
+    <div class="door l"><div class="band"></div></div>
+    <div class="door r"><div class="band"></div></div>
+    <img class="bow" src="assets/bow.webp" alt="">
+    <div class="words">
+      <div class="top"><span class="lbl">The wedding of</span><span class="nm" id="gBride">Ayesha</span><span class="amp">&amp;</span><span class="nm" id="gGroom">Hamza</span></div>
+      <div class="foot"><span class="for" id="sealFor">You are invited</span><span class="tap">Tap to open</span></div>
+    </div>
+    <button type="button" class="hit" id="openBtn" aria-label="Untie the ribbon and open the invitation"></button>
   </div>
 </div>
 
@@ -332,8 +368,9 @@ function render(){
     </div></section>`);
 
   $("#deck").innerHTML = frames.join("");
-  $("#ini").textContent = (c.couple.bride[0]||"") + "&" + (c.couple.groom[0]||"");
+  $("#gBride").textContent = c.couple.bride; $("#gGroom").textContent = c.couple.groom;
   $("#sealFor").textContent = c.guest ? "For " + c.guest.name : "You are invited";
+  fitGateNames();
   buildDots(); observe(); tick();
 }
 
@@ -406,10 +443,25 @@ function step(){
   if(petals.length) requestAnimationFrame(step); else { running = false; cx.clearRect(0,0,innerWidth,innerHeight); }
 }
 
-/* ---------- doors ---------- */
+/* ---------- gate ---------- */
+// Long names shrink to fit the plain linen between the vines.
+function fitGateNames(){
+  document.querySelectorAll(".words .nm").forEach(el => {
+    el.style.fontSize = ""; const box = el.parentElement.clientWidth;
+    if(!box) return;
+    let fs = parseFloat(getComputedStyle(el).fontSize);
+    while(el.scrollWidth > box && fs > 8){ fs -= 1; el.style.fontSize = fs + "px"; }
+  });
+}
+addEventListener("resize", fitGateNames);
+if(document.fonts) document.fonts.ready.then(fitGateNames);
+// Preload the gate art so the card never appears half-drawn.
+["gate","bow","band"].forEach(n => { const i = new Image(); i.src = "assets/" + n + ".webp"; });
 $("#openBtn").addEventListener("click", () => {
-  const d = $("#doors"); d.classList.add("open");
-  setTimeout(()=>{ d.classList.add("gone"); shower(innerWidth/2, innerHeight*.35); }, reduce ? 300 : 1500);
+  const d = $("#doors"); if(d.classList.contains("untie")) return;
+  d.classList.add("untie");
+  setTimeout(() => d.classList.add("open"), reduce ? 150 : 900);
+  setTimeout(() => { d.classList.add("gone"); shower(innerWidth/2, innerHeight*.35); }, reduce ? 500 : 2600);
 });
 
 /* ---------- preview mode ---------- */
