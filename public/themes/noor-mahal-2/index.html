@@ -250,9 +250,11 @@ const DEFAULTS = {
   selectedEvents: ["baraat", "walima"],
   events: {
     mehndi: { title: "Mehndi", sub: "An evening of henna, dholki and song", start: "2026-12-10T19:30:00+05:00", hours: 4,
-              venue: "The Courtyard, Lawn 2", address: "Khayaban-e-Ittehad, Phase 6, DHA, Karachi", accent: "#6f9a35", motif: "leaf" },
+              venue: "The Courtyard, Lawn 2", address: "Khayaban-e-Ittehad, Phase 6, DHA, Karachi", accent: "#6f9a35", motif: "leaf",
+              video: "assets/mehndi.mp4", poster: "assets/mehndi-poster.jpg" },
     nikkah: { title: "Nikkah", sub: "The solemn vows", start: "2026-12-11T17:00:00+05:00", hours: 2,
-              venue: "Masjid-e-Tooba", address: "Phase 2, DHA, Karachi", accent: "#b9a77d", motif: "crescent" },
+              venue: "Masjid-e-Tooba", address: "Phase 2, DHA, Karachi", accent: "#b9a77d", motif: "crescent",
+              video: "assets/nikkah.mp4", poster: "assets/nikkah-poster.jpg", lift: -22, zoom: 1.28 },
     baraat: { title: "Baraat", sub: "The groom's procession arrives", start: "2026-12-12T20:00:00+05:00", hours: 4,
               venue: "Grand Ballroom, Royal Banquet", address: "Main Shahrah-e-Faisal, Karachi", accent: "#b2323b", motif: "lotus",
               video: "assets/baraat.mp4", poster: "assets/baraat-poster.jpg" },
@@ -341,7 +343,7 @@ function render(){
       + "&dates=" + gcal(e.date) + "/" + gcal(end) + "&location=" + encodeURIComponent(where) + "&ctz=" + encodeURIComponent(c.timeZone);
     // A function can have a background video, or a still image; otherwise it gets the lantern lights.
     const media = e.video
-      ? `<video class="bgv" src="${esc(e.video)}"${e.poster ? ` poster="${esc(e.poster)}"` : ""} muted playsinline preload="auto" aria-hidden="true"></video><div class="shade"></div>`
+      ? `<video class="bgv" src="${esc(e.video)}"${e.poster ? ` poster="${esc(e.poster)}"` : ""} muted playsinline preload="none" aria-hidden="true"></video><div class="shade"></div>`
       : e.image ? `<img class="bgv bgi" src="${esc(e.image)}" alt="" loading="lazy"><div class="shade"></div>`
       : `${lights()}<div class="motif">${MOTIF[e.motif]||""}</div>`;
     frames.push(`<section class="frame event${e.video || e.image ? " has-video" : ""}" data-name="${esc(e.title)}" style="--accent:${e.accent}${e.lift != null ? `;--lift:${+e.lift}%` : ""}${e.zoom ? `;--zoom:${+e.zoom}` : ""}">
@@ -409,7 +411,9 @@ function observe(){
       en.target.classList.remove("play"); void en.target.offsetWidth; en.target.classList.add("play");
     }
     // A section's video plays once from the start each time it comes into view, then rests on its last frame.
-    const v = en.target.querySelector(".bgv");
+    // Videos load only when needed: the one in view, and the next section's, so it is ready when the guest scrolls on.
+    if(en.isIntersecting){ const nx = secs[secs.indexOf(en.target)+1], nv = nx && nx.querySelector("video.bgv"); if(nv && nv.preload === "none"){ nv.preload = "auto"; nv.load(); } }
+    const v = en.target.querySelector("video.bgv");
     if(v){ if(en.isIntersecting){ try { v.currentTime = 0; } catch(_){} v.play().catch(()=>{}); } else v.pause(); }
   }), {root:$("#deck"), threshold:0.6});
   secs.forEach(s=>io.observe(s));
