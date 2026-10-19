@@ -103,6 +103,11 @@ a{color:inherit}
 .doors.open .bg{opacity:0}
 .doors.open .gate{filter:none}
 .doors.gone{display:none}
+/* Portrait screens (phones): the gate fills the whole screen like a cover; a sliver of each outer edge is trimmed. */
+@media (max-aspect-ratio:2/3){
+  .doors{overflow:hidden}
+  .gate{--cw:max(100vw,calc(100svh * .558));filter:none;position:absolute;left:50%;top:50%;translate:-50% -50%}
+}
 
 /* ---------- cover ---------- */
 .cover{text-align:center;display:grid;gap:clamp(10px,2vh,18px);justify-items:center;max-width:520px}
