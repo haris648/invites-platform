@@ -135,7 +135,10 @@ a{color:inherit}
 .event .motif{position:absolute;left:50%;top:22%;transform:translate(-50%,-50%);width:min(64vw,300px);opacity:.5;pointer-events:none}
 
 /* event with a background video: the video fills the frame, a shade keeps the card readable */
-.frame>.bgv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;transform:translateY(-12%) scale(1.15);transform-origin:50% 0;pointer-events:none}
+.frame>.bgv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;transform:translateY(var(--lift,-12%)) scale(var(--zoom,1.15));transform-origin:50% 0;pointer-events:none}
+/* a still image gets a slow zoom each time its section comes into view */
+.frame.play>.bgi{animation:drift 16s ease-out both}
+@keyframes drift{from{transform:translateY(var(--lift,-12%)) scale(var(--zoom,1.15))}to{transform:translateY(calc(var(--lift,-12%) - 1%)) scale(calc(var(--zoom,1.15) + .06))}}
 .frame>.shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(6,18,19,.35) 0%,rgba(6,18,19,.05) 22%,rgba(6,18,19,.15) 42%,rgba(6,18,19,.72) 100%)}
 .frame.has-video::before,.frame.has-video .hint{display:none}
 .card{width:min(100%,430px);align-self:end;margin-bottom:clamp(64px,11vh,96px);padding:22px 22px 20px;border-radius:26px 26px 18px 18px;background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);box-shadow:0 30px 60px rgba(0,0,0,.35);display:grid;gap:14px}
@@ -192,7 +195,7 @@ a{color:inherit}
 @keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){
   .deck{scroll-behavior:auto}
-  .frame.play .rise,.down .orb,.event .lights i::after{animation:none}
+  .frame.play .rise,.down .orb,.event .lights i::after,.frame.play>.bgi{animation:none}
   .door,.band,.bow,.words,.doors .bg{transition:opacity .3s!important}
   .bow,.words .tap{animation:none}
   .doors.untie .bow,.doors.untie .door .band,.doors.open .door{transform:none}
@@ -254,7 +257,8 @@ const DEFAULTS = {
               venue: "Grand Ballroom, Royal Banquet", address: "Main Shahrah-e-Faisal, Karachi", accent: "#b2323b", motif: "lotus",
               video: "assets/baraat.mp4", poster: "assets/baraat-poster.jpg" },
     walima: { title: "Walima", sub: "A reception to celebrate", start: "2026-12-13T19:00:00+05:00", hours: 4,
-              venue: "Hall 1, Topaz Marquee", address: "Block D2, Phase 1, Johar Town, Lahore", accent: "#2f8a84", motif: "lotus" }
+              venue: "Hall 1, Topaz Marquee", address: "Block D2, Phase 1, Johar Town, Lahore", accent: "#2f8a84", motif: "lotus",
+              video: "assets/walima.mp4", poster: "assets/walima-poster.jpg", lift: -22, zoom: 1.28 }
   }
 };
 const ORDER = ["mehndi","nikkah","baraat","walima"];
@@ -335,10 +339,12 @@ function render(){
     const maps = e.map || "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(where);
     const cal = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(`${e.title} · ${c.couple.bride} & ${c.couple.groom}`)
       + "&dates=" + gcal(e.date) + "/" + gcal(end) + "&location=" + encodeURIComponent(where) + "&ctz=" + encodeURIComponent(c.timeZone);
+    // A function can have a background video, or a still image; otherwise it gets the lantern lights.
     const media = e.video
       ? `<video class="bgv" src="${esc(e.video)}"${e.poster ? ` poster="${esc(e.poster)}"` : ""} muted playsinline preload="auto" aria-hidden="true"></video><div class="shade"></div>`
+      : e.image ? `<img class="bgv bgi" src="${esc(e.image)}" alt="" loading="lazy"><div class="shade"></div>`
       : `${lights()}<div class="motif">${MOTIF[e.motif]||""}</div>`;
-    frames.push(`<section class="frame event${e.video ? " has-video" : ""}" data-name="${esc(e.title)}" style="--accent:${e.accent}">
+    frames.push(`<section class="frame event${e.video || e.image ? " has-video" : ""}" data-name="${esc(e.title)}" style="--accent:${e.accent}${e.lift != null ? `;--lift:${+e.lift}%` : ""}${e.zoom ? `;--zoom:${+e.zoom}` : ""}">
       ${media}<div class="arch"></div>${FINIAL}
       <article class="card">
         <div class="top rise"><span class="count">${pad(i+1)} / ${pad(evs.length)}</span>
