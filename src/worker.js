@@ -14,21 +14,22 @@
 
 // Every theme you sell is registered here. `path` is its folder in /public/themes.
 const THEMES = {
-  "noor-mahal": {
-    name: "Noor Mahal",
-    path: "/themes/noor-mahal/",
-    og: "/themes/noor-mahal/og.png",
+  // Signature: an embroidered gate tied with silk, a film for each function, deep sage silk inside.
+  "signature": {
+    name: "Signature",
+    path: "/themes/signature/",
+    og: "/themes/signature/og.jpg",
     events: ["mehndi", "nikkah", "baraat", "walima"],
     titles: { mehndi: "Mehndi", nikkah: "Nikkah", baraat: "Baraat", walima: "Walima" },
     timeZone: "Asia/Karachi",
-    rsvpOnPage: false,   // guests reply on WhatsApp
+    rsvpOnPage: false,
     shareMessage: "Assalam o Alaikum {guest}! With great joy, {couple} invite you to celebrate their wedding with them. Please open your invitation: {link}",
   },
-  // Copy of Noor Mahal, for building a version with real photos and video without touching the original.
-  "noor-mahal-2": {
-    name: "Noor Mahal 2.0",
-    path: "/themes/noor-mahal-2/",
-    og: "/themes/noor-mahal-2/og.png",
+  // Resham: the Signature gate and films, with ivory linen and sage thread-work inside.
+  "resham": {
+    name: "Resham",
+    path: "/themes/resham/",
+    og: "/themes/resham/og.jpg",
     events: ["mehndi", "nikkah", "baraat", "walima"],
     titles: { mehndi: "Mehndi", nikkah: "Nikkah", baraat: "Baraat", walima: "Walima" },
     timeZone: "Asia/Karachi",
@@ -47,7 +48,7 @@ const THEMES = {
   },
 };
 // Old theme keys that were renamed, so earlier previews keep working.
-const ALIASES = { jharokha: "noor-mahal" };
+const ALIASES = { jharokha: "signature", "noor-mahal": "signature", "noor-mahal-2": "resham", "noor-mahal-3": "signature" };
 const themeFor = (key) => THEMES[ALIASES[key] || key];
 
 // Regular prices per region. Visitors are matched by the country Cloudflare detects; anyone not listed gets DEFAULT.
@@ -73,6 +74,10 @@ export default {
 
     try {
       await ensureTables(env);
+      if ((parts[0] === "templates" || parts[0] === "themes") && ALIASES[parts[1]]) {
+        url.pathname = "/" + [parts[0], ALIASES[parts[1]], ...parts.slice(2)].join("/") + (parts.length === 2 || url.pathname.endsWith("/") ? "/" : "");
+        return Response.redirect(url.toString(), 301);
+      }
       if (url.pathname === "/api/try" && req.method === "POST") return await createDraft(req, env, ctx, url);
       if (url.pathname === "/api/rsvp" && req.method === "POST") return await saveRsvp(req, env);
       if (url.pathname === "/api/pricing" && req.method === "GET") return pricing(req, url);
