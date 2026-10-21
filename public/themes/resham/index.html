@@ -62,25 +62,20 @@ a{color:inherit}
 .rule{width:64px;height:1px;background:linear-gradient(90deg,transparent,var(--brass),transparent);border:0;margin:0}
 
 /* ---------- curtains (opening) ----------
-   Sage silk drapes. On tap the film plays its first second (the tie loosens), then the drapes
-   are split down the middle and swept aside, revealing the welcome screen right behind them. */
-.doors{position:fixed;inset:0;z-index:40;background:#2e4236}
+   A film of sage silk drapes shot against flat blue. The blue is made see-through as it plays,
+   so the drapes part over the welcome screen, which is already sitting right behind them. */
+.doors{position:fixed;inset:0;z-index:40;transition:opacity 1s ease}
 .doors .film{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%}
-.doors .half{position:absolute;top:0;width:50%;height:100%;display:block;will-change:transform;transition:transform 1.9s cubic-bezier(.62,.02,.22,1),opacity .7s ease 1.35s}
-.doors .half.l{left:0;transform-origin:0 50%;box-shadow:14px 0 30px rgba(0,0,0,.35)}
-.doors .half.r{right:0;transform-origin:100% 50%;box-shadow:-14px 0 30px rgba(0,0,0,.35)}
+.doors .key{position:absolute;inset:0;width:100%;height:100%;display:block}
+.doors.keyed .film{opacity:0}
 .doors .tap{position:absolute;left:0;right:0;bottom:calc(9vh + env(safe-area-inset-bottom,0px));z-index:2;display:grid;justify-items:center;text-align:center;pointer-events:none;transition:opacity .5s ease}
 .doors .tap b{font-family:var(--f-label);font-weight:400;font-size:13px;letter-spacing:.3em;text-transform:uppercase;color:#f3e3bd;
   padding:11px 22px;border-radius:999px;background:rgba(14,26,19,.68);border:1px solid rgba(217,183,106,.75);box-shadow:0 6px 20px rgba(0,0,0,.35);animation:breathe 2.6s ease-in-out infinite}
 @keyframes breathe{50%{opacity:.7}}
 .doors .hit{position:absolute;inset:0;z-index:3;border:0;background:none;cursor:pointer}
 .doors.playing .tap{opacity:0}
-/* the split: the film hides, the two halves gather to the sides like real drapes */
-.doors.part{background:none;pointer-events:none}
-.doors.part .film{visibility:hidden}
-.doors.part .half.l{transform:translateX(-58%) scaleX(.42);opacity:0}
-.doors.part .half.r{transform:translateX(58%) scaleX(.42);opacity:0}
-.doors.fade{opacity:0;transition:opacity .8s ease;pointer-events:none}
+.doors.open{pointer-events:none}          /* the guest can scroll while the drapes are still gathering */
+.doors.fade{opacity:0;pointer-events:none}
 .doors.gone{display:none}
 
 /* ---------- cover ---------- */
@@ -217,8 +212,8 @@ a{color:inherit}
 <body>
 
 <div class="doors" id="doors">
-  <video class="film" id="film" src="assets/curtain.mp4" poster="assets/curtain-poster.jpg" muted playsinline preload="auto" aria-hidden="true"></video>
-  <canvas class="half l" id="halfL" aria-hidden="true" hidden></canvas><canvas class="half r" id="halfR" aria-hidden="true" hidden></canvas>
+  <video class="film" id="film" src="assets/curtain.mp4" poster="assets/curtain-poster.jpg" muted playsinline preload="auto" crossorigin="anonymous" aria-hidden="true"></video>
+  <canvas class="key" id="key" aria-hidden="true"></canvas>
   <div class="tap"><b>Tap to open</b></div>
   <button type="button" class="hit" id="openBtn" aria-label="Open the invitation"></button>
 </div>
@@ -516,37 +511,51 @@ document.addEventListener("visibilitychange", () => {
 });
 
 /* ---------- curtains ---------- */
-const PART_AT = 1.0;   // seconds into the film: the tie has loosened, the hall is not yet visible
-function splitDrapes(film){
-  // copy the current frame into two halves, cropped exactly like the film on screen (object-fit: cover)
-  const W = innerWidth, H = innerHeight, r = Math.min(devicePixelRatio || 1, 2);
-  const vw = film.videoWidth, vh = film.videoHeight; if(!vw) return false;
-  const sc = Math.max(W / vw, H / vh), dw = vw * sc, dh = vh * sc, ox = (W - dw) / 2, oy = (H - dh) / 2;
-  [["#halfL", 0], ["#halfR", W / 2]].forEach(([id, shift]) => {
-    const c = $(id); c.hidden = false; c.width = Math.ceil(W / 2 * r); c.height = Math.ceil(H * r);
-    const x = c.getContext("2d"); x.setTransform(r, 0, 0, r, 0, 0); x.drawImage(film, ox - shift, oy, dw, dh);
-  });
-  return true;
+// Draws the film onto a WebGL canvas and turns its flat blue backdrop see-through (chroma key).
+function makeKeyer(film, canvas){
+  const gl = canvas.getContext("webgl", { premultipliedAlpha: true, alpha: true }); if(!gl) return null;
+  const sh = (t, src) => { const o = gl.createShader(t); gl.shaderSource(o, src); gl.compileShader(o); return o; };
+  const prog = gl.createProgram();
+  gl.attachShader(prog, sh(gl.VERTEX_SHADER, "attribute vec2 p;uniform vec2 s,o;varying vec2 uv;void main(){uv=o+(p*.5+.5)*s;uv.y=1.-uv.y;gl_Position=vec4(p,0.,1.);}"));
+  gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, "precision mediump float;uniform sampler2D t;varying vec2 uv;void main(){vec4 c=texture2D(t,uv);float d=c.b-max(c.r,c.g);float a=1.-smoothstep(.05,.22,d);c.b=min(c.b,c.g*.96);gl_FragColor=vec4(c.rgb*a,a);}"));
+  gl.linkProgram(prog); if(!gl.getProgramParameter(prog, gl.LINK_STATUS)) return null;
+  gl.useProgram(prog);
+  const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(prog, "p"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
+  [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T].forEach(k => gl.texParameteri(gl.TEXTURE_2D, k, gl.CLAMP_TO_EDGE));
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  const uS = gl.getUniformLocation(prog, "s"), uO = gl.getUniformLocation(prog, "o");
+  return function draw(){
+    const r = Math.min(devicePixelRatio || 1, 2), W = innerWidth, H = innerHeight;
+    if(canvas.width !== Math.round(W*r) || canvas.height !== Math.round(H*r)){ canvas.width = Math.round(W*r); canvas.height = Math.round(H*r); }
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    // match object-fit: cover
+    const vw = film.videoWidth, vh = film.videoHeight, k = Math.max(W/vw, H/vh), sx = W/(vw*k), sy = H/(vh*k);
+    gl.uniform2f(uS, sx, sy); gl.uniform2f(uO, (1-sx)/2, (1-sy)/2);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, film);
+    gl.clearColor(0,0,0,0); gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  };
 }
 $("#openBtn").addEventListener("click", () => {
   const d = $("#doors"), film = $("#film"); if(d.classList.contains("playing")) return;
   d.classList.add("playing");
   startMusic();
-  let done = false;
-  const reveal = () => {
-    if(done) return; done = true;
-    film.pause();
-    let ok = false; try { ok = !reduce && splitDrapes(film); } catch(e){ ok = false; }
-    if(ok){ void d.offsetWidth; d.classList.add("part"); }
-    else d.classList.add("fade");
-    setTimeout(() => shower(innerWidth/2, innerHeight*.35), ok ? 700 : 200);
-    setTimeout(() => d.classList.add("gone"), ok ? 2100 : 850);
+  let draw = null; try { draw = !reduce && makeKeyer(film, $("#key")); } catch(e){ draw = null; }
+  let ended = false, opened = false;
+  const open = () => { if(opened) return; opened = true; d.classList.add("open"); shower(innerWidth/2, innerHeight*.35); };
+  const finish = () => { if(ended) return; ended = true; open(); d.classList.add("fade"); setTimeout(() => { d.classList.add("gone"); film.pause(); }, 1000); };
+  if(!draw){ finish(); return; }          // no WebGL or reduced motion: just fade into the invitation
+  const frame = () => {
+    if(ended) return;
+    try { draw(); if(!d.classList.contains("keyed")) d.classList.add("keyed"); } catch(e){ finish(); return; }
+    if(film.currentTime > 2.2) open();     // the drapes have parted: let the guest in
+    if(film.currentTime > 5.2 || film.ended) finish();   // drapes gathered at the sides: fade them away
+    (film.requestVideoFrameCallback ? film.requestVideoFrameCallback.bind(film) : requestAnimationFrame)(frame);
   };
-  if(reduce){ reveal(); return; }
-  const watch = () => { if(done) return; if(film.currentTime >= PART_AT || film.ended) reveal(); else requestAnimationFrame(watch); };
-  film.addEventListener("error", reveal);
-  film.play().then(() => requestAnimationFrame(watch)).catch(reveal);
-  setTimeout(reveal, 5000);   // never get stuck if the film stalls
+  film.addEventListener("error", finish);
+  film.play().then(frame).catch(finish);
+  setTimeout(finish, 9000);   // never get stuck if the film stalls
 });
 
 /* ---------- preview mode ---------- */
