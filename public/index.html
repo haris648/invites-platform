@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#0E2426">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>The Invitary · Animated digital wedding invitations</title>
-<meta name="description" content="Animated digital wedding invitations with RSVP, one link for every event. Try any design with your names, free.">
+<meta name="description" content="Animated digital wedding invitations with RSVP, one link for every event. Personal links for every guest, a film for every function. Try any design with your names, free.">
 <meta property="og:title" content="The Invitary · Animated wedding invitations">
 <meta property="og:description" content="Animated digital wedding invitations. Try any design with your names, free.">
 <meta property="og:image" content="/assets/brand/og.jpg">
@@ -17,53 +17,341 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Corinthia&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Marcellus+SC&display=swap">
 <link rel="stylesheet" href="/assets/shop.css">
 <style>
-.hero{padding-block:72px 40px;display:grid;gap:18px;max-width:640px}
-.hero h1{font-family:var(--f-script);font-weight:400;font-size:clamp(68px,13vw,120px);line-height:.85}
-.hero p{margin:0;font-size:22px;color:var(--ivory-soft)}
+html{scroll-behavior:smooth}
+section[id]{scroll-margin-top:24px}
+.sec{padding-block:clamp(56px,9vw,104px)}
+.sec + .sec{border-top:1px solid rgba(200,160,79,.16)}
+.head{display:grid;gap:12px;align-content:start;max-width:620px;margin-bottom:clamp(28px,4vw,44px)}
+.head h2,.big{font-family:var(--f-script);font-weight:400;font-size:clamp(56px,10vw,92px);line-height:.85}
+.head h2 em,.big em{font-style:normal;color:var(--brass)}
+.head p{margin:0;font-size:20px;color:var(--ivory-soft)}
+.center{text-align:center;margin-inline:auto;justify-items:center}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+
+/* hero */
+.hero{padding-block:clamp(48px,8vw,88px) clamp(40px,6vw,64px);display:grid;gap:40px;align-items:center}
+.hero .copy{display:grid;gap:18px;max-width:600px}
+.hero h1{font-family:var(--f-script);font-weight:400;font-size:clamp(68px,13vw,124px);line-height:.85}
+.hero h1 em{font-style:normal;color:var(--brass)}
+.hero .copy > p{margin:0;font-size:22px;color:var(--ivory-soft)}
+.hero .trust{font-size:16px;color:var(--ivory-soft);display:flex;flex-wrap:wrap;gap:6px 18px}
+.hero .trust span::before{content:"◆";color:var(--brass);font-size:10px;margin-right:8px;vertical-align:2px}
+.stack{position:relative;height:clamp(380px,52vw,520px);max-width:520px;width:100%;justify-self:center}
+.stack figure{position:absolute;margin:0;width:46%;aspect-ratio:9/16;border-radius:22px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 60px rgba(0,0,0,.45)}
+.stack img{width:100%;height:100%;object-fit:cover}
+.stack figure:nth-child(1){left:0;top:8%;transform:rotate(-7deg)}
+.stack figure:nth-child(2){left:27%;top:0;z-index:2}
+.stack figure:nth-child(3){right:0;top:10%;transform:rotate(7deg)}
+.stack figcaption{position:absolute;left:0;right:0;bottom:0;padding:28px 12px 12px;background:linear-gradient(transparent,rgba(8,22,23,.9));font-family:var(--f-label);font-size:11px;letter-spacing:.18em;text-align:center;color:var(--sand)}
+@media (min-width:900px){.hero{grid-template-columns:1.05fr .95fr}}
+
+/* strip */
+.strip{border-block:1px solid var(--line);background:#0b1f21;overflow:hidden}
+.strip .track{display:flex;gap:48px;width:max-content;padding:16px 0;animation:slide 40s linear infinite}
+.strip span{font-family:var(--f-label);font-size:12px;letter-spacing:.2em;color:var(--sand);white-space:nowrap}
+.strip span::before{content:"✦";margin-right:14px;color:var(--brass)}
+@keyframes slide{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.strip .track{animation:none;flex-wrap:wrap;width:auto;justify-content:center;gap:12px 32px}}
+
+/* designs */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px}
 .tile{display:grid;gap:12px;text-decoration:none;color:inherit}
-.tile .shot{aspect-ratio:9/16;max-height:460px;border-radius:22px;border:1px solid var(--line);overflow:hidden;background:var(--night-2)}
+.tile .shot{aspect-ratio:9/16;max-height:460px;border-radius:22px;border:1px solid var(--line);overflow:hidden;background:var(--night-2);transition:transform .3s,box-shadow .3s}
+.tile:hover .shot{transform:translateY(-4px);box-shadow:0 24px 50px rgba(0,0,0,.4)}
 .tile .shot iframe{width:100%;height:100%;border:0;pointer-events:none}
-.tile h2{font-family:var(--f-script);font-weight:400;font-size:52px;line-height:.9}
-.tile .meta{display:flex;justify-content:space-between;align-items:baseline;color:var(--ivory-soft)}
-.tile .price{font-family:var(--f-label);letter-spacing:.1em;color:var(--sand)}
+.tile h3{margin:0;font-family:var(--f-script);font-weight:400;font-size:52px;line-height:.9}
+.tile .meta{display:flex;justify-content:space-between;align-items:baseline;gap:12px;color:var(--ivory-soft)}
+.tile .price{font-family:var(--f-label);letter-spacing:.1em;color:var(--sand);white-space:nowrap}
+.tile .go{font-family:var(--f-label);font-size:11px;letter-spacing:.18em;color:var(--brass);margin-top:2px}
+
+/* cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.card{border:1px solid var(--line);border-radius:18px;padding:22px;background:var(--panel);display:grid;gap:8px;align-content:start}
+.card .ic{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);color:var(--brass);margin-bottom:6px}
+.card .ic svg{width:19px;height:19px}
+.card h3{margin:0;font-family:var(--f-body);font-weight:600;font-size:22px}
+.card p{margin:0;font-size:17px;color:var(--ivory-soft);line-height:1.45}
+
+/* films */
+.films{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.films figure{margin:0;position:relative;aspect-ratio:9/14;border-radius:18px;overflow:hidden;border:1px solid var(--line)}
+.films img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.films figure:hover img{transform:scale(1.04)}
+.films figcaption{position:absolute;left:0;right:0;bottom:0;padding:40px 14px 14px;background:linear-gradient(transparent,rgba(8,22,23,.92))}
+.films b{display:block;font-family:var(--f-script);font-weight:400;font-size:40px;line-height:.9}
+.films small{font-family:var(--f-label);font-size:10.5px;letter-spacing:.16em;color:var(--sand)}
+@media (max-width:760px){.films{grid-template-columns:repeat(2,1fr)}}
+
+/* guests */
+.split{display:grid;gap:40px;align-items:center}
+@media (min-width:900px){.split{grid-template-columns:1fr 1.1fr}}
+.ticks{list-style:none;padding:0;margin:0;display:grid;gap:10px;font-size:19px}
+.ticks li::before{content:"✓";color:var(--brass);margin-right:10px}
+.panel{border:1px solid var(--line);border-radius:22px;background:#0b1f21;padding:18px;box-shadow:0 30px 60px rgba(0,0,0,.35);display:grid;gap:12px}
+.panel .bar{display:flex;justify-content:space-between;align-items:center;gap:10px;font-family:var(--f-label);font-size:11px;letter-spacing:.16em;color:var(--sand)}
+.panel .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.panel .stats div{border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.panel .stats b{display:block;font-size:26px;font-weight:600;line-height:1.1}
+.panel .stats span{font-family:var(--f-label);font-size:10px;letter-spacing:.14em;color:var(--ivory-soft)}
+.guest{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;border:1px solid rgba(200,160,79,.22);border-radius:14px;padding:12px 14px;background:var(--panel)}
+.guest b{font-weight:600;font-size:19px}
+.guest small{grid-column:1;color:var(--ivory-soft);font-size:15px}
+.chip{grid-row:span 2;font-family:var(--f-label);font-size:10px;letter-spacing:.14em;padding:6px 10px;border-radius:999px;border:1px solid var(--line);color:var(--sand);white-space:nowrap}
+.chip.yes{background:rgba(159,211,163,.12);border-color:rgba(159,211,163,.5);color:var(--ok)}
+.chip.wait{color:var(--ivory-soft)}
+.panel .wa{display:flex;align-items:center;justify-content:center;gap:8px;min-height:42px;border-radius:999px;background:linear-gradient(180deg,#e2c27a,#b88f3e);color:#241806;font-family:var(--f-label);font-size:11px;letter-spacing:.14em}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0;border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.steps li{list-style:none;padding:24px 22px;display:grid;gap:8px;align-content:start;border-right:1px solid var(--line);border-bottom:1px solid var(--line);margin:-1px -1px 0 0;background:var(--panel)}
+.steps{padding:0;margin:0}
+.steps .n{font-family:var(--f-label);font-size:12px;letter-spacing:.2em;color:var(--brass)}
+.steps h3{margin:0;font-family:var(--f-script);font-weight:400;font-size:40px;line-height:.9}
+.steps p{margin:0;color:var(--ivory-soft);font-size:17px}
+
+/* bento */
+.bento{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+.bento .card{grid-column:span 2}
+.bento .wide{grid-column:span 3}
+.bento .feat{grid-column:span 3;grid-row:span 2;background:linear-gradient(160deg,#173a3b,#0e2426);position:relative;overflow:hidden;min-height:320px}
+.bento .feat img{position:absolute;right:-6%;bottom:-8%;width:46%;border-radius:16px;border:1px solid var(--line);transform:rotate(6deg);box-shadow:0 20px 40px rgba(0,0,0,.45)}
+.bento .feat .txt{max-width:56%;display:grid;gap:8px}
+@media (max-width:900px){.bento{grid-template-columns:1fr 1fr}.bento .card,.bento .wide{grid-column:span 1}.bento .feat{grid-column:span 2}}
+@media (max-width:560px){.bento{grid-template-columns:1fr}.bento .card,.bento .wide,.bento .feat{grid-column:span 1}.bento .feat .txt{max-width:none}.bento .feat{min-height:0}.bento .feat img{display:none}}
+
+/* band */
+.band{border-radius:24px;border:1px solid var(--line);padding:clamp(28px,5vw,52px);display:grid;gap:24px;align-items:center;background:linear-gradient(135deg,#173a3b,#0e2426 70%)}
+@media (min-width:900px){.band{grid-template-columns:1.3fr 1fr}}
+.band .copy{display:grid;gap:12px}
+.band p{margin:0;color:var(--ivory-soft);font-size:19px}
+.custom{border-radius:20px;padding:26px;background:linear-gradient(180deg,#e2c27a,#b88f3e);color:#241806;display:grid;gap:10px}
+.custom h3{margin:0;font-family:var(--f-script);font-weight:400;font-size:50px;line-height:.9}
+.custom p{margin:0;color:#3a2a0d;font-size:18px}
+.custom .btn{background:#0e2426;color:var(--ivory);border-color:#0e2426;justify-self:start}
+
+/* faq */
+.faq{display:grid;gap:40px}
+@media (min-width:900px){.faq{grid-template-columns:.8fr 1.2fr}}
+details{border-bottom:1px solid var(--line);padding:18px 0}
+details:first-child{border-top:1px solid var(--line)}
+summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px;font-size:21px;font-weight:600}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-family:var(--f-label);color:var(--brass);font-size:22px;line-height:1;transition:transform .25s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{margin:12px 0 0;color:var(--ivory-soft);font-size:18px}
+
+/* footer */
+.foot2{border-top:1px solid var(--line);margin-top:24px;background:#0b1f21}
+.foot2 .wrap{padding-block:44px 28px;display:grid;gap:28px}
+.foot2 .cols{display:grid;gap:28px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.foot2 h4{margin:0 0 10px;font-family:var(--f-label);font-weight:400;font-size:12px;letter-spacing:.2em;color:var(--sand)}
+.foot2 a{display:block;color:var(--ivory-soft);text-decoration:none;font-size:17px;padding:3px 0}
+.foot2 a:hover{color:var(--ivory)}
+.foot2 .brandcol img{height:42px;margin-bottom:12px}
+.foot2 .brandcol p{margin:0;color:var(--ivory-soft);font-size:17px;max-width:300px}
+.foot2 .base{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;border-top:1px solid rgba(200,160,79,.18);padding-top:18px;color:var(--ivory-soft);font-size:15px}
 </style>
 </head>
 <body>
 <header class="top"><div class="wrap">
   <a class="brand" href="/" aria-label="The Invitary home"><img src="/assets/brand/logo-light.svg" alt="The Invitary"></a>
-  <nav><a href="/#designs">Designs</a><a href="https://wa.me/971501767643" target="_blank" rel="noopener">WhatsApp</a></nav>
+  <nav><a href="#designs">Designs</a><a href="#how">How it works</a><a href="#faq">Questions</a><a href="https://wa.me/971501767643" target="_blank" rel="noopener">WhatsApp</a></nav>
 </div></header>
 
-<main class="wrap">
-  <section class="hero">
-    <span class="label">Digital wedding invitations</span>
-    <h1>Invitations that move</h1>
-    <p>One link for your whole wedding: every event on its own card, directions, calendar and RSVP built in. Try any design with your names first, free.</p>
-    <p class="sale" data-sale hidden></p>
-  </section>
+<main>
+  <!-- hero -->
+  <div class="wrap">
+    <section class="hero">
+      <div class="copy">
+        <span class="label">Digital wedding invitations</span>
+        <h1>Invitations <em>that move</em></h1>
+        <p>One link for your whole wedding: every function on its own card, with directions, calendar and RSVP built in. Every guest gets a link with their own name. Try any design with your names first, free.</p>
+        <p class="sale" data-sale hidden></p>
+        <div class="cta"><a class="btn solid" href="#designs">See the designs</a><a class="btn" href="https://wa.me/971501767643" target="_blank" rel="noopener">Chat on WhatsApp</a></div>
+        <div class="trust"><span>Live within a day</span><span>One-time payment</span><span>Edit any time</span></div>
+      </div>
+      <div class="stack" aria-hidden="true">
+        <figure><img src="/assets/home/envelope.webp" alt=""><figcaption>EVER AFTER</figcaption></figure>
+        <figure><img src="/assets/home/drapes.webp" alt=""><figcaption>RESHAM</figcaption></figure>
+        <figure><img src="/assets/home/gate.webp" alt=""><figcaption>SIGNATURE</figcaption></figure>
+      </div>
+    </section>
+  </div>
 
-  <!-- Add one tile per theme. -->
-  <section class="grid" id="designs" aria-label="Designs">
-    <a class="tile" href="/templates/resham/">
-      <div class="shot"><iframe src="/themes/resham/" title="Resham preview" loading="lazy" tabindex="-1"></iframe></div>
-      <div><h2>Resham</h2>
-        <div class="meta"><span>Sage silk drapes part onto a film for every function</span><span class="price"><s data-was="invitation" hidden></s> <span data-price="invitation">$100</span></span></div></div>
-    </a>
-    <a class="tile" href="/templates/ever-after/">
-      <div class="shot"><iframe src="/themes/ever-after/" title="Ever After preview" loading="lazy" tabindex="-1"></iframe></div>
-      <div><h2>Ever After</h2>
-        <div class="meta"><span>An embossed envelope opens onto a floral aisle</span><span class="price"><s data-was="invitation" hidden></s> <span data-price="invitation">$100</span></span></div></div>
-    </a>
-    <a class="tile" href="/templates/signature/">
-      <div class="shot"><iframe src="/themes/signature/" title="Signature preview" loading="lazy" tabindex="-1"></iframe></div>
-      <div><h2>Signature</h2>
-        <div class="meta"><span>An embroidered gate tied with silk, opening onto a film for every function</span><span class="price"><s data-was="invitation" hidden></s> <span data-price="invitation">$100</span></span></div></div>
-    </a>
-  </section>
+  <div class="strip" aria-hidden="true"><div class="track">
+    <span>A real website, not a video</span><span>Personal link for every guest</span><span>RSVP built in</span><span>Edit any time</span><span>One-time payment</span><span>Music and petals</span><span>Directions and calendar</span><span>Help on WhatsApp</span>
+    <span>A real website, not a video</span><span>Personal link for every guest</span><span>RSVP built in</span><span>Edit any time</span><span>One-time payment</span><span>Music and petals</span><span>Directions and calendar</span><span>Help on WhatsApp</span>
+  </div></div>
+
+  <div class="wrap">
+    <!-- designs -->
+    <section class="sec" id="designs">
+      <div class="head">
+        <span class="label">Choose your design</span>
+        <h2>Pick the <em>feeling</em></h2>
+        <p>Open any design to watch it play, then try it with your own names in seconds. Free, no sign-up.</p>
+      </div>
+      <!-- Add one tile per theme. -->
+      <div class="grid" aria-label="Designs">
+        <a class="tile" href="/templates/resham/">
+          <div class="shot"><iframe src="/themes/resham/" title="Resham preview" loading="lazy" tabindex="-1"></iframe></div>
+          <div><h3>Resham</h3>
+            <div class="meta"><span>Sage silk drapes part onto a film for every function</span><span class="price"><s data-was="invitation" hidden></s> <span data-price="invitation">$100</span></span></div>
+            <div class="go">TRY IT FREE →</div></div>
+        </a>
+        <a class="tile" href="/templates/ever-after/">
+          <div class="shot"><iframe src="/themes/ever-after/" title="Ever After preview" loading="lazy" tabindex="-1"></iframe></div>
+          <div><h3>Ever After</h3>
+            <div class="meta"><span>An embossed envelope opens onto a floral aisle</span><span class="price"><s data-was="invitation" hidden></s> <span data-price="invitation">$100</span></span></div>
+            <div class="go">TRY IT FREE →</div></div>
+        </a>
+        <a class="tile" href="/templates/signature/">
+          <div class="shot"><iframe src="/themes/signature/" title="Signature preview" loading="lazy" tabindex="-1"></iframe></div>
+          <div><h3>Signature</h3>
+            <div class="meta"><span>An embroidered gate tied with silk, opening onto a film for every function</span><span class="price"><s data-was="invitation" hidden></s> <span data-price="invitation">$100</span></span></div>
+            <div class="go">TRY IT FREE →</div></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- real website -->
+    <section class="sec">
+      <div class="head center">
+        <span class="label">Not a video, not a PDF</span>
+        <h2>A real website. <em>Made to share.</em></h2>
+        <p>Your invitation is a beautiful little website with its own link, so it opens instantly on any phone and never gets blurry in a forward.</p>
+      </div>
+      <div class="cards">
+        <div class="card"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg></div><h3>Made for phones</h3><p>Full-screen, swipe to move between your functions. Looks just as good on a laptop.</p></div>
+        <div class="card"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20l1.4-4A8 8 0 1 1 8 18.6z"/></svg></div><h3>Share on WhatsApp</h3><p>Send one link to everyone, or a personal link to each family. A preview with your design shows in the chat.</p></div>
+        <div class="card"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></div><h3>Change it any time</h3><p>Venue moved or time changed? Update it once and every link shows the new details straight away.</p></div>
+        <div class="card"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg></div><h3>Music and magic</h3><p>Soft music begins as the invitation opens, and every tap sends a shower of petals with a blessing.</p></div>
+      </div>
+    </section>
+
+    <!-- films -->
+    <section class="sec">
+      <div class="head">
+        <span class="label">Every function, its own moment</span>
+        <h2>A film for <em>every function</em></h2>
+        <p>In Resham and Signature, each function plays its own cinematic scene behind the date, venue and directions. Choose only the functions you're hosting.</p>
+      </div>
+      <div class="films">
+        <figure><img src="/assets/home/mehndi.webp" alt="Mehndi night with dhol and lights" loading="lazy"><figcaption><b>Mehndi</b><small>DHOLKI AND HENNA</small></figcaption></figure>
+        <figure><img src="/assets/home/nikkah.webp" alt="Bride at an outdoor nikkah" loading="lazy"><figcaption><b>Nikkah</b><small>THE SOLEMN VOWS</small></figcaption></figure>
+        <figure><img src="/assets/home/baraat.webp" alt="Bride and groom beneath a carved arch" loading="lazy"><figcaption><b>Baraat</b><small>THE PROCESSION</small></figcaption></figure>
+        <figure><img src="/assets/home/walima.webp" alt="Couple walking down a floral aisle" loading="lazy"><figcaption><b>Walima</b><small>THE RECEPTION</small></figcaption></figure>
+      </div>
+    </section>
+
+    <!-- guest list -->
+    <section class="sec" id="guests">
+      <div class="split">
+        <div class="head" style="margin:0">
+          <span class="label">Guest list package</span>
+          <h2>Guests, <em>greeted by name</em></h2>
+          <p>Every guest gets their own link that opens with their name, their number of seats and only the functions they're invited to. You manage it all yourself from your private couple panel.</p>
+          <ul class="ticks">
+            <li>Add guests one by one, or paste your whole list</li>
+            <li>Send each link on WhatsApp in one tap</li>
+            <li>See who has opened their invitation</li>
+            <li>Replies, guest counts and dinner choices in one place</li>
+          </ul>
+        </div>
+        <div class="panel" aria-hidden="true">
+          <div class="bar"><span>YOUR GUESTS</span><span>142 INVITED</span></div>
+          <div class="stats"><div><b>96</b><span>OPENED</span></div><div><b>71</b><span>COMING</span></div><div><b>214</b><span>SEATS</span></div></div>
+          <div class="guest"><b>Chachu family</b><span class="chip yes">COMING · 4</span><small>Nikkah, Baraat, Walima · opened</small></div>
+          <div class="guest"><b>Khala Nasreen</b><span class="chip yes">COMING · 3</span><small>All functions · opened</small></div>
+          <div class="guest"><b>Office friends</b><span class="chip wait">NO REPLY YET</span><small>Walima · not opened</small></div>
+          <div class="wa">SEND ON WHATSAPP</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- how it works -->
+    <section class="sec" id="how">
+      <div class="head center">
+        <span class="label">How it works</span>
+        <h2>Live <em>within a day</em></h2>
+        <p>No apps, no design skills. We set it up with you on WhatsApp.</p>
+      </div>
+      <ol class="steps">
+        <li><span class="n">01</span><h3>Try it free</h3><p>Pick a design and see it with your names in seconds.</p></li>
+        <li><span class="n">02</span><h3>Send your details</h3><p>Dates, venues, families and message, all on WhatsApp.</p></li>
+        <li><span class="n">03</span><h3>We make it live</h3><p>Your invitation is ready on its own link, usually the same day.</p></li>
+        <li><span class="n">04</span><h3>Share the link</h3><p>Send it to everyone, or a personal link to every guest.</p></li>
+      </ol>
+    </section>
+
+    <!-- more than a pretty page -->
+    <section class="sec">
+      <div class="head">
+        <span class="label">Everything included</span>
+        <h2>More than <em>a pretty page</em></h2>
+      </div>
+      <div class="bento">
+        <div class="card feat">
+          <div class="txt"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></div>
+          <h3>A private couple panel</h3><p>Your own link to change names, dates and venues, add guests, and read every reply. No need to ask us for small edits.</p></div>
+          <img src="/assets/home/aisle.webp" alt="">
+        </div>
+        <div class="card wide"><h3>RSVP built in</h3><p>Guests reply in a tap with their guest count, dinner choice and a note for you. Download it all as a spreadsheet.</p></div>
+        <div class="card wide"><h3>Directions and calendar</h3><p>A map button for every venue and a one-tap reminder in their phone's calendar.</p></div>
+        <div class="card"><h3>Live countdown</h3><p>Days, hours and minutes to your first function.</p></div>
+        <div class="card"><h3>Every function</h3><p>Mehndi, Nikkah, Baraat, Walima: show only the ones you host.</p></div>
+        <div class="card"><h3>Help on WhatsApp</h3><p>Real people, quick replies, before and after your wedding.</p></div>
+      </div>
+    </section>
+
+    <!-- change once + custom -->
+    <section class="sec">
+      <div class="band">
+        <div class="copy">
+          <span class="label">One link, always up to date</span>
+          <h2 class="big">Change it once. <em>Every link updates.</em></h2>
+          <p>Printed cards can't be fixed once they're sent. Your Invitary link can: correct a time, add a function or change a venue, and every guest sees the latest details the next time they open it.</p>
+        </div>
+        <div class="custom">
+          <span class="label" style="color:#4a3510">Something of your own</span>
+          <h3>Made just for you</h3>
+          <p>Want your own colours, your own artwork or a design no one else has? We can create a custom invitation for you.</p>
+          <a class="btn" href="https://wa.me/971501767643?text=Hi!%20I%27d%20like%20a%20custom%20wedding%20invitation." target="_blank" rel="noopener">Ask on WhatsApp</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- faq -->
+    <section class="sec" id="faq">
+      <div class="faq">
+        <div class="head" style="margin:0">
+          <span class="label">Good to know</span>
+          <h2>Before you <em>send the link</em></h2>
+          <p>Anything else? Message us on WhatsApp and we'll reply quickly.</p>
+        </div>
+        <div>
+          <details><summary>What exactly am I buying?</summary><p>A personal wedding invitation website on its own link, in the design you choose, with your names, functions, venues and RSVP. You pay once; there is no subscription.</p></details>
+          <details><summary>What is the guest list package?</summary><p>Every guest or family gets a personal link that greets them by name, shows their number of seats and only the functions they're invited to. You add and send them yourself from your couple panel, and see who has opened and replied.</p></details>
+          <details><summary>Do my guests need to download anything?</summary><p>No. The invitation opens in any phone's browser straight from WhatsApp, Instagram or a text message. No app and no account.</p></details>
+          <details><summary>How long does it take?</summary><p>Usually the same day, once we have your details. You can try any design with your names right now, for free.</p></details>
+          <details><summary>Can I change details after it's live?</summary><p>Yes, as often as you like, from your couple panel or by messaging us. Every link updates straight away.</p></details>
+          <details><summary>How long does my invitation stay online?</summary><p>Well past your wedding, so guests can look back at it. Ask us if you need it for longer.</p></details>
+          <details><summary>How do I pay?</summary><p>Message us on WhatsApp after trying your design. We'll confirm the price for your country and the payment options available to you.</p></details>
+        </div>
+      </div>
+    </section>
+  </div>
 </main>
 
-<footer class="foot"><div class="wrap"><span>© 2026 The Invitary</span><span>One-time payment · no subscription</span></div></footer>
+<footer class="foot2"><div class="wrap">
+  <div class="cols">
+    <div class="brandcol"><img src="/assets/brand/logo-light.svg" alt="The Invitary"><p>Animated digital wedding invitations, with a personal link for every guest.</p></div>
+    <div><h4>Designs</h4><a href="/templates/resham/">Resham</a><a href="/templates/ever-after/">Ever After</a><a href="/templates/signature/">Signature</a></div>
+    <div><h4>Learn more</h4><a href="#how">How it works</a><a href="#guests">Guest list package</a><a href="#faq">Questions</a></div>
+    <div><h4>Say hello</h4><a href="https://wa.me/971501767643" target="_blank" rel="noopener">WhatsApp</a></div>
+  </div>
+  <div class="base"><span>© 2026 The Invitary</span><span>One-time payment · no subscription</span></div>
+</div></footer>
 <script src="/assets/pricing.js" defer></script>
 </body>
 </html>
