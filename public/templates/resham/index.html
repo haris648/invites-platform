@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/brand/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
+<meta name="theme-color" content="#0E2426">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Resham · Digital wedding invitation · The Invitary</title>
+<meta name="description" content="An embroidered gate tied with silk opens onto a film for every function. Try Resham with your names, free.">
+<meta property="og:title" content="Resham · Digital wedding invitation">
+<meta property="og:description" content="An embroidered gate tied with silk, opening onto every function. Try it with your names, free.">
+<meta property="og:image" content="/themes/resham/og.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Corinthia&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Marcellus+SC&display=swap">
+<link rel="stylesheet" href="/assets/shop.css">
+<style>
+.product{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:56px;padding-block:48px;align-items:start}
+.phone{position:sticky;top:24px;aspect-ratio:9/18.5;width:100%;border-radius:38px;padding:10px;background:#081718;border:1px solid var(--line);box-shadow:0 30px 70px rgba(0,0,0,.45)}
+.phone iframe{width:100%;height:100%;border:0;border-radius:30px;background:var(--night)}
+.phone-cap{margin-top:12px;text-align:center;font-size:16px;color:var(--ivory-soft)}
+.info{display:grid;gap:22px;min-width:0}
+.info h1{font-family:var(--f-script);font-weight:400;font-size:clamp(76px,12vw,112px);line-height:.85}
+.lede{margin:0;font-size:22px;color:var(--ivory-soft);max-width:34em}
+.points{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.points li{padding-left:22px;position:relative}
+.points li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:8px;transform:rotate(45deg);background:var(--brass)}
+.tiers{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tier{border:1px solid var(--line);border-radius:18px;padding:18px;display:grid;gap:8px;align-content:start}
+.tier .name{font-family:var(--f-label);letter-spacing:.12em;font-size:13px;color:var(--sand)}
+.tier .amt{font-size:34px;font-weight:600;line-height:1}
+.tier .amt s{font-size:18px;font-weight:400;color:var(--ivory-soft);margin-left:6px}
+.tier ul{margin:0;padding-left:18px;font-size:16px;color:var(--ivory-soft)}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.try{border:1px solid var(--brass);border-radius:22px;padding:24px;background:var(--panel);display:grid;gap:16px}
+.try h2{font-family:var(--f-script);font-weight:400;font-size:52px;line-height:.9}
+.try p.small{margin:-8px 0 0;font-size:16px;color:var(--ivory-soft)}
+.specs{display:grid;grid-template-columns:auto 1fr;gap:6px 20px;font-size:17px}
+.specs dt{font-family:var(--f-label);font-size:12px;letter-spacing:.14em;color:var(--sand);padding-top:3px}
+.specs dd{margin:0;color:var(--ivory-soft)}
+@media (max-width:820px){
+  .product{grid-template-columns:1fr;gap:32px}
+  .phone{position:relative;top:0;max-width:340px;margin:0 auto}
+}
+@media (max-width:480px){ .tiers{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/" aria-label="The Invitary home"><img src="/assets/brand/logo-light.svg" alt="The Invitary"></a>
+  <nav><a href="/#designs">All designs</a><a href="https://wa.me/971501767643" target="_blank" rel="noopener">WhatsApp</a></nav>
+</div></header>
+
+<main class="wrap product">
+  <div>
+    <div class="phone"><iframe id="frame" src="/themes/resham/" title="Resham live preview"></iframe></div>
+    <p class="phone-cap">Live sample · tap the ribbon to open</p>
+  </div>
+
+  <div class="info">
+    <span class="label">Wedding invitation</span>
+    <h1>Resham</h1>
+    <p class="lede">Untie the silk ribbon and an embroidered gate swings open. Every function then plays its own film, with its date, venue and directions on top.</p>
+    <ul class="points">
+      <li>A separate card for each function you host, shown one per swipe</li>
+      <li>Directions and add-to-calendar on every card</li>
+      <li>Guests greeted by name, with their own seats and events</li>
+      <li>Send on WhatsApp as often as you like</li>
+    </ul>
+
+    <!-- Prices come from src/worker.js (PRICING and SALE) -->
+    <p class="sale" data-sale hidden></p>
+    <div class="tiers">
+      <div class="tier"><span class="name">Invitation</span><span class="amt"><span data-price="invitation">$100</span><s data-was="invitation" hidden></s></span>
+        <ul><li>One link for the whole invitation</li><li>All your functions</li><li>Edits any time</li></ul></div>
+      <div class="tier"><span class="name">+ Guest list</span><span class="amt"><span data-price="guestlist">$130</span><s data-was="guestlist" hidden></s></span>
+        <ul><li>A personal link per guest</li><li>Choose their functions and seats</li></ul></div>
+    </div>
+
+    <div class="cta">
+      <a class="btn" href="#try">Try with your names · free</a>
+      <a class="btn solid" href="https://wa.me/971501767643?text=Hi!%20I%27d%20like%20to%20buy%20the%20Noor%20Mahal%20invitation." target="_blank" rel="noopener">Buy on WhatsApp</a>
+    </div>
+
+    <form class="try" id="try" novalidate>
+      <h2>Try it with your names</h2>
+      <p class="small">Your preview opens in seconds, and we email you the link to share.</p>
+      <div class="pair">
+        <div class="field"><label class="label" for="bride">Bride's name</label><input id="bride" name="bride" maxlength="24" autocomplete="off" required></div>
+        <div class="field"><label class="label" for="groom">Groom's name</label><input id="groom" name="groom" maxlength="24" autocomplete="off" required></div>
+      </div>
+      <div class="field"><label class="label" for="email">Email for your preview link</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+      <fieldset class="field" style="border:0;padding:0;margin:0">
+        <legend class="label" style="margin-bottom:8px">Your functions</legend>
+        <div class="chips">
+          <label><input type="checkbox" name="events" value="mehndi"><span>Mehndi</span></label>
+          <label><input type="checkbox" name="events" value="nikkah"><span>Nikkah</span></label>
+          <label><input type="checkbox" name="events" value="baraat" checked><span>Baraat</span></label>
+          <label><input type="checkbox" name="events" value="walima" checked><span>Walima</span></label>
+        </div>
+      </fieldset>
+      <p class="msg err" id="msg" role="status" hidden></p>
+      <button class="btn solid" type="submit" id="go">Show my preview</button>
+    </form>
+
+    <dl class="specs">
+      <dt>Functions</dt><dd>Mehndi, Nikkah, Baraat, Walima</dd>
+      <dt>Sections</dt><dd>Embroidered gate and silk ribbon, welcome, invitation, a film for each function, countdown, RSVP</dd>
+      <dt>Colours</dt><dd>Deep sage silk, gold zari and ivory</dd>
+    </dl>
+  </div>
+</main>
+
+<footer class="foot"><div class="wrap"><span>© 2026 The Invitary</span><span>One-time payment · no subscription</span></div></footer>
+
+<script>
+const form = document.getElementById("try"), msg = document.getElementById("msg"), go = document.getElementById("go");
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const fd = new FormData(form);
+  const payload = { template: "resham", bride: fd.get("bride"), groom: fd.get("groom"), email: fd.get("email"), events: fd.getAll("events") };
+  msg.hidden = true; go.disabled = true; go.textContent = "Preparing your preview…";
+  try {
+    const res = await fetch("/api/try", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload) });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || "Couldn't create your preview. Please try again.");
+    location.href = data.url;
+  } catch (err) {
+    msg.textContent = err.message; msg.hidden = false;
+    go.disabled = false; go.textContent = "Show my preview";
+  }
+});
+</script>
+<script src="/assets/pricing.js" defer></script>
+</body>
+</html>

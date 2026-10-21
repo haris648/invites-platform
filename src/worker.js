@@ -14,7 +14,7 @@
 
 // Every theme you sell is registered here. `path` is its folder in /public/themes.
 const THEMES = {
-  // Signature: an embroidered gate tied with silk, a film for each function, deep sage silk inside.
+  // Signature: an embroidered gate tied with silk, a film for each function, ivory linen inside.
   "signature": {
     name: "Signature",
     path: "/themes/signature/",
@@ -25,7 +25,7 @@ const THEMES = {
     rsvpOnPage: false,
     shareMessage: "Assalam o Alaikum {guest}! With great joy, {couple} invite you to celebrate their wedding with them. Please open your invitation: {link}",
   },
-  // Resham: the Signature gate and films, with ivory linen and sage thread-work inside.
+  // Resham: deep sage silk, a film for each function.
   "resham": {
     name: "Resham",
     path: "/themes/resham/",
@@ -48,7 +48,7 @@ const THEMES = {
   },
 };
 // Old theme keys that were renamed, so earlier previews keep working.
-const ALIASES = { jharokha: "signature", "noor-mahal": "signature", "noor-mahal-2": "resham", "noor-mahal-3": "signature" };
+const ALIASES = { jharokha: "signature", "noor-mahal": "signature", "noor-mahal-2": "signature", "noor-mahal-3": "resham" };
 const themeFor = (key) => THEMES[ALIASES[key] || key];
 
 // Regular prices per region. Visitors are matched by the country Cloudflare detects; anyone not listed gets DEFAULT.
