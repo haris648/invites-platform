@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Wedding Invitation</title>
+<meta name="description" content="You're invited">
+<meta name="robots" content="noindex">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Wedding Invitation">
+<meta property="og:description" content="You're invited">
+<meta property="og:image" content="/themes/front-page/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#1d1a16">
+<link rel="preload" as="image" href="assets/portrait.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Oswald:wght@500;600&display=swap">
+<style>
+/* =========================================================
+   FRONT PAGE: the wedding as the only story in a vintage broadsheet.
+   Newsprint, black ink, one red for stamps; colour photographs.
+   ========================================================= */
+:root{
+  --paper:#f3eee2; --paper-2:#ebe4d3; --ink:#1c1a17; --ink-2:#3f3a33; --muted:#6f685c; --rule:#26231f; --red:#b42a1f;
+  --desk:#1d1a16;
+  --f-mast:"UnifrakturMaguntia","Old English Text MT",serif;
+  --f-head:"Playfair Display",Georgia,serif;
+  --f-body:"Libre Caslon Text",Georgia,"Times New Roman",serif;
+  --f-cond:"Oswald","Arial Narrow",sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--desk);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;overflow:hidden;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+img{display:block;max-width:100%}
+
+/* ---------- the deck: one newspaper page per screen ---------- */
+.deck{height:100%;overflow-y:auto;scroll-snap-type:y mandatory;scroll-behavior:smooth;overscroll-behavior:contain;scrollbar-width:none}
+.deck::-webkit-scrollbar{display:none}
+.page{position:relative;min-height:100%;scroll-snap-align:start;display:flex;justify-content:center;
+  background:radial-gradient(120% 90% at 50% 40%,#2a2621,#14120f)}
+.sheet{position:relative;width:100%;max-width:820px;min-height:100svh;padding:calc(18px + env(safe-area-inset-top,0px)) max(18px,env(safe-area-inset-right,0px)) 88px max(18px,env(safe-area-inset-left,0px));
+  background:var(--paper) url(assets/paper.webp);background-size:400px;box-shadow:0 0 60px rgba(0,0,0,.55);display:flex;flex-direction:column;gap:12px}
+.sheet::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(130% 100% at 50% 40%,transparent 60%,rgba(80,60,30,.13))}
+@media (min-width:860px){.sheet{padding-left:44px;padding-right:44px}}
+.sheet.mid{justify-content:center;padding-top:calc(44px + env(safe-area-inset-top,0px))}
+
+/* shared newspaper type */
+.rule{border:0;border-top:1px solid var(--rule);margin:0}
+.rule2{border:0;border-top:3px double var(--rule);margin:0}
+.kicker{font-family:var(--f-cond);font-weight:600;font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--red)}
+.slug{font-family:var(--f-cond);font-weight:500;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2)}
+.h2{margin:0;font-family:var(--f-head);font-weight:900;font-size:clamp(34px,9.4vw,58px);line-height:.95;letter-spacing:-.01em}
+.h2 i{font-weight:400}
+.lede{margin:0;font-size:17px;line-height:1.55;color:var(--ink-2)}
+.drop::first-letter{float:left;font-family:var(--f-head);font-weight:900;font-size:3.6em;line-height:.82;padding:.06em .08em 0 0;color:var(--ink)}
+.cols{column-gap:26px;column-rule:1px solid rgba(38,35,31,.35)}
+@media (min-width:620px){.cols{columns:2}}
+.cols p{margin:0 0 .8em;text-align:justify;hyphens:auto}
+@media (max-width:620px){.cols{font-size:15px;line-height:1.45}.clips{gap:10px}.pull{font-size:19px}}
+.photo{margin:0;background:#fff;padding:6px 6px 0;box-shadow:0 1px 0 rgba(0,0,0,.08),0 8px 18px rgba(60,40,10,.18)}
+.photo img{width:100%;height:100%;object-fit:cover;filter:saturate(.92) contrast(1.03)}
+.photo figcaption{font-family:var(--f-body);font-style:italic;font-size:12.5px;line-height:1.35;color:var(--ink-2);padding:6px 2px 8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);
+  font-family:var(--f-cond);font-weight:600;font-size:13px;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;cursor:pointer}
+.btn.solid{background:var(--ink);color:var(--paper)}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn svg{width:16px;height:16px}
+
+/* turn the page */
+.turn{position:absolute;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:2;display:flex;align-items:center;gap:10px;background:none;border:0;cursor:pointer;
+  font-family:var(--f-cond);font-weight:600;font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink)}
+.turn i{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--ink);display:grid;place-items:center;animation:bob 2.4s ease-in-out infinite}
+.turn svg{width:16px;height:16px}
+@keyframes bob{50%{transform:translateY(4px)}}
+.folio{position:absolute;top:calc(8px + env(safe-area-inset-top,0px));right:18px;font-family:var(--f-cond);font-size:10px;letter-spacing:.2em;color:var(--muted)}
+
+/* ---------- PAGE 1: front page ---------- */
+.ears{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
+.ear{font-family:var(--f-cond);font-size:10px;letter-spacing:.14em;text-transform:uppercase;line-height:1.3;color:var(--ink-2);border:1px solid var(--rule);padding:5px 7px;max-width:120px}
+.ear.r{justify-self:end;text-align:right}
+.ear b{display:block;font-weight:600;color:var(--ink)}
+.mast{margin:0;font-family:var(--f-mast);font-weight:400;font-size:clamp(40px,12.6vw,96px);line-height:1;text-align:center;white-space:nowrap;letter-spacing:.01em}
+.dateline{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-top:3px double var(--rule);border-bottom:1px solid var(--rule);
+  font-family:var(--f-cond);font-weight:500;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase}
+.dateline span:nth-child(2){text-align:center}
+.headline{margin:4px 0 0;font-family:var(--f-head);font-weight:900;text-transform:uppercase;text-align:center;line-height:.95;letter-spacing:-.01em;font-size:clamp(40px,13vw,92px);white-space:nowrap}
+.headline .amp{font-weight:400;font-style:italic;text-transform:none}
+.headline.stacked{white-space:normal}.headline.stacked span:not(.amp){display:block;white-space:nowrap}
+.half .hl.stacked{white-space:normal}.half .hl.stacked span{display:block;white-space:nowrap}
+.deck2{display:flex;align-items:center;justify-content:center;gap:10px;margin:2px 0 4px;font-family:var(--f-head);font-style:italic;font-weight:400;font-size:clamp(20px,5.6vw,34px)}
+.deck2 svg{width:clamp(56px,14vw,90px);height:auto;flex:none}
+.front{display:grid;gap:14px;grid-template-columns:1fr}
+.front .photo{height:min(36svh,520px)}
+.front .photo img{height:calc(100% - 34px);object-position:50% 30%}
+.front .lede{font-size:15.5px;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+@media (min-height:820px) and (max-width:699px){.front .lede{-webkit-line-clamp:5}}
+.front .story{display:grid;gap:8px;align-content:start}
+.byline{font-family:var(--f-cond);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2)}
+.more{font-family:var(--f-cond);font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--red);background:none;border:0;padding:0;cursor:pointer;justify-self:start}
+@media (min-width:700px){.front{grid-template-columns:1.25fr 1fr}.front .photo{height:auto;aspect-ratio:3/4}}
+/* a delivery label for the guest's own copy */
+.front .photo{position:relative}
+.label{position:absolute;z-index:3;right:-8px;top:-10px;transform:rotate(4deg);background:#fbf8f0;border:1px dashed var(--ink-2);padding:6px 10px 7px;
+  box-shadow:0 4px 12px rgba(40,30,10,.22);font-family:var(--f-cond);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);max-width:56%}
+.label b{display:block;font-family:var(--f-head);font-style:italic;font-weight:700;font-size:16px;letter-spacing:0;text-transform:none;color:var(--ink);line-height:1.15}
+
+/* ---------- PAGE 2: stop press (scratch the date) ---------- */
+.stop{display:flex;align-items:center;gap:10px;background:var(--red);color:#fff;padding:6px 12px;font-family:var(--f-cond);font-weight:600;font-size:14px;letter-spacing:.28em;text-transform:uppercase;align-self:flex-start}
+.stop::before{content:"";width:8px;height:8px;border-radius:50%;background:#fff;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.reveal{position:relative;margin:6px auto 0;width:min(100%,520px);aspect-ratio:5/4;border:2px solid var(--ink);outline:1px solid var(--ink);outline-offset:4px;background:#fbf8ef;
+  display:grid;place-items:center;text-align:center;-webkit-user-select:none;user-select:none}
+.reveal .when{display:grid;gap:4px;justify-items:center;padding:18px}
+.reveal .dow{font-family:var(--f-cond);font-weight:600;font-size:15px;letter-spacing:.3em;text-transform:uppercase}
+.reveal .day{font-family:var(--f-head);font-weight:900;font-size:clamp(92px,30vw,150px);line-height:.85}
+.reveal .mon{font-family:var(--f-head);font-weight:700;font-style:italic;font-size:clamp(26px,7vw,38px);line-height:1}
+.reveal .at{font-size:14px;color:var(--ink-2);margin-top:6px}
+.reveal canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair;transition:opacity .6s ease}
+.reveal.done canvas{opacity:0;pointer-events:none}
+.stamp{position:absolute;z-index:2;pointer-events:none;font-family:var(--f-cond);font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--red);
+  border:4px double var(--red);border-radius:6px;padding:6px 14px;line-height:1;mix-blend-mode:multiply;opacity:0}
+.reveal .stamp{right:-12px;top:-16px;font-size:clamp(18px,5vw,24px);background:rgba(251,248,239,.6);transform:rotate(-12deg) scale(2.2)}
+.reveal.done .stamp{animation:thump .45s cubic-bezier(.3,1.6,.5,1) .35s forwards}
+@keyframes thump{0%{opacity:0;transform:rotate(-12deg) scale(2.2)}100%{opacity:.88;transform:rotate(-12deg) scale(1)}}
+.stop-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;opacity:0;transition:opacity .6s ease .6s}
+.reveal.done + .stop-actions{opacity:1}
+.hint{text-align:center;font-style:italic;color:var(--ink-2);margin:0}
+
+/* ---------- PAGE 3: feature ---------- */
+.feature{display:grid;gap:16px}
+.clips{position:relative;display:grid;grid-template-columns:1.35fr 1fr;gap:14px;align-items:start}
+.clips .photo:first-child{transform:rotate(-1.6deg)}
+.clips .photo:last-child{transform:rotate(2.4deg);margin-top:24px}
+.clips .photo img{aspect-ratio:4/3}
+.clips .photo:last-child img{aspect-ratio:1}
+.tape{position:absolute;width:74px;height:22px;background:rgba(236,225,190,.75);box-shadow:0 1px 2px rgba(0,0,0,.1);z-index:2}
+.clips .photo{position:relative}
+.clips .photo .tape{top:-9px;left:50%;transform:translateX(-50%) rotate(-4deg)}
+.pull{margin:4px 0;padding:10px 0;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);font-family:var(--f-head);font-style:italic;font-size:22px;line-height:1.25;text-align:center}
+.pull small{display:block;margin-top:6px;font-family:var(--f-cond);font-style:normal;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2)}
+
+/* ---------- PAGE 4: order of the day ---------- */
+.order{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--rule)}
+.order li{list-style:none;display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:center;padding:12px 8px;border-bottom:1px solid rgba(38,35,31,.35)}
+.order li:nth-child(odd){border-right:1px solid rgba(38,35,31,.35)}
+.order svg{width:44px;height:44px;color:var(--ink)}
+.order b{display:block;font-family:var(--f-cond);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+.order span{display:block;font-family:var(--f-head);font-weight:700;font-size:17px;line-height:1.15}
+.order small{display:block;font-style:italic;color:var(--ink-2);font-size:13px;line-height:1.3}
+.order{padding:0;margin:0}
+@media (max-width:420px){.order li{grid-template-columns:36px 1fr;gap:8px;padding:10px 6px}.order svg{width:36px;height:36px}.order span{font-size:15px}}
+
+/* ---------- PAGE 5: public notices ---------- */
+.notices{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:620px){.notices{grid-template-columns:1fr 1fr}}
+.notice{border:1.5px solid var(--ink);outline:1px solid var(--ink);outline-offset:-6px;padding:16px 16px 14px;display:grid;gap:6px;background:rgba(255,255,255,.35)}
+.notice .kicker{color:var(--ink-2)}
+.notice h3{margin:0;font-family:var(--f-head);font-weight:900;font-size:26px;line-height:1}
+.notice .when{font-family:var(--f-cond);font-weight:600;font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+.notice .where{font-size:15px;line-height:1.35}
+.notice .where b{display:block}
+.notice p{margin:0;font-size:14px;font-style:italic;color:var(--ink-2)}
+.notice .acts{display:flex;gap:8px;margin-top:4px}
+.notice .btn{min-height:38px;padding:0 12px;font-size:11.5px}
+
+/* ---------- PAGE 6: who's who + forecast ---------- */
+.who{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}
+.who div{border-top:1px solid var(--rule);padding-top:6px}
+.who b{display:block;font-family:var(--f-cond);font-weight:600;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2)}
+.who span{font-family:var(--f-head);font-weight:700;font-size:17px;line-height:1.2}
+.forecast{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;border:1.5px solid var(--ink);padding:12px 14px}
+.forecast svg{width:54px;height:54px}
+.forecast b{font-family:var(--f-cond);font-weight:600;font-size:12px;letter-spacing:.2em;text-transform:uppercase}
+.forecast p{margin:2px 0 0;font-size:14px;line-height:1.35}
+.fine{display:grid;gap:10px;grid-template-columns:1fr 1fr}
+.fine div{border-left:3px solid var(--ink);padding:2px 0 2px 10px}
+.fine b{display:block;font-family:var(--f-cond);font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--red)}
+.fine span{display:block;font-family:var(--f-head);font-weight:700;font-size:16px;line-height:1.2}
+.fine small{display:block;font-size:13px;line-height:1.35;color:var(--ink-2)}
+.classifieds{border-top:3px double var(--rule);padding-top:8px;display:grid;gap:8px}
+.classifieds .ads{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ad{border:1px solid var(--rule);padding:7px 9px;font-size:12.5px;line-height:1.3}
+.ad b{display:block;font-family:var(--f-cond);font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.ad a{font-family:var(--f-cond);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--red)}
+
+/* ---------- PAGE 7: reply coupon ---------- */
+.coupon{position:relative;border:2px dashed var(--ink);padding:20px 16px 18px;display:grid;gap:12px;background:rgba(255,255,255,.4)}
+.coupon .scissors{position:absolute;top:-13px;left:18px;background:var(--paper);padding:0 6px;width:34px;height:24px}
+.coupon h3{margin:0;font-family:var(--f-head);font-weight:900;font-size:28px;line-height:1;text-align:center}
+.coupon .dl{text-align:center;font-family:var(--f-cond);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2)}
+.f{display:grid;gap:5px;min-width:0}
+.f label,.f legend{font-family:var(--f-cond);font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;padding:0}
+fieldset.f{border:0;margin:0;padding:0}
+.f input,.f select,.f textarea{width:100%;min-height:44px;border:0;border-bottom:1.5px solid var(--ink);background:transparent;font:inherit;font-size:16px;color:var(--ink);padding:6px 2px;border-radius:0}
+.f textarea{min-height:64px;resize:vertical}
+.f select{appearance:auto}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.choice label{cursor:pointer;position:relative;font-family:var(--f-head);font-weight:400;letter-spacing:0;text-transform:none;font-size:16px}
+.choice input{position:absolute;opacity:0}
+.choice span{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 10px;border:1.5px solid var(--ink);font-family:var(--f-head);font-style:italic;font-size:16px}
+.choice span::before{content:"";width:16px;height:16px;border:1.5px solid var(--ink);flex:none}
+.choice input:checked+span::before{background:var(--ink);box-shadow:inset 0 0 0 3px #fbf8ef}
+.choice input:focus-visible+span{outline:2px solid var(--red);outline-offset:2px}
+.meals{display:grid;gap:8px}
+.r-msg{margin:0;color:var(--red);font-size:14px}
+.thanks{text-align:center;display:grid;gap:10px;justify-items:center}
+.thanks .t-big{margin:0;font-family:var(--f-head);font-weight:900;font-size:34px}
+.thanks p{margin:0}
+.thanks small{font-family:var(--f-cond);font-size:10.5px;letter-spacing:.16em;color:var(--muted)}
+
+/* ---------- PAGE 8: late edition ---------- */
+.ticker{overflow:hidden;background:var(--ink);color:var(--paper);border-block:3px double var(--paper)}
+.ticker div{display:flex;gap:40px;width:max-content;padding:9px 0;animation:tick 26s linear infinite;font-family:var(--f-cond);font-weight:500;font-size:13px;letter-spacing:.2em;text-transform:uppercase}
+@keyframes tick{to{transform:translateX(-50%)}}
+.clock{display:grid;grid-template-columns:repeat(4,1fr);border:1.5px solid var(--ink)}
+.clock div{text-align:center;padding:12px 4px;border-right:1px solid var(--ink)}
+.clock div:last-child{border-right:0}
+.clock b{display:block;font-family:var(--f-head);font-weight:900;font-size:clamp(34px,10vw,52px);line-height:1;font-variant-numeric:tabular-nums}
+.clock span{font-family:var(--f-cond);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2)}
+.closing{text-align:center;display:grid;gap:10px;justify-items:center}
+.closing .h2{font-size:clamp(38px,10vw,62px)}
+.closing p{margin:0;font-size:17px;color:var(--ink-2)}
+.hashtag{font-family:var(--f-cond);font-weight:600;letter-spacing:.14em;color:var(--red)}
+.theend{display:inline-block;margin-top:6px;padding:6px 16px;border:1.5px solid var(--ink);font-family:var(--f-head);font-style:italic;font-weight:700;font-size:18px;transform:rotate(-3deg)}
+.credit{font-family:var(--f-cond);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------- opening: the paper spins in, then unfolds ---------- */
+.press{position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:radial-gradient(90% 70% at 50% 45%,#3a342c,#0f0d0b 75%);perspective:1600px;transition:opacity .7s ease}
+.press .rays{position:absolute;inset:-50%;background:repeating-conic-gradient(from 0deg,rgba(255,240,210,.05) 0 8deg,transparent 8deg 16deg);animation:spin 60s linear infinite;pointer-events:none}
+@keyframes spin{to{transform:rotate(1turn)}}
+.paper{--w:min(84vw,calc(84svh * .62),420px);position:relative;width:var(--w);height:calc(var(--w) * .8);transform-style:preserve-3d;cursor:pointer;
+  animation:spinin 1.6s cubic-bezier(.2,.75,.25,1) .2s both}
+@keyframes spinin{0%{transform:scale(.04) rotate(-900deg);opacity:0}15%{opacity:1}100%{transform:scale(1) rotate(-3deg)}}
+.half{position:absolute;left:0;right:0;height:100%;background:var(--paper) url(assets/paper.webp);background-size:300px;padding:6% 7% 0;overflow:hidden;backface-visibility:hidden}
+.half.top{top:0;box-shadow:0 26px 50px rgba(0,0,0,.55);display:flex;flex-direction:column;gap:4%}
+.half.top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:16px;background:linear-gradient(transparent,rgba(60,40,10,.18))}
+.half.bot{top:100%;transform-origin:50% 0;transform:rotateX(180deg);padding-top:3%}
+.paper.open .half.bot{transition:transform 1s cubic-bezier(.5,.05,.25,1);transform:rotateX(0deg)}
+.half .m{font-family:var(--f-mast);font-size:calc(var(--w) * .11);line-height:1;text-align:center;white-space:nowrap}
+.half .dl{display:flex;justify-content:space-between;border-top:3px double var(--rule);border-bottom:1px solid var(--rule);padding:3px 0;font-family:var(--f-cond);font-size:calc(var(--w) * .022);letter-spacing:.14em;text-transform:uppercase}
+.half .hl{white-space:nowrap;font-family:var(--f-head);font-weight:900;text-transform:uppercase;text-align:center;font-size:calc(var(--w) * .1);line-height:.92}
+.half .hl i{font-weight:400;text-transform:none}
+.half .sub{text-align:center;font-family:var(--f-head);font-style:italic;font-size:calc(var(--w) * .05)}
+.half .ph{height:72%;background:#fff;padding:4px}
+.half .ph img{width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+.half .tx{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6%;margin-top:4%}
+.half .tx i{height:5px;background:rgba(40,36,30,.25);box-shadow:0 9px 0 rgba(40,36,30,.25),0 18px 0 rgba(40,36,30,.25)}
+.press .tap{position:absolute;left:0;right:0;bottom:calc(9svh + env(safe-area-inset-bottom,0px));display:grid;justify-items:center;gap:8px;text-align:center;opacity:0;animation:fadein .6s ease 1.9s forwards;pointer-events:none}
+.press .tap b{font-family:var(--f-cond);font-weight:600;font-size:13px;letter-spacing:.3em;text-transform:uppercase;color:#f3e7cc;padding:10px 20px;border:1px solid rgba(243,231,204,.6);animation:breathe 2.4s ease-in-out 2.5s infinite}
+.press .tap small{font-family:var(--f-body);font-style:italic;color:rgba(243,231,204,.75);font-size:14px}
+.press .extra{position:absolute;top:calc(9svh + env(safe-area-inset-top,0px));left:0;right:0;text-align:center;font-family:var(--f-cond);font-weight:600;font-size:clamp(26px,8vw,40px);letter-spacing:.14em;color:#f3e7cc;opacity:0;animation:fadein .5s ease 1.6s forwards}
+.press .extra span{color:#e35b4c}
+@keyframes fadein{to{opacity:1}}
+@keyframes breathe{50%{opacity:.55}}
+.press .hit{position:absolute;inset:0;border:0;background:none;cursor:pointer;z-index:3}
+.press.opening .tap,.press.opening .extra{opacity:0!important;transition:opacity .3s}
+.press.opening .paper{animation:none;transform:rotate(0deg) translateY(calc(var(--w) * -.4));transition:transform .9s cubic-bezier(.5,.05,.25,1)}
+.press.zoom .paper{transform:translateY(calc(var(--w) * -.4)) scale(3.2);transition:transform .8s cubic-bezier(.6,0,.4,1)}
+.press.zoom{opacity:0;transition:opacity .6s ease .35s}
+.press.gone{display:none}
+
+/* tap anywhere: an inked stamp thumps down */
+.tapstamp{position:fixed;z-index:30;pointer-events:none;font-family:var(--f-cond);font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--red);
+  border:3px double var(--red);border-radius:5px;padding:5px 12px;font-size:clamp(20px,6vw,28px);line-height:1;white-space:nowrap;mix-blend-mode:multiply;
+  animation:tapthump 1.6s ease forwards}
+@keyframes tapthump{0%{opacity:0;transform:translate(-50%,-50%) rotate(var(--r)) scale(2)}14%{opacity:.9;transform:translate(-50%,-50%) rotate(var(--r)) scale(1)}70%{opacity:.85}100%{opacity:0;transform:translate(-50%,-50%) rotate(var(--r)) scale(1)}}
+
+.previewbar{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:35;display:flex;align-items:center;gap:10px;padding:5px 5px 5px 14px;background:var(--ink);color:var(--paper);white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.previewbar span{font-family:var(--f-cond);font-size:11px;letter-spacing:.24em}
+.previewbar .btn{min-height:34px;padding:0 14px;font-size:11px;background:var(--paper);color:var(--ink);border-color:var(--paper)}
+body.is-preview .folio{display:none}
+body.is-preview .sheet{padding-top:calc(60px + env(safe-area-inset-top,0px))}
+
+/* entrance motion when a page comes into view */
+.page.play .in{animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+.page.play .in:nth-child(2){animation-delay:.08s}.page.play .in:nth-child(3){animation-delay:.16s}.page.play .in:nth-child(4){animation-delay:.24s}.page.play .in:nth-child(5){animation-delay:.32s}.page.play .in:nth-child(6){animation-delay:.4s}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .deck{scroll-behavior:auto}
+  .page.play .in,.turn i,.ticker div,.press .rays,.paper,.press .tap b,.stop::before{animation:none!important}
+  .press .tap,.press .extra{animation:none;opacity:1}
+}
+</style>
+</head>
+<body>
+
+<!-- opening -->
+<div class="press" id="press">
+  <div class="rays"></div>
+  <div class="extra" aria-hidden="true">EXTRA! <span>EXTRA!</span></div>
+  <div class="paper" id="paper" aria-hidden="true">
+    <div class="half top">
+      <div class="m" id="pMast">The Wedding Chronicle</div>
+      <div class="dl"><span id="pVol">Vol. I</span><span id="pDate"></span><span>Special edition</span></div>
+      <div class="hl" id="pHead">Olivia <i>&amp;</i> James</div>
+      <div class="sub">finally tie the knot</div>
+    </div>
+    <div class="half bot">
+      <div class="ph"><img src="assets/portrait.jpg" alt="" id="pPhoto"></div>
+      <div class="tx"><i></i><i></i><i></i></div>
+    </div>
+  </div>
+  <div class="tap"><b>Tap to read all about it</b><small id="pFor"></small></div>
+  <button type="button" class="hit" id="openBtn" aria-label="Open the invitation"></button>
+</div>
+
+<main class="deck" id="deck">
+
+  <!-- 1. front page -->
+  <section class="page" id="p1" data-name="Front page">
+    <div class="sheet">
+      <div class="ears in">
+        <div class="ear"><b>Weather</b>100% chance of love</div>
+        <span class="slug" id="price">Price: your presence</span>
+        <div class="ear r"><b>Est.</b><span id="est">where it all began</span></div>
+      </div>
+      <h1 class="mast in" id="mast">The Wedding Chronicle</h1>
+      <div class="dateline in"><span id="vol">Vol. I · No. 1</span><span id="fullDate"></span><span id="place">Special edition</span></div>
+      <h2 class="headline in" id="headline"><span id="hB">Olivia</span> <span class="amp">&amp;</span> <span id="hG">James</span></h2>
+      <div class="deck2 in"><span>finally tie the</span>
+        <svg viewBox="0 0 120 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-label="knot"><path d="M2 22c14 0 22-14 36-14 12 0 14 18 26 18s14-18 26-18c10 0 18 8 28 8"/><path d="M2 18c14 0 22 14 36 14 12 0 14-18 26-18s14 18 26 18c10 0 18-8 28-8"/><path d="M30 6c10 6 10 22 0 28M90 6c-10 6-10 22 0 28" stroke-width="1.6"/></svg>
+      </div>
+      <div class="front in">
+        <figure class="photo"><img src="assets/portrait.jpg" alt="The couple" id="heroImg"><figcaption id="heroCap"></figcaption><div class="label" id="delivered" hidden>Special delivery for<b id="deliveredTo"></b></div></figure>
+        <div class="story">
+          <span class="byline" id="byline"></span>
+          <hr class="rule">
+          <p class="lede drop" id="lead"></p>
+          <button class="more" type="button" data-next>The date, on page 2 →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. stop press -->
+  <section class="page" id="p2" data-name="The date">
+    <div class="sheet mid">
+      <span class="folio">PAGE 2</span>
+      <span class="stop in">Stop press</span>
+      <h2 class="h2 in">The date <i>has been set</i></h2>
+      <p class="hint in" id="scratchHint">Scratch the ink away to reveal it.</p>
+      <div class="reveal in" id="reveal">
+        <div class="when"><span class="dow" id="rDow"></span><span class="day" id="rDay"></span><span class="mon" id="rMon"></span><span class="at" id="rAt"></span></div>
+        <span class="stamp">Save the date</span>
+        <canvas id="scratch" aria-label="Scratch to reveal the date"></canvas>
+      </div>
+      <div class="stop-actions"><a class="btn solid" id="rCal" target="_blank" rel="noopener"></a></div>
+    </div>
+  </section>
+
+  <!-- 3. feature -->
+  <section class="page" id="p3" data-name="Our story">
+    <div class="sheet">
+      <span class="folio">PAGE 3</span>
+      <span class="kicker in">The love story</span>
+      <h2 class="h2 in" id="storyTitle"></h2>
+      <div class="clips in">
+        <figure class="photo"><span class="tape"></span><img src="assets/street.jpg" alt="" id="clip1" loading="lazy"><figcaption id="clip1Cap"></figcaption></figure>
+        <figure class="photo"><span class="tape"></span><img src="assets/hands.jpg" alt="" id="clip2" loading="lazy"><figcaption id="clip2Cap"></figcaption></figure>
+      </div>
+      <div class="cols in" id="storyText"></div>
+      <div class="pull in" id="pull"></div>
+    </div>
+  </section>
+
+  <!-- 4. order of the day -->
+  <section class="page" id="p4" data-name="Order of the day">
+    <div class="sheet mid">
+      <span class="folio">PAGE 4</span>
+      <span class="kicker in">On the day</span>
+      <h2 class="h2 in">Order <i>of the day</i></h2>
+      <ol class="order in" id="order"></ol>
+    </div>
+  </section>
+
+  <!-- 5. public notices -->
+  <section class="page" id="p5" data-name="Where and when">
+    <div class="sheet mid">
+      <span class="folio">PAGE 5</span>
+      <span class="kicker in">Public notices</span>
+      <h2 class="h2 in">Where <i>&amp;</i> when</h2>
+      <div class="notices in" id="notices"></div>
+    </div>
+  </section>
+
+  <!-- 6. who's who + forecast -->
+  <section class="page" id="p6" data-name="Good to know">
+    <div class="sheet">
+      <span class="folio">PAGE 6</span>
+      <span class="kicker in">Society pages</span>
+      <h2 class="h2 in">Who's who</h2>
+      <div class="who in" id="who"></div>
+      <div class="forecast in">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="24" cy="24" r="9"/><path d="M24 7v4M24 37v4M7 24h4M37 24h4M12 12l3 3M33 33l3 3M12 36l3-3M33 15l3-3"/><path d="M30 48h22a8 8 0 0 0-2-15.7A11 11 0 0 0 29 36a6 6 0 0 0 1 12z" fill="var(--paper)"/><path d="M41 41.5c-2.4-2.6-6.4-.6-5 2.6l5 5 5-5c1.4-3.2-2.6-5.2-5-2.6z" fill="var(--red)" stroke="none"/></svg>
+        <div><b>The forecast</b><p id="forecast"></p></div>
+      </div>
+      <div class="fine in" id="fine"></div>
+      <div class="classifieds in" id="classifieds"><span class="kicker" style="color:var(--ink)">Classifieds</span><div class="ads" id="ads"></div></div>
+    </div>
+  </section>
+
+  <!-- 7. reply coupon -->
+  <section class="page" id="rsvp" data-name="Reply">
+    <div class="sheet mid">
+      <span class="folio">PAGE 7</span>
+      <span class="kicker in">Letters to the couple</span>
+      <h2 class="h2 in">Kindly <i>reply</i></h2>
+      <div class="coupon in">
+        <svg class="scissors" viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7" cy="6" r="4.5"/><circle cx="7" cy="18" r="4.5"/><path d="M11 8l26 12M11 16L37 4"/></svg>
+        <h3>Reply coupon</h3>
+        <div class="dl" id="deadline"></div>
+        <div id="rsvpBox"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. late edition -->
+  <section class="page" id="p8" data-name="Late edition">
+    <div class="sheet mid">
+      
+      <div class="ticker in" aria-hidden="true"><div id="ticker"></div></div>
+      <span class="kicker in" id="countLabel">Counting down</span>
+      <div class="clock in" id="clock"><div><b data-u="d">00</b><span>Days</span></div><div><b data-u="h">00</b><span>Hours</span></div><div><b data-u="m">00</b><span>Minutes</span></div><div><b data-u="s">00</b><span>Seconds</span></div></div>
+      <div class="closing in">
+        <h2 class="h2" id="closeTitle"></h2>
+        <p id="closing"></p>
+        <span class="hashtag" id="hashtag"></span>
+        <span class="theend">The End</span>
+        <span class="credit">Printed with love by The Invitary</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="previewbar" id="previewbar" hidden><span>PREVIEW</span><a class="btn" id="buyLink" href="#" target="_blank" rel="noopener">Buy this design</a></div>
+
+<!-- The server replaces "null" with this customer's settings. Opened directly, the sample below is shown. -->
+<script id="invite-data" type="application/json">null</script>
+<script>
+/* =========================================================
+   SAMPLE CONTENT. Each customer's saved settings are merged over this.
+   ========================================================= */
+var DEFAULTS = {
+  timeZone: "Europe/London",
+  masthead: "",                                              // empty: "The <Bride> & <Groom> Times"
+  couple: { bride: "Olivia", groom: "James" },
+  fullNames: { bride: "Olivia Grace Bennett", groom: "James Edward Carter" },
+  hosts: "Together with their families",
+  request: "Olivia Bennett and James Carter request the pleasure of your company as they become husband and wife, in a garden in the Cotswolds, surrounded by everyone they love.",
+  place: "The Cotswolds",
+  since: "London, 2019",
+  guest: { name: "The Harrison Family", seats: 3 },
+  photos: {
+    hero: { src: "assets/portrait.jpg", caption: "PICTURED: The happy couple, moments after she said yes." },
+    one:  { src: "assets/street.jpg",   caption: "Spotted strolling hand in hand through St James's." },
+    two:  { src: "assets/hands.jpg",    caption: "Exhibit A: the ring." }
+  },
+  story: {
+    title: "How it all began",
+    text: [
+      "It started, as the best stories do, with a spilled coffee. One rainy Tuesday in a tiny café off Marylebone High Street, James knocked Olivia's flat white across her notebook, and spent the next hour making it up to her.",
+      "Sources close to the couple confirm that the hour turned into dinner, the dinner into a weekend, and the weekend into five years of Sunday walks, terrible puns and an alarming number of houseplants.",
+      "Last autumn, on the same café's corner table, James asked a question of his own. Witnesses report that Olivia said yes before he had finished asking."
+    ]
+  },
+  quote: { text: "Whatever our souls are made of, his and mine are the same.", by: "Emily Brontë" },
+  selectedEvents: ["ceremony", "reception"],
+  events: {
+    welcome:   { title: "Welcome Drinks", sub: "The evening before", start: "2027-06-18T19:00:00+01:00", hours: 3, venue: "The Willow Inn", address: "Mill Lane, Bibury, Gloucestershire GL7 5NW", note: "Relaxed drinks by the river. Come as you are." },
+    ceremony:  { title: "The Ceremony", sub: "Beneath the old oak", start: "2027-06-19T14:00:00+01:00", hours: 1, venue: "Ashcombe Gardens", address: "Ashcombe Lane, Cirencester, Gloucestershire GL7 6AB", note: "Please be seated by 1:40 pm." },
+    reception: { title: "The Reception", sub: "Dinner, toasts and dancing", start: "2027-06-19T16:30:00+01:00", hours: 7.5, venue: "The Garden Marquee", address: "Ashcombe Gardens, Cirencester, Gloucestershire GL7 6AB", note: "Long tables, speeches and dancing under festoon lights." },
+    brunch:    { title: "Farewell Brunch", sub: "One last toast", start: "2027-06-20T10:30:00+01:00", hours: 2, venue: "The Orangery", address: "Ashcombe Gardens, Cirencester, Gloucestershire GL7 6AB", note: "Coffee, pastries and one last goodbye." }
+  },
+  timeline: [
+    { time: "1:30 pm", title: "Guests arrive", note: "Welcome to the garden", icon: "arrive" },
+    { time: "2:00 pm", title: "The ceremony", note: "Beneath the old oak", icon: "rings" },
+    { time: "2:45 pm", title: "Drinks & photos", note: "Lawn games and canapés", icon: "drinks" },
+    { time: "4:30 pm", title: "Wedding breakfast", note: "Dinner in the marquee", icon: "dinner" },
+    { time: "7:00 pm", title: "Speeches & cake", note: "Raise a glass", icon: "cake" },
+    { time: "8:30 pm", title: "First dance", note: "Then the floor is yours", icon: "dance" }
+  ],
+  party: [
+    { role: "Parents of the bride", names: "Thomas & Anne Bennett" },
+    { role: "Parents of the groom", names: "Richard & Helen Carter" },
+    { role: "Maid of honour", names: "Sophie Bennett" },
+    { role: "Best man", names: "Tom Ashworth" }
+  ],
+  forecast: "Sunny spells of joy, scattered confetti in the afternoon and a 100% chance of happy tears. Dancing expected well into the night.",
+  details: [
+    { label: "Dress code", title: "Garden formal", text: "Summer suits and floaty dresses. Block heels are kind to the lawn." },
+    { label: "Little ones", title: "Adults only", text: "We love your little ones, but our day is adults only." }
+  ],
+  travel: {
+    stays: [
+      { name: "The Willow Inn", note: "10 minutes away. Mention our names for 15% off.", url: "" },
+      { name: "Rosebank Cottage B&B", note: "5 minutes away. Cosy and quiet.", url: "" }
+    ],
+    getting: "Nearest station: Kemble, a 15 minute taxi ride. Free parking on site."
+  },
+  gifts: { text: "Your presence is the greatest gift. If you'd like to give something, a contribution to our honeymoon would mean the world.", label: "View our registry", url: "" },
+  rsvp: { deadline: "2027-05-01", meals: ["Spring lamb", "Pan-roasted salmon", "Wild mushroom risotto (v)"], askSong: true },
+  hashtag: "#OliviaAndJamesSayIDo",
+  closing: "We can't wait to celebrate with you. Read all about it, in person.",
+  blessings: ["EXTRA!", "Congratulations!", "Hold the press!", "Hear, hear!", "Cheers!"]
+};
+var ORDER = ["welcome", "ceremony", "reception", "brunch"];
+function merge(base, over) {
+  if (Array.isArray(over) || over === null || typeof over !== "object") return over === undefined ? base : over;
+  var out = {}; for (var k in base) out[k] = base[k];
+  Object.keys(over).forEach(function (k) {
+    out[k] = (base && base[k] && typeof base[k] === "object" && !Array.isArray(base[k])) ? merge(base[k], over[k]) : over[k];
+  });
+  return out;
+}
+var INJECTED = (function () { try { return JSON.parse(document.getElementById("invite-data").textContent); } catch (e) { return null; } })();
+var C = merge(DEFAULTS, INJECTED || {});
+if (INJECTED && INJECTED.couple && !INJECTED.fullNames) C.fullNames = { bride: C.couple.bride, groom: C.couple.groom };
+if (INJECTED && INJECTED.couple && !INJECTED.hashtag) C.hashtag = "#" + (C.couple.bride + "And" + C.couple.groom).replace(/[^A-Za-z0-9]/g, "");
+if (INJECTED && INJECTED.couple && !INJECTED.request) C.request = C.fullNames.bride + " and " + C.fullNames.groom + " request the pleasure of your company as they become husband and wife, surrounded by everyone they love.";
+C.selectedEvents = (C.selectedEvents || []).filter(function (k) { return C.events[k]; });
+
+(function () {
+  var $ = function (s) { return document.querySelector(s); }, $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
+  var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+  var setText = function (s, t) { var el = $(s); if (el) el.textContent = t == null ? "" : t; };
+  var RM = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var TZ = C.timeZone || "Europe/London";
+  var fmt = function (d, o) { o.timeZone = TZ; return new Intl.DateTimeFormat("en-GB", o).format(d); };
+  var time = function (d) { return new Intl.DateTimeFormat("en-GB", { hour: "numeric", minute: "2-digit", hour12: true, timeZone: TZ }).format(d).replace(":00", "").replace(" ", " "); };
+  var gcal = function (d) { return d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z"; };
+  var B = C.couple.bride, G = C.couple.groom;
+
+  var evs = ORDER.filter(function (k) { return C.selectedEvents.indexOf(k) > -1; }).map(function (k) { var e = C.events[k]; return Object.assign({ key: k }, e, { date: new Date(e.start) }); });
+  var main = evs.filter(function (e) { return e.key === "ceremony"; })[0] || evs[0];
+  var calUrl = function (e) {
+    var end = new Date(e.date.getTime() + (e.hours || 3) * 36e5), where = e.venue + ", " + e.address;
+    return "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(e.title + " · " + B + " & " + G) +
+      "&dates=" + gcal(e.date) + "/" + gcal(end) + "&location=" + encodeURIComponent(where) + "&ctz=" + encodeURIComponent(TZ);
+  };
+  var mapUrl = function (e) { return e.map || "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(e.venue + ", " + e.address); };
+  var days = main ? Math.max(0, Math.ceil((main.date - Date.now()) / 864e5)) : 0;
+
+  /* ---------- front page ---------- */
+  var mast = C.masthead || ("The " + B + " & " + G + " Times");
+  setText("#mast", mast); setText("#pMast", mast);
+  setText("#hB", B); setText("#hG", G);
+  $("#pHead").innerHTML = "<span>" + esc(B) + "</span> <i>&amp;</i> <span>" + esc(G) + "</span>";
+  var longDate = main ? fmt(main.date, { weekday: "long", day: "numeric", month: "long", year: "numeric" }) : "";
+  setText("#fullDate", longDate); setText("#pDate", main ? fmt(main.date, { day: "numeric", month: "short", year: "numeric" }) : "");
+  setText("#vol", "Vol. I · No. " + (days || 1)); setText("#pVol", days ? days + " days to go" : "Vol. I");
+  setText("#place", C.place || "Special edition");
+  setText("#est", C.since || "where it all began");
+  setText("#byline", C.hosts || "Announced by their families");
+  setText("#lead", C.request);
+  var ph = C.photos || {};
+  if (ph.hero && ph.hero.src) { $("#heroImg").src = ph.hero.src; $("#pPhoto").src = ph.hero.src; }
+  setText("#heroCap", ph.hero && ph.hero.caption);
+  if (C.guest && C.guest.name) { $("#delivered").hidden = false; setText("#deliveredTo", C.guest.name); setText("#pFor", "Delivered to " + C.guest.name); }
+  if (C.preview) { document.body.classList.add("is-preview"); $("#previewbar").hidden = false; if (C.buyUrl) $("#buyLink").href = C.buyUrl; else $("#buyLink").hidden = true; }
+
+  // headlines and mastheads shrink to fit long names
+  function fit(el, minPx) {
+    if (!el || !el.offsetWidth) return;
+    // measured left-aligned: centred text that overflows on both sides would hide half its overflow
+    el.style.fontSize = ""; el.style.textAlign = "left"; var fs = parseFloat(getComputedStyle(el).fontSize);
+    while (el.scrollWidth > el.clientWidth + 1 && fs > minPx) { fs -= 1; el.style.fontSize = fs + "px"; }
+    el.style.textAlign = "";
+  }
+  function fitHead(el, minPx) {
+    // one line if it fits at a readable size; otherwise the two names stack, each on its own line
+    if (!el || !el.offsetWidth) return;
+    el.classList.remove("stacked"); fit(el, minPx);
+    if (el.scrollWidth > el.clientWidth + 1) { el.classList.add("stacked"); el.style.fontSize = ""; fit(el, 18); }
+  }
+  function fitAll() { fit($("#mast"), 18); fitHead($("#headline"), 34); fit($("#pMast"), 10); fitHead($("#pHead"), 16); }
+  fitAll(); addEventListener("resize", fitAll); if (document.fonts) document.fonts.ready.then(fitAll);
+
+  /* ---------- stop press ---------- */
+  if (main) {
+    setText("#rDow", fmt(main.date, { weekday: "long" }));
+    setText("#rDay", fmt(main.date, { day: "numeric" }));
+    setText("#rMon", fmt(main.date, { month: "long", year: "numeric" }));
+    setText("#rAt", time(main.date) + " · " + main.venue);
+    var rc = $("#rCal"); rc.href = calUrl(main); rc.textContent = "Add to my calendar";
+  }
+  var sc = $("#scratch"), sx = sc.getContext("2d"), revealed = false, drawing = false, last = null, moves = 0;
+  function paintInk() {
+    if (revealed) return;
+    var r = sc.getBoundingClientRect(); if (!r.width) return;
+    var d = Math.min(devicePixelRatio || 1, 2); sc.width = r.width * d; sc.height = r.height * d; sx.setTransform(d, 0, 0, d, 0, 0);
+    sx.globalCompositeOperation = "source-over";
+    // dense newsprint "ink": rows of grey type on a smudged black block
+    sx.fillStyle = "#2a2723"; sx.fillRect(0, 0, r.width, r.height);
+    sx.fillStyle = "rgba(255,255,255,.06)";
+    for (var y = 10; y < r.height; y += 9) for (var x = 8; x < r.width - 8; x += 6 + Math.random() * 30) { var w = 8 + Math.random() * 40; sx.fillRect(x, y, Math.min(w, r.width - 8 - x), 3); x += w; }
+    var g = sx.createRadialGradient(r.width * .3, r.height * .3, 10, r.width * .5, r.height * .5, r.width * .8);
+    g.addColorStop(0, "rgba(255,255,255,.08)"); g.addColorStop(1, "rgba(0,0,0,.25)"); sx.fillStyle = g; sx.fillRect(0, 0, r.width, r.height);
+    sx.textAlign = "center"; sx.fillStyle = "#f3eee2";
+    sx.font = "600 " + Math.round(r.width * .085) + "px Oswald, 'Arial Narrow', sans-serif"; sx.fillText("SCRATCH HERE", r.width / 2, r.height / 2);
+    sx.font = "italic " + Math.round(r.width * .04) + "px 'Libre Caslon Text', Georgia, serif"; sx.fillText("to reveal the big day", r.width / 2, r.height / 2 + r.width * .07);
+  }
+  function spos(e) { var r = sc.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+  function scratchAt(p) {
+    sx.globalCompositeOperation = "destination-out"; sx.lineCap = "round"; sx.lineJoin = "round"; sx.lineWidth = 46;
+    sx.beginPath(); sx.moveTo(last ? last.x : p.x, last ? last.y : p.y); sx.lineTo(p.x, p.y); sx.stroke(); last = p;
+    if (++moves % 8 === 0) checkCleared();
+  }
+  function checkCleared() {
+    try {
+      var data = sx.getImageData(0, 0, sc.width, sc.height).data, clear = 0, n = 0;
+      for (var i = 3; i < data.length; i += 4 * 48) { n++; if (data[i] < 40) clear++; }
+      if (clear / n > .5) doReveal();
+    } catch (e) { doReveal(); }
+  }
+  function doReveal() { if (revealed) return; revealed = true; $("#reveal").classList.add("done"); setText("#scratchHint", "Mark your calendar."); }
+  sc.addEventListener("pointerdown", function (e) { drawing = true; last = null; sc.setPointerCapture && sc.setPointerCapture(e.pointerId); scratchAt(spos(e)); });
+  sc.addEventListener("pointermove", function (e) { if (drawing) scratchAt(spos(e)); });
+  ["pointerup", "pointercancel", "pointerleave"].forEach(function (t) { sc.addEventListener(t, function () { drawing = false; last = null; }); });
+  if (RM) doReveal();
+
+  /* ---------- feature ---------- */
+  setText("#storyTitle", (C.story && C.story.title) || "How it all began");
+  $("#storyText").innerHTML = ((C.story && C.story.text) || []).map(function (p, i) { return "<p" + (i ? "" : ' class="drop"') + ">" + esc(p) + "</p>"; }).join("");
+  [["one", "#clip1", "#clip1Cap"], ["two", "#clip2", "#clip2Cap"]].forEach(function (x) {
+    var p = ph[x[0]]; var fig = $(x[1]).closest("figure");
+    if (!p || !p.src) { fig.remove(); return; }
+    $(x[1]).src = p.src; setText(x[2], p.caption);
+  });
+  if (!$(".clips figure")) $(".clips").remove();
+  if (C.quote && C.quote.text) $("#pull").innerHTML = "“" + esc(C.quote.text) + "”" + (C.quote.by ? "<small>" + esc(C.quote.by) + "</small>" : ""); else $("#pull").remove();
+
+  /* ---------- order of the day ---------- */
+  var ICON = {
+    arrive: '<path d="M10 54h44M16 54V24l16-12 16 12v30"/><path d="M27 54V38h10v16"/>',
+    rings:  '<circle cx="25" cy="38" r="12"/><circle cx="39" cy="38" r="12"/><path d="M21 18l4-6 4 6-4 6z"/>',
+    drinks: '<path d="M14 12h14l-2 18a5 5 0 0 1-10 0zM21 35v15M15 52h12"/><path d="M36 12h14l-2 18a5 5 0 0 1-10 0zM43 35v15M37 52h12"/><path d="M28 9l8 6"/>',
+    dinner: '<circle cx="32" cy="34" r="14"/><circle cx="32" cy="34" r="9"/><path d="M10 18v10a4 4 0 0 0 4 4v20M14 18v10M54 18c-4 2-5 8-5 14h5v20"/>',
+    cake:   '<path d="M14 52h36V36H14zM18 36V26h28v10M24 26V18h16v8M32 18v-6"/><path d="M14 44c6 3 12-3 18 0s12 3 18 0"/>',
+    dance:  '<circle cx="32" cy="20" r="9"/><path d="M23 20h18M32 11v18M26 13l12 14M38 13L26 27"/><path d="M14 54l8-8 6 6 8-10 8 8 6-4"/><path d="M32 4v7"/>',
+    car:    '<path d="M8 42h48v-8l-6-10H22l-8 10H8z"/><circle cx="18" cy="44" r="5"/><circle cx="46" cy="44" r="5"/><path d="M46 20c4-6 10-6 12-2M50 26l6 4"/>',
+    camera: '<rect x="10" y="20" width="44" height="30" rx="3"/><circle cx="32" cy="35" r="9"/><path d="M24 20l4-6h8l4 6"/>',
+    heart:  '<path d="M32 52S12 40 12 26a10 10 0 0 1 20-3 10 10 0 0 1 20 3c0 14-20 26-20 26z"/>'
+  };
+  $("#order").innerHTML = (C.timeline || []).map(function (t) {
+    return '<li><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICON[t.icon] || ICON.heart) + '</svg>' +
+      '<div><b>' + esc(t.time) + '</b><span>' + esc(t.title) + '</span>' + (t.note ? '<small>' + esc(t.note) + '</small>' : '') + '</div></li>';
+  }).join("");
+  if (!(C.timeline || []).length) $("#p4").remove();
+
+  /* ---------- notices ---------- */
+  var PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>';
+  var CAL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="5" width="17" height="15" rx="1"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>';
+  $("#notices").innerHTML = evs.map(function (e) {
+    return '<article class="notice"><span class="kicker">' + esc(e.sub || "Notice") + '</span><h3>' + esc(e.title) + '</h3>' +
+      '<div class="when">' + fmt(e.date, { weekday: "short", day: "numeric", month: "short", year: "numeric" }) + ' · ' + time(e.date) + '</div>' +
+      '<div class="where"><b>' + esc(e.venue) + '</b>' + esc(e.address) + '</div>' + (e.note ? '<p>' + esc(e.note) + '</p>' : '') +
+      '<div class="acts"><a class="btn solid" href="' + esc(mapUrl(e)) + '" target="_blank" rel="noopener">' + PIN + 'Directions</a><a class="btn" href="' + esc(calUrl(e)) + '" target="_blank" rel="noopener">' + CAL + 'Calendar</a></div></article>';
+  }).join("");
+
+  /* ---------- who's who, forecast, fine print, classifieds ---------- */
+  var party = (C.party || []).slice();
+  if (C.guest && C.guest.seats) party.push({ role: "Seats reserved for you", names: C.guest.seats + (C.guest.seats > 1 ? " guests" : " guest") });
+  $("#who").innerHTML = party.map(function (p) { return '<div><b>' + esc(p.role) + '</b><span>' + esc(p.names) + '</span></div>'; }).join("");
+  if (!party.length) $("#who").remove();
+  setText("#forecast", C.forecast);
+  $("#fine").innerHTML = (C.details || []).slice(0, 4).map(function (d) { return '<div><b>' + esc(d.label) + '</b><span>' + esc(d.title) + '</span><small>' + esc(d.text) + '</small></div>'; }).join("");
+  var ads = ((C.travel && C.travel.stays) || []).map(function (s) { return '<div class="ad"><b>' + esc(s.name) + '</b>' + esc(s.note) + (s.url ? ' <a href="' + esc(s.url) + '" target="_blank" rel="noopener">Book</a>' : '') + '</div>'; });
+  if (C.travel && C.travel.getting) ads.push('<div class="ad"><b>Getting there</b>' + esc(C.travel.getting) + '</div>');
+  if (C.gifts && C.gifts.text) ads.push('<div class="ad"><b>Gifts</b>' + esc(C.gifts.text) + (C.gifts.url ? ' <a href="' + esc(C.gifts.url) + '" target="_blank" rel="noopener">' + esc(C.gifts.label || "Registry") + '</a>' : '') + '</div>');
+  $("#ads").innerHTML = ads.join(""); if (!ads.length) $("#classifieds").remove();
+
+  /* ---------- reply coupon (same RSVP system as the other designs) ---------- */
+  var RS = C.rsvp;
+  if (RS) {
+    if (RS.deadline) setText("#deadline", "Kindly reply by " + fmt(new Date(RS.deadline + "T12:00:00Z"), { day: "numeric", month: "long", year: "numeric" }));
+    var RKEY = "fp-rsvp-" + (C.slug || "sample") + "-" + (C.guestKey || "");
+    var renderRsvp = function (sent) {
+      var box = $("#rsvpBox"), done = sent;
+      try { done = done || JSON.parse(localStorage.getItem(RKEY)); } catch (e) {}
+      if (done) {
+        box.innerHTML = '<div class="thanks"><p class="t-big">' + (done.attending === "yes" ? "See you there!" : "Thank you") + '</p><p>' + (done.attending === "yes" ? "We've saved your seat" + (done.count > 1 ? "s" : "") + ". We can't wait to celebrate with you." : "We'll miss you, and thank you for letting us know.") + '</p>' +
+          (C.slug ? '' : '<small>PREVIEW: REPLIES ARE SAVED ONCE THE INVITATION IS LIVE</small>') + '<button class="btn" type="button" id="rAgain">Change my reply</button></div>';
+        return;
+      }
+      var max = (C.guest && C.guest.seats) || 4, opts = "";
+      for (var i = 1; i <= max; i++) opts += '<option value="' + i + '">' + i + '</option>';
+      box.innerHTML = '<form id="rForm" novalidate style="display:grid;gap:12px">' +
+        '<div class="f"><label for="rName">Name' + (max > 1 ? 's' : '') + '</label><input id="rName" maxlength="80" autocomplete="name" value="' + esc(C.guest && C.guest.name) + '"></div>' +
+        '<fieldset class="f"><legend>Will you attend?</legend><div class="choice">' +
+        '<label><input type="radio" name="att" value="yes" id="rYes"><span>With bells on</span></label>' +
+        '<label><input type="radio" name="att" value="no" id="rNo"><span>Sadly, no</span></label></div></fieldset>' +
+        '<div id="rYesF" hidden style="display:grid;gap:12px">' +
+        '<div class="f"><label for="rCount">Number of guests</label><select id="rCount">' + opts + '</select></div>' +
+        (RS.meals && RS.meals.length ? '<div class="f"><label>Dinner choice</label><div class="meals" id="rMeals"></div></div>' : '') +
+        '<div class="f"><label for="rDiet">Dietary requirements</label><input id="rDiet" maxlength="200" placeholder="Allergies, vegetarian…"></div>' +
+        (RS.askSong ? '<div class="f"><label for="rSong">Request a song</label><input id="rSong" maxlength="120"></div>' : '') +
+        '</div>' +
+        '<div class="f"><label for="rNote">A note for the couple</label><textarea id="rNote" maxlength="600"></textarea></div>' +
+        '<p class="r-msg" id="rMsg" role="status" hidden></p>' +
+        '<button class="btn solid" type="submit" id="rSend">Send my reply</button></form>';
+      var meals = function () {
+        var m = $("#rMeals"); if (!m) return; var n = +$("#rCount").value, prev = $$("#rMeals select").map(function (x) { return x.value; }), h = "";
+        for (var k = 0; k < n; k++) h += '<select aria-label="Dinner choice for guest ' + (k + 1) + '"><option value="">Guest ' + (k + 1) + ': choose…</option>' +
+          RS.meals.map(function (o) { return '<option' + (prev[k] === o ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join("") + '</select>';
+        m.innerHTML = h;
+      };
+      $$('#rForm input[name="att"]').forEach(function (r) { r.addEventListener("change", function () { $("#rYesF").hidden = !$("#rYes").checked; }); });
+      $("#rCount").addEventListener("change", meals); meals();
+    };
+    document.addEventListener("click", function (e) { if (e.target.id === "rAgain") { try { localStorage.removeItem(RKEY); } catch (_) {} renderRsvp(); } });
+    document.addEventListener("submit", function (e) {
+      if (e.target.id !== "rForm") return;
+      e.preventDefault();
+      var msg = $("#rMsg"), send = $("#rSend"), yes = $("#rYes").checked, no = $("#rNo").checked;
+      var body = { slug: C.slug, guest: C.guestKey || null, name: $("#rName").value.trim(), attending: yes ? "yes" : no ? "no" : "",
+        count: yes ? +$("#rCount").value : 0, meals: yes ? $$("#rMeals select").map(function (x) { return x.value; }) : [],
+        dietary: yes ? ($("#rDiet").value || "").trim() : "", song: yes && $("#rSong") ? $("#rSong").value.trim() : "", message: $("#rNote").value.trim() };
+      var err = !body.name ? "Please add your name." : !body.attending ? "Please let us know if you can come." : "";
+      if (err) { msg.textContent = err; msg.hidden = false; return; }
+      msg.hidden = true;
+      var done = function () { try { localStorage.setItem(RKEY, JSON.stringify(body)); } catch (_) {} renderRsvp(body); if (yes) stampAt(innerWidth / 2, innerHeight * .4, "RSVP received"); };
+      if (!C.slug) return done();
+      send.disabled = true; send.textContent = "Sending…";
+      fetch("/api/rsvp", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.error || "Your reply didn't send. Please try again."); }); })
+        .then(done, function (x) { msg.textContent = x.message; msg.hidden = false; send.disabled = false; send.textContent = "Send my reply"; });
+    });
+    renderRsvp();
+  } else $("#rsvp").remove();
+
+  /* ---------- late edition ---------- */
+  var news = [B + " & " + G + " to wed", main ? longDate : "", "Guests advised to bring tissues", "Dance floor expected to be packed", "Read all about it", C.hashtag || ""].filter(Boolean);
+  $("#ticker").innerHTML = news.concat(news).map(function (n) { return "<span>★ " + esc(n) + "</span>"; }).join("");
+  setText("#countLabel", main ? "Counting down to " + main.title.replace(/^The /, "the ") : "Counting down");
+  setText("#closeTitle", B + " & " + G);
+  setText("#closing", C.closing);
+  setText("#hashtag", C.hashtag);
+  function tick() {
+    if (!main) return;
+    var ms = Math.max(0, main.date - Date.now()), d = Math.floor(ms / 864e5); ms -= d * 864e5;
+    var h = Math.floor(ms / 36e5); ms -= h * 36e5; var m = Math.floor(ms / 6e4), s = Math.floor((ms - m * 6e4) / 1e3);
+    var pad = function (n) { return String(n).padStart(2, "0"); };
+    [["d", d], ["h", h], ["m", m], ["s", s]].forEach(function (x) { var el = document.querySelector('#clock [data-u="' + x[0] + '"]'); if (el) el.textContent = pad(x[1]); });
+  }
+  tick(); setInterval(tick, 1000);
+
+  /* ---------- turn the page ---------- */
+  var CHEV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>';
+  var pages = $$(".page");
+  pages.forEach(function (p, i) { if (i < pages.length - 1) p.querySelector(".sheet").insertAdjacentHTML("beforeend", '<button class="turn" type="button" data-next><i>' + CHEV + '</i>Turn the page</button>'); });
+  document.addEventListener("click", function (e) {
+    var n = e.target.closest && e.target.closest("[data-next]"); if (!n) return;
+    var p = n.closest(".page"), nx = p && p.nextElementSibling; if (nx) nx.scrollIntoView({ behavior: RM ? "auto" : "smooth" });
+  });
+  var io = new IntersectionObserver(function (ents) {
+    ents.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      en.target.classList.remove("play"); void en.target.offsetWidth; en.target.classList.add("play");
+      if (en.target.id === "p2") setTimeout(paintInk, 50);
+    });
+  }, { root: $("#deck"), threshold: .55 });
+  pages.forEach(function (p) { io.observe(p); });
+  addEventListener("resize", function () { if (!revealed) paintInk(); });
+  document.addEventListener("keydown", function (e) {
+    var deck = $("#deck"), h = deck.clientHeight;
+    if (["ArrowDown", "PageDown"].indexOf(e.key) > -1) { e.preventDefault(); deck.scrollBy({ top: h, behavior: "smooth" }); }
+    if (["ArrowUp", "PageUp"].indexOf(e.key) > -1) { e.preventDefault(); deck.scrollBy({ top: -h, behavior: "smooth" }); }
+  });
+
+  /* ---------- tap anywhere: an inked stamp ---------- */
+  var opened = false, lastWord = -1;
+  function stampAt(x, y, word) {
+    var words = C.blessings || []; if (!word) { if (!words.length) return; var k; do { k = (Math.random() * words.length) | 0; } while (words.length > 1 && k === lastWord); lastWord = k; word = words[k]; }
+    var el = document.createElement("div"); el.className = "tapstamp"; el.textContent = word;
+    el.style.setProperty("--r", (Math.random() * 24 - 12).toFixed(1) + "deg");
+    el.style.left = Math.min(Math.max(x, 110), innerWidth - 110) + "px"; el.style.top = Math.min(Math.max(y, 70), innerHeight - 70) + "px";
+    document.body.appendChild(el); setTimeout(function () { el.remove(); }, 1700);
+  }
+  document.addEventListener("click", function (e) {
+    if (!opened || !e.target.closest) return;
+    if (e.target.closest("a,button,input,textarea,select,label,form,canvas,.reveal,.previewbar")) return;
+    stampAt(e.clientX, e.clientY);
+  });
+
+  /* ---------- opening ---------- */
+  var press = $("#press");
+  $("#openBtn").addEventListener("click", function () {
+    if (press.classList.contains("opening")) return;
+    if (RM) { press.classList.add("gone"); opened = true; return; }
+    press.classList.add("opening"); $("#paper").classList.add("open");
+    setTimeout(function () { press.classList.add("zoom"); }, 1250);
+    setTimeout(function () { press.classList.add("gone"); opened = true; fitAll(); stampAt(innerWidth / 2, innerHeight * .3, "EXTRA!"); }, 2100);
+  });
+})();
+</script>
+</body>
+</html>

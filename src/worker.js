@@ -36,6 +36,17 @@ const THEMES = {
     rsvpOnPage: false,
     shareMessage: "Assalam o Alaikum {guest}! With great joy, {couple} invite you to celebrate their wedding with them. Please open your invitation: {link}",
   },
+  // Front Page: the wedding as the only story in a vintage newspaper. English audience.
+  "front-page": {
+    name: "Front Page",
+    path: "/themes/front-page/",
+    og: "/themes/front-page/og.jpg",
+    events: ["welcome", "ceremony", "reception", "brunch"],
+    titles: { welcome: "Welcome Drinks", ceremony: "The Ceremony", reception: "The Reception", brunch: "Farewell Brunch" },
+    timeZone: "Europe/London",
+    rsvpOnPage: true,
+    shareMessage: "Extra, extra! Dear {guest}, {couple} are getting married, and you're invited. Read all about it: {link}",
+  },
   "ever-after": {
     name: "Ever After",
     path: "/themes/ever-after/",
