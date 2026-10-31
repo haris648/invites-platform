@@ -271,6 +271,13 @@ fieldset.f{border:0;margin:0;padding:0}
   animation:tapthump 1.6s ease forwards}
 @keyframes tapthump{0%{opacity:0;transform:translate(-50%,-50%) rotate(var(--r)) scale(2)}14%{opacity:.9;transform:translate(-50%,-50%) rotate(var(--r)) scale(1)}70%{opacity:.85}100%{opacity:0;transform:translate(-50%,-50%) rotate(var(--r)) scale(1)}}
 
+/* music on/off */
+#music{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:max(14px,env(safe-area-inset-left,0px));z-index:36;width:40px;height:40px;border-radius:50%;
+  display:grid;place-items:center;cursor:pointer;color:var(--ink);background:rgba(243,238,226,.92);border:1.5px solid var(--ink);box-shadow:0 4px 12px rgba(0,0,0,.25)}
+#music svg{width:18px;height:18px}
+#music .off,#music.muted .on{display:none}
+#music.muted .off{display:block}
+@media (min-width:900px){#music{left:max(12px,calc(50% - 410px - 56px))}}
 .previewbar{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:35;display:flex;align-items:center;gap:10px;padding:5px 5px 5px 14px;background:var(--ink);color:var(--paper);white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.35)}
 .previewbar span{font-family:var(--f-cond);font-size:11px;letter-spacing:.24em}
 .previewbar .btn{min-height:34px;padding:0 14px;font-size:11px;background:var(--paper);color:var(--ink);border-color:var(--paper)}
@@ -438,6 +445,10 @@ body.is-preview .sheet{padding-top:calc(60px + env(safe-area-inset-top,0px))}
   </section>
 </main>
 
+<button type="button" id="music" aria-label="Pause music" hidden>
+  <svg class="on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" stroke="none"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg>
+  <svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" stroke="none"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
+</button>
 <div class="previewbar" id="previewbar" hidden><span>PREVIEW</span><a class="btn" id="buyLink" href="#" target="_blank" rel="noopener">Buy this design</a></div>
 
 <!-- The server replaces "null" with this customer's settings. Opened directly, the sample below is shown. -->
@@ -506,6 +517,7 @@ var DEFAULTS = {
   gifts: { text: "Your presence is the greatest gift. If you'd like to give something, a contribution to our honeymoon would mean the world.", label: "View our registry", url: "" },
   rsvp: { deadline: "2027-05-01", meals: ["Spring lamb", "Pan-roasted salmon", "Wild mushroom risotto (v)"], askSong: true },
   hashtag: "#OliviaAndJamesSayIDo",
+  music: "assets/music.mp3",
   closing: "We can't wait to celebrate with you. Read all about it, in person.",
   blessings: ["EXTRA!", "Congratulations!", "Hold the press!", "Hear, hear!", "Cheers!"]
 };
@@ -784,14 +796,44 @@ C.selectedEvents = (C.selectedEvents || []).filter(function (k) { return C.event
   }
   document.addEventListener("click", function (e) {
     if (!opened || !e.target.closest) return;
-    if (e.target.closest("a,button,input,textarea,select,label,form,canvas,.reveal,.previewbar")) return;
+    if (e.target.closest("a,button,input,textarea,select,label,form,canvas,.reveal,.previewbar,#music")) return;
     stampAt(e.clientX, e.clientY);
+  });
+
+  /* ---------- music: starts softly as the paper unfolds, rises to a gentle volume, loops ---------- */
+  var VOL = .38, aud = null, actx = null, gain = null, muted = false, mBtn = $("#music");
+  function startMusic() {
+    if (!C.music || aud) return;
+    aud = new Audio(C.music); aud.loop = true; aud.preload = "auto";
+    // Web Audio sets the level, so the fade-in and volume also work on iPhone (which ignores audio.volume)
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (AC) {
+      try {
+        actx = new AC(); var src = actx.createMediaElementSource(aud); gain = actx.createGain();
+        src.connect(gain); gain.connect(actx.destination);
+        var t = actx.currentTime; gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(VOL, t + 5);
+      } catch (e) { actx = null; gain = null; }
+    }
+    if (!actx) { var v = 0; aud.volume = 0; var iv = setInterval(function () { v = Math.min(VOL, v + .02); aud.volume = v; if (v >= VOL) clearInterval(iv); }, 250); }
+    aud.play().catch(function () {});
+    mBtn.hidden = false;
+  }
+  mBtn.addEventListener("click", function () {
+    muted = !muted; mBtn.classList.toggle("muted", muted); mBtn.setAttribute("aria-label", muted ? "Play music" : "Pause music");
+    if (!aud) return;
+    if (muted) aud.pause(); else { if (actx && actx.state === "suspended") actx.resume(); aud.play().catch(function () {}); }
+  });
+  // pause when the guest leaves the tab or locks the phone, carry on when they come back
+  document.addEventListener("visibilitychange", function () {
+    if (!aud || muted) return;
+    if (document.hidden) aud.pause(); else { if (actx && actx.state === "suspended") actx.resume(); aud.play().catch(function () {}); }
   });
 
   /* ---------- opening ---------- */
   var press = $("#press");
   $("#openBtn").addEventListener("click", function () {
     if (press.classList.contains("opening")) return;
+    startMusic();
     if (RM) { press.classList.add("gone"); opened = true; return; }
     press.classList.add("opening"); $("#paper").classList.add("open");
     setTimeout(function () { press.classList.add("zoom"); }, 1250);
