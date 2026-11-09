@@ -47,6 +47,18 @@ const THEMES = {
     rsvpOnPage: true,
     shareMessage: "Extra, extra! Dear {guest}, {couple} are getting married, and you're invited. Read all about it: {link}",
   },
+  // Private: Haris & Filza's own wedding (Baraat & Nikah, Valima). Not listed in the shop, not available to try.
+  "haris-ki-shadi": {
+    name: "Haris ki Shadi",
+    private: true,
+    path: "/themes/haris-ki-shadi/",
+    og: "/themes/haris-ki-shadi/og.jpg",
+    events: ["baraat", "valima"],
+    titles: { baraat: "Baraat & Nikah", valima: "Valima" },
+    timeZone: "Asia/Karachi",
+    rsvpOnPage: false,
+    shareMessage: "Assalam o Alaikum {guest}! With great joy, Haris & Filza invite you to their wedding. Please open your invitation: {link}",
+  },
   "ever-after": {
     name: "Ever After",
     path: "/themes/ever-after/",
@@ -120,7 +132,7 @@ async function createDraft(req, env, ctx, url) {
   const email = clean(body.email, 120).toLowerCase();
   const events = Array.isArray(body.events) ? [...new Set(body.events)].filter((e) => theme?.events.includes(e)) : [];
 
-  if (!theme) return json({ error: "That design doesn't exist." }, 400);
+  if (!theme || theme.private) return json({ error: "That design doesn't exist." }, 400);
   if (!bride || !groom) return json({ error: "Add both the bride's and the groom's name." }, 400);
   if (!EMAIL_RE.test(email)) return json({ error: "Enter a valid email so we can send your preview link." }, 400);
   if (!events.length) return json({ error: "Pick at least one function." }, 400);
@@ -190,7 +202,7 @@ async function renderInvitation(req, env, ctx, url, slug, guestKey) {
 
   const c = config.couple || {};
   return serveTheme(env, url, theme, config, {
-    title: c.bride && c.groom ? `${c.bride} & ${c.groom}` : "Wedding Invitation",
+    title: config.pageTitle || (c.bride && c.groom ? `${c.bride} & ${c.groom}` : "Wedding Invitation"),
     description,
   });
 }
