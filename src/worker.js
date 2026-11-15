@@ -25,6 +25,17 @@ const THEMES = {
     rsvpOnPage: false,
     shareMessage: "Assalam o Alaikum {guest}! With great joy, {couple} invite you to celebrate their wedding with them. Please open your invitation: {link}",
   },
+  // Sawari: the wedding car drives the guest along a red-carpet road, stopping at a decorated gate for each function.
+  "sawari": {
+    name: "Sawari",
+    path: "/themes/sawari/",
+    og: "/themes/sawari/og.jpg",
+    events: ["mehndi", "nikkah", "baraat", "walima"],
+    titles: { mehndi: "Mehndi", nikkah: "Nikkah", baraat: "Baraat", walima: "Walima" },
+    timeZone: "Asia/Karachi",
+    rsvpOnPage: false,
+    shareMessage: "Assalam o Alaikum {guest}! With great joy, {couple} invite you to celebrate their wedding with them. Hop in, your invitation is here: {link}",
+  },
   // Resham: deep sage silk, a film for each function.
   "resham": {
     name: "Resham",
