@@ -220,10 +220,13 @@ html[lang=ar] .gfor b{font-weight:700;font-size:20px;line-height:2}
 #music svg{width:20px;height:20px}
 #music .off,#music.muted .on{display:none}
 #music.muted .off{display:block}
-#lang{position:absolute;z-index:12;right:calc(var(--sw) * .035);bottom:calc(var(--sw) * .035);height:40px;display:flex;align-items:center;gap:7px;padding:0 14px 0 10px;border-radius:99px;border:1px solid var(--gold);background:rgba(255,252,246,.92);color:var(--gold-d);cursor:pointer;box-shadow:0 4px 14px rgba(90,64,30,.18);direction:ltr;overflow:hidden}
+#lang{position:absolute;z-index:12;right:calc(var(--sw) * .035);bottom:calc(var(--sw) * .035);height:40px;display:flex;align-items:center;gap:3px;padding:0 4px 0 9px;border-radius:99px;border:1px solid var(--gold);background:rgba(255,252,246,.92);color:var(--gold-d);cursor:pointer;box-shadow:0 4px 14px rgba(90,64,30,.18);direction:ltr;overflow:hidden}
 #lang svg{width:20px;height:20px;flex:none}
-#lang .lb{font-size:15px;line-height:1;white-space:nowrap}
-#lang .lb.ar{font-family:"Noto Nastaliq Urdu","Amiri",serif;font-size:14px;line-height:2;margin-top:-2px}
+/* two-part switch: the language being shown is filled in gold */
+#lang .lb{height:30px;min-width:40px;padding:0 10px;border-radius:99px;display:grid;place-items:center;font-size:14px;line-height:1;white-space:nowrap;color:var(--gold-d);transition:background .3s,color .3s}
+#lang .lb[data-l=ar]{font-family:"Tajawal","Amiri",sans-serif;font-weight:700}
+#lang .lb[data-l=en]{font-family:"Marcellus",serif;letter-spacing:.06em}
+#lang .lb.on{background:linear-gradient(180deg,#c9a463,#a8823f);color:#fffaf0;box-shadow:0 2px 6px rgba(125,95,43,.3)}
 #lang::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.85) 50%,transparent 70%);transform:translateX(-120%)}
 #lang.shine::after{animation:shine 1.4s ease-in-out 2}
 @keyframes shine{to{transform:translateX(120%)}}
@@ -266,7 +269,7 @@ body.is-preview #lang{bottom:calc(var(--sw) * .035 + 52px)}
   </button>
   <button type="button" id="lang" hidden>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3z"/></svg>
-    <span class="lb" id="langLbl"></span>
+    <span class="lb" data-l="ar">عربي</span><span class="lb" data-l="en">EN</span>
   </button>
 </div>
 <canvas id="sparks" aria-hidden="true"></canvas>
@@ -489,8 +492,8 @@ if (Array.isArray(C.eventOrder)) ORDER = C.eventOrder.filter(function (k) { retu
     html.lang = LANG; html.dir = LANG === "ar" ? "rtl" : "ltr";
     $("#tapTxt").textContent = U("tap"); $("#cueTxt").textContent = U("scroll"); $("#gforLbl").textContent = U("for");
     $("#gate").setAttribute("aria-label", LANG === "ar" ? "افتح الدعوة" : "Open the invitation");
-    var lb = $("#langLbl"), other = LANG === "en" ? "ar" : "en";
-    lb.textContent = UI[LANG].switchTo; lb.className = "lb" + (other === "ar" ? " ar" : "");
+    var other = LANG === "en" ? "ar" : "en";
+    $$("#lang .lb").forEach(function (x) { x.classList.toggle("on", x.getAttribute("data-l") === LANG); });
     $("#lang").setAttribute("aria-label", other === "ar" ? "اقرأ الدعوة بالعربية" : "Read the invitation in English");
     $("#lang").hidden = LANGS.length < 2;
     mBtn.setAttribute("aria-label", LANG === "ar" ? (muted ? "تشغيل الموسيقى" : "إيقاف الموسيقى") : (muted ? "Play music" : "Mute music"));

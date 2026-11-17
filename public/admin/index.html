@@ -55,7 +55,7 @@ td .btn.danger{color:var(--error);border-color:rgba(240,163,122,.5)}
 
     <section class="card">
       <h2>Live invitations</h2>
-      <div class="tbl"><table><thead><tr><th>Link</th><th>Design</th><th>Status</th><th>Email</th><th></th></tr></thead><tbody id="invs"></tbody></table></div>
+      <div class="tbl"><table><thead><tr><th>Link</th><th>Design</th><th>Status</th><th>Opens</th><th>Email</th><th></th></tr></thead><tbody id="invs"></tbody></table></div>
       <details style="margin-top:14px"><summary class="muted" style="cursor:pointer">Create without a preview (private designs)</summary>
         <div class="row" style="margin-top:10px">
           <div class="field" style="flex:0 1 200px"><select id="newTpl" aria-label="Design"><option value="haris-ki-shadi">Haris ki Shadi</option><option value="lulua">Lulua</option></select></div>
@@ -81,6 +81,7 @@ td .btn.danger{color:var(--error);border-color:rgba(240,163,122,.5)}
           <a class="btn solid" id="accWa" href="#" target="_blank" rel="noopener">Send to couple on WhatsApp</a></div>
         <p class="msg" id="accMsg" hidden></p>
       </div>
+      <div class="card" style="background:#0b2122;gap:10px" id="stats"></div>
       <p class="muted" style="margin:0">Only include what differs from the design's sample: names, parents, message, RSVP number, and each function's date, venue and address. Dates use the format 2026-12-13T19:00:00+05:00.</p>
       <div class="field"><label class="label" for="edData">Invitation content (JSON)</label><textarea id="edData" spellcheck="false"></textarea></div>
       <div class="row">
@@ -141,10 +142,10 @@ async function loadAll() {
   drafts = d.drafts;
   renderDrafts();
   $("#invs").innerHTML = invitations.map((i) => `<tr>
-    <td>${copyBtn(location.origin + "/" + i.slug)}</td><td>${esc(i.template)}</td><td>${esc(i.status)}</td><td>${esc(i.email || "")}</td>
+    <td>${copyBtn(location.origin + "/" + i.slug)}</td><td>${esc(i.template)}</td><td>${esc(i.status)}</td><td title="Opens · people (devices)">${i.opens || 0} · ${i.people || 0}</td><td>${esc(i.email || "")}</td>
     <td><div class="actions"><button class="btn" type="button" data-edit="${esc(i.slug)}">Edit</button>
       <button class="btn danger" type="button" data-remove="${esc(i.slug)}">Delete</button></div></td></tr>`).join("")
-    || `<tr><td colspan="5" class="muted">No live invitations yet.</td></tr>`;
+    || `<tr><td colspan="6" class="muted">No live invitations yet.</td></tr>`;
 }
 function renderDrafts() {
   const pages = Math.max(1, Math.ceil(drafts.length / PER_PAGE));
@@ -219,12 +220,27 @@ async function openEditor(slug) {
   $("#edTitle").textContent = "/" + slug;
   $("#edData").value = JSON.stringify(data.invitation.data, null, 2);
   $("#edStatus").value = data.invitation.status;
-  $("#edOpen").href = "/" + slug;
+  $("#edOpen").href = "/" + slug + "?check";   // ?check: your own opens aren't counted
+  renderStats(data.stats);
   showAccess(data.access);
   $("#edMsg").hidden = true; $("#gMsg").hidden = true;
   $("#gEvents").innerHTML = data.events.map((e) => `<label><input type="checkbox" value="${esc(e)}" checked><span>${esc(e)}</span></label>`).join("");
   renderGuests(); renderRsvps();
   $("#editor").scrollIntoView({ behavior: "smooth" });
+}
+function renderStats(st) {
+  st = st || {};
+  const daily = (st.daily || []).slice().reverse(), max = Math.max(1, ...daily.map((d) => d.views));
+  $("#stats").innerHTML = `<span class="label">Opens</span>
+    <div class="row" style="gap:28px;align-items:baseline">
+      <div><b style="font-size:34px">${st.opens || 0}</b> <span class="muted">times opened</span></div>
+      <div><b style="font-size:34px">${st.people || 0}</b> <span class="muted">people (devices)</span></div>
+      <div class="muted">${st.lastAt ? "Last opened " + when(st.lastAt) : "Not opened yet"}</div></div>
+    ${daily.length ? `<div style="display:flex;gap:3px;align-items:flex-end;height:70px" title="Opens per day, last 30 days">${daily.map((d) =>
+      `<div title="${esc(d.day)}: ${d.views}" style="flex:1;min-width:6px;background:#c9a463;border-radius:3px 3px 0 0;height:${Math.max(4, Math.round(d.views / max * 70))}px"></div>`).join("")}</div>
+      <div class="muted mono" style="display:flex;justify-content:space-between;font-size:12px"><span>${esc(daily[0].day)}</span><span>${esc(daily[daily.length - 1].day)}</span></div>` : ""}
+    ${(st.countries || []).length ? `<div class="muted">Countries: ${st.countries.map((c) => esc(c.country) + " " + c.people).join(" · ")}</div>` : ""}
+    <p class="muted" style="margin:0;font-size:14px">Counts everyone who opens the main link or a guest link. WhatsApp's link preview and links opened with ?check (like the Open button here) aren't counted.</p>`;
 }
 function renderGuests() {
   const slug = current.invitation.slug;

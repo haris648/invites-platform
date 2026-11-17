@@ -210,7 +210,7 @@ table{width:100%;border-collapse:collapse;font-size:15px}
       '<p class="muted">' + (S.tier === "guests" ? "Use this link for groups or social media. For each guest, send their personal link from the Guests tab." : "Send this link to all your guests.") + '</p></section>' +
       '<section class="stats">' +
         stat(S.tier === "guests" ? g.length : "–", "Guests") + stat(S.tier === "guests" ? seats : "–", "Seats invited") +
-        stat(S.tier === "guests" ? opened : "–", "Opened") + stat(coming, "Coming") + '</section>' +
+        stat(S.tier === "guests" ? opened : (S.openedBy || 0), S.tier === "guests" ? "Opened" : "People opened") + stat(coming, "Coming") + '</section>' +
       (days !== null ? '<p class="muted" style="text-align:center">' + (days === 0 ? "Your celebrations begin today" : days + (days === 1 ? " day" : " days") + " until your first function") + '</p>' : '') +
       '<section class="card"><h3>' + (left ? "Finish your invitation" : "Your invitation is ready") + '</h3>' +
       '<ul class="check">' + todo.map(function (t) { return '<li class="' + (t[1] ? "done" : "") + '"><i>' + (t[1] ? "✓" : "") + '</i><span>' + esc(t[0]) + '</span></li>'; }).join("") + '</ul>' +

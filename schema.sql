@@ -68,3 +68,21 @@ CREATE TABLE IF NOT EXISTS guest_views (
   views           INTEGER NOT NULL DEFAULT 1,
   PRIMARY KEY (invitation_slug, key)
 );
+
+-- Opens of live invitations (main link and guest links). Created automatically by the Worker too.
+CREATE TABLE IF NOT EXISTS invitation_daily (
+  invitation_slug TEXT NOT NULL,
+  day TEXT NOT NULL,                 -- YYYY-MM-DD, Pakistan time
+  views INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (invitation_slug, day)
+);
+CREATE TABLE IF NOT EXISTS invitation_visitors (
+  invitation_slug TEXT NOT NULL,
+  visitor TEXT NOT NULL,             -- random id kept in a cookie on the visitor's device
+  first_at INTEGER NOT NULL,
+  last_at INTEGER NOT NULL,
+  views INTEGER NOT NULL DEFAULT 1,
+  country TEXT,
+  guest_key TEXT,
+  PRIMARY KEY (invitation_slug, visitor)
+);

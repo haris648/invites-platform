@@ -205,6 +205,13 @@ async function renderInvitation(req, env, ctx, url, slug, guestKey) {
   const config = { guest: null, ...JSON.parse(inv.data), slug, guestKey: guestKey || null };
   let description = "You're invited";
 
+  // Opens are counted for every visitor, except link-preview bots and anyone opening with ?check (you and the couple checking it)
+  const ua = req.headers.get("user-agent") || "";
+  const counts = !url.searchParams.has("check") && !/bot|crawler|spider|preview|whatsapp|facebookexternalhit|telegram|slack|discord|skype|headless/i.test(ua);
+  const cookieId = (req.headers.get("cookie") || "").match(/(?:^|;\s*)inv_v=([a-z0-9]{16})/)?.[1];
+  const visitor = cookieId || randomId(16);
+  const headers = cookieId || !counts ? {} : { "set-cookie": `inv_v=${visitor}; Path=/; Max-Age=31536000; SameSite=Lax; Secure; HttpOnly` };
+
   if (guestKey) {
     const guest = await env.DB.prepare("SELECT * FROM guests WHERE invitation_slug = ? AND key = ?").bind(slug, guestKey).first();
     if (!guest) return notFound(env, url);
@@ -212,9 +219,8 @@ async function renderInvitation(req, env, ctx, url, slug, guestKey) {
     const allowed = guest.events ? JSON.parse(guest.events) : null;
     if (allowed?.length) config.selectedEvents = (config.selectedEvents || theme.events).filter((e) => allowed.includes(e));
     description = `${guest.name}, you're invited`;
-    // Remember that this guest opened their invitation (ignore link-preview bots and the couple checking it)
-    const ua = req.headers.get("user-agent") || "";
-    if (!url.searchParams.has("check") && !/bot|crawler|spider|preview|whatsapp|facebookexternalhit|telegram|slack|discord|skype/i.test(ua)) {
+    // Remember that this guest opened their invitation
+    if (counts) {
       const now = Date.now();
       ctx.waitUntil(env.DB.prepare(
         "INSERT INTO guest_views (invitation_slug, key, first_at, last_at, views) VALUES (?, ?, ?, ?, 1) " +
@@ -223,16 +229,36 @@ async function renderInvitation(req, env, ctx, url, slug, guestKey) {
     }
   }
 
+  if (counts) {
+    const now = Date.now(), country = req.cf?.country || null;
+    const day = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Karachi" }).format(now);   // days in your time zone, e.g. 2026-11-18
+    ctx.waitUntil(env.DB.batch([
+      env.DB.prepare("INSERT INTO invitation_daily (invitation_slug, day, views) VALUES (?, ?, 1) ON CONFLICT(invitation_slug, day) DO UPDATE SET views = views + 1").bind(slug, day),
+      env.DB.prepare("INSERT INTO invitation_visitors (invitation_slug, visitor, first_at, last_at, views, country, guest_key) VALUES (?, ?, ?, ?, 1, ?, ?) " +
+        "ON CONFLICT(invitation_slug, visitor) DO UPDATE SET last_at = excluded.last_at, views = views + 1").bind(slug, visitor, now, now, country, guestKey || null),
+    ]).catch(() => {}));
+  }
+
   const c = config.couple || {};
   return serveTheme(env, url, theme, config, {
     title: config.pageTitle || (c.bride && c.groom ? `${c.bride} & ${c.groom}` : "Wedding Invitation"),
     description,
-  });
+  }, headers);
+}
+
+// Opens of one invitation: totals, the last 30 days, and countries
+async function viewStats(env, slug) {
+  const [tot, daily, countries] = await env.DB.batch([
+    env.DB.prepare("SELECT COUNT(*) AS people, COALESCE(SUM(views), 0) AS opens, MIN(first_at) AS firstAt, MAX(last_at) AS lastAt FROM invitation_visitors WHERE invitation_slug = ?").bind(slug),
+    env.DB.prepare("SELECT day, views FROM invitation_daily WHERE invitation_slug = ? ORDER BY day DESC LIMIT 30").bind(slug),
+    env.DB.prepare("SELECT COALESCE(country, '?') AS country, COUNT(*) AS people FROM invitation_visitors WHERE invitation_slug = ? GROUP BY country ORDER BY people DESC LIMIT 8").bind(slug),
+  ]);
+  return { ...tot.results[0], daily: daily.results, countries: countries.results };
 }
 
 /* ---------------- theme rendering ---------------- */
 
-async function serveTheme(env, url, theme, config, meta) {
+async function serveTheme(env, url, theme, config, meta, extraHeaders = {}) {
   const res = await env.ASSETS.fetch(new Request(new URL(theme.path, url.origin)));
   if (!res.ok) return notFound(env, url);
 
@@ -258,6 +284,7 @@ async function serveTheme(env, url, theme, config, meta) {
       "content-type": "text/html; charset=utf-8",
       "cache-control": "private, no-store",
       "x-robots-tag": "noindex",
+      ...extraHeaders,
     },
   });
 }
@@ -281,7 +308,10 @@ async function admin(req, env, url, path) {
 
   // GET /api/admin/invitations
   if (!slug && req.method === "GET") {
-    const { results } = await env.DB.prepare("SELECT slug, template, status, email, created_at, updated_at FROM invitations ORDER BY created_at DESC LIMIT 200").all();
+    const { results } = await env.DB.prepare(
+      "SELECT i.slug, i.template, i.status, i.email, i.created_at, i.updated_at, COALESCE(v.opens, 0) AS opens, COALESCE(v.people, 0) AS people FROM invitations i " +
+      "LEFT JOIN (SELECT invitation_slug, SUM(views) AS opens, COUNT(*) AS people FROM invitation_visitors GROUP BY invitation_slug) v ON v.invitation_slug = i.slug " +
+      "ORDER BY i.created_at DESC LIMIT 200").all();
     return json({ invitations: results });
   }
 
@@ -322,6 +352,7 @@ async function admin(req, env, url, path) {
       events: themeFor(inv.template)?.events || [],
       guests: results.map((g) => ({ ...g, events: g.events ? JSON.parse(g.events) : null })),
       rsvps: rsvps.results.map((r) => ({ ...r, meals: r.meals ? JSON.parse(r.meals) : [] })),
+      stats: await viewStats(env, slug),
     });
   }
 
@@ -337,7 +368,7 @@ async function admin(req, env, url, path) {
 
   // DELETE /api/admin/invitations/:slug  removes the invitation, its guests, replies and panel link
   if (!sub && req.method === "DELETE") {
-    await env.DB.batch(["invitations WHERE slug", "guests WHERE invitation_slug", "rsvps WHERE invitation_slug", "invitation_access WHERE invitation_slug", "guest_views WHERE invitation_slug"]
+    await env.DB.batch(["invitations WHERE slug", "guests WHERE invitation_slug", "rsvps WHERE invitation_slug", "invitation_access WHERE invitation_slug", "guest_views WHERE invitation_slug", "invitation_daily WHERE invitation_slug", "invitation_visitors WHERE invitation_slug"]
       .map((t) => env.DB.prepare(`DELETE FROM ${t} = ?`).bind(slug)));
     return json({ ok: true });
   }
@@ -389,6 +420,9 @@ function ensureTables(env) {
     tablesReady = env.DB.batch([
       env.DB.prepare("CREATE TABLE IF NOT EXISTS invitation_access (invitation_slug TEXT PRIMARY KEY, token TEXT NOT NULL UNIQUE, tier TEXT NOT NULL DEFAULT 'basic', created_at INTEGER NOT NULL)"),
       env.DB.prepare("CREATE TABLE IF NOT EXISTS guest_views (invitation_slug TEXT NOT NULL, key TEXT NOT NULL, first_at INTEGER NOT NULL, last_at INTEGER NOT NULL, views INTEGER NOT NULL DEFAULT 1, PRIMARY KEY (invitation_slug, key))"),
+      // Every open of a live invitation (main link and guest links): one row per day, and one row per device.
+      env.DB.prepare("CREATE TABLE IF NOT EXISTS invitation_daily (invitation_slug TEXT NOT NULL, day TEXT NOT NULL, views INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (invitation_slug, day))"),
+      env.DB.prepare("CREATE TABLE IF NOT EXISTS invitation_visitors (invitation_slug TEXT NOT NULL, visitor TEXT NOT NULL, first_at INTEGER NOT NULL, last_at INTEGER NOT NULL, views INTEGER NOT NULL DEFAULT 1, country TEXT, guest_key TEXT, PRIMARY KEY (invitation_slug, visitor))"),
     ]).catch((err) => { tablesReady = null; throw err; });
   }
   return tablesReady;
@@ -442,6 +476,7 @@ async function couple(req, env, url, token, path) {
         openedAt: seen[g.key]?.first_at || null, views: seen[g.key]?.views || 0 })) : [],
       rsvps: rsvps.results.map((r) => ({ ...r, meals: r.meals ? JSON.parse(r.meals) : [] })),
       support: env.WHATSAPP_NUMBER || null,
+      openedBy: (await env.DB.prepare("SELECT COUNT(*) AS n FROM invitation_visitors WHERE invitation_slug = ?").bind(slug).first())?.n || 0,
     });
   }
 
