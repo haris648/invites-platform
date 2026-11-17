@@ -313,6 +313,7 @@ table{width:100%;border-collapse:collapse;font-size:15px}
   /* ---------- details ---------- */
   function inp(path, label, value, opts) {
     opts = opts || {};
+    if (value && typeof value === "object") value = value.en || value.ar || "";   // Lulua keeps some text as { en, ar }
     var id = "f-" + path.replace(/[^a-z0-9]/gi, "-");
     var common = 'id="' + id + '" data-path="' + path + '"' + (opts.max ? ' maxlength="' + opts.max + '"' : "") + (opts.placeholder ? ' placeholder="' + esc(opts.placeholder) + '"' : "");
     var control = opts.area ? '<textarea ' + common + '>' + esc(value) + '</textarea>'

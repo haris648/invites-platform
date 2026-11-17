@@ -14,16 +14,17 @@
 
 // Every theme you sell is registered here. `path` is its folder in /public/themes.
 const THEMES = {
-  // Lulua (لؤلؤة): an ivory gate tied with a pearl bow opens onto a rose-and-pearl frame. Fully Arabic, for the Gulf.
+  // Lulua (لؤلؤة): an ivory gate tied with a pearl bow opens onto a rose-and-pearl frame. English with the
+  // Qur'anic verses in Arabic, and a button that turns the whole card into Arabic. Made for the UAE and Saudi.
   "lulua": {
     name: "Lulua",
     path: "/themes/lulua/",
     og: "/themes/lulua/og.jpg",
     events: ["milka", "henna", "wedding"],
-    titles: { milka: "عقد القران", henna: "ليلة الحناء", wedding: "حفل الزفاف" },
-    timeZone: "Asia/Riyadh",
+    titles: { milka: "Nikah Ceremony", henna: "Henna Night", wedding: "Wedding Reception" },
+    timeZone: "Asia/Dubai",
     rsvpOnPage: true,
-    shareMessage: "السلام عليكم {guest}، يسعدنا ويشرفنا دعوتكم لحضور حفل زواج {couple}. تفضلوا بفتح الدعوة: {link}",
+    shareMessage: "Assalamu Alaikum {guest}! With great joy, {couple} invite you to celebrate their wedding. Please open your invitation: {link}",
   },
   // Signature: an embroidered gate tied with silk, a film for each function, ivory linen inside.
   "signature": {
