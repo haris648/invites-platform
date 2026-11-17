@@ -48,12 +48,14 @@ a{color:inherit}
 /* ---------- the stage: a phone-shaped column, full screen on phones ---------- */
 #stage{position:fixed;top:0;bottom:0;left:50%;width:var(--sw);height:var(--sh);transform:translateX(-50%);overflow:hidden;background:var(--paper);box-shadow:0 0 60px rgba(90,64,30,.25);isolation:isolate}
 
-/* the frame is three slices so it fits any screen height: top and bottom keep their shape, the plain pillar section stretches */
-.fr{position:absolute;inset:0;pointer-events:none}
-.fr i{position:absolute;left:0;right:0;background-repeat:no-repeat;background-size:100% 100%}
-.fr .t{top:0;height:calc(var(--sw) * .8889)}
-.fr .b{bottom:0;height:calc(var(--sw) * .6111)}
-.fr .m{top:calc(var(--sw) * .8889 - 1px);bottom:calc(var(--sw) * .6111 - 1px)}
+/* the frame is three slices so it fits any screen height: top and bottom keep their shape, the plain pillar section stretches.
+   It is drawn wider than the screen, so the pillars sit half off the edges and the card inside has room to breathe. */
+:root{--fk:1.28;--ft:39px}   /* --ft: how much of the bow is tucked above the screen, set by script so the slices never overlap */
+.fr{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.fr i{position:absolute;left:calc(var(--sw) * (1 - var(--fk)) / 2);width:calc(var(--sw) * var(--fk));background-repeat:no-repeat;background-size:100% 100%}
+.fr .t{top:calc(var(--ft) * -1);height:calc(var(--sw) * var(--fk) * .8889)}
+.fr .b{bottom:calc(var(--sw) * -.03);height:calc(var(--sw) * var(--fk) * .6111)}
+.fr .m{top:calc(var(--sw) * var(--fk) * .8889 - var(--ft) - 1px);bottom:calc(var(--sw) * (var(--fk) * .6111 - .03) - 1px)}
 .fr.bg{z-index:0}
 .fr.bg .t{background-image:url(assets/frame-top.webp)} .fr.bg .m{background-image:url(assets/frame-mid.webp)} .fr.bg .b{background-image:url(assets/frame-bot.webp)}
 .fr.ov{z-index:3}
@@ -61,13 +63,13 @@ a{color:inherit}
 
 /* ---------- the scrolling invitation ---------- */
 #scroll{position:absolute;inset:0;z-index:2;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scroll-snap-type:y proximity;scrollbar-width:none;transition:opacity .3s;
-  -webkit-mask-image:linear-gradient(to bottom,transparent calc(var(--sw) * .30),#000 calc(var(--sw) * .45),#000 calc(100% - var(--sw) * .09),transparent calc(100% - var(--sw) * .01));
-          mask-image:linear-gradient(to bottom,transparent calc(var(--sw) * .30),#000 calc(var(--sw) * .45),#000 calc(100% - var(--sw) * .09),transparent calc(100% - var(--sw) * .01))}
+  -webkit-mask-image:linear-gradient(to bottom,transparent calc(var(--sw) * .40 - var(--ft)),#000 calc(var(--sw) * .55 - var(--ft)),#000 calc(100% - var(--sw) * .09),transparent calc(100% - var(--sw) * .01));
+          mask-image:linear-gradient(to bottom,transparent calc(var(--sw) * .40 - var(--ft)),#000 calc(var(--sw) * .55 - var(--ft)),#000 calc(100% - var(--sw) * .09),transparent calc(100% - var(--sw) * .01))}
 #scroll::-webkit-scrollbar{display:none}
 #scroll.swap{opacity:0}
 body.locked #scroll{overflow:hidden}
 .sec{min-height:var(--sh);scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
-  padding:calc(var(--sw) * .47) calc(var(--sw) * .225) calc(var(--sw) * .25)}
+  padding:calc(var(--sw) * .57 - var(--ft)) calc(var(--sw) * .14) calc(var(--sw) * .24)}
 .sec > *{max-width:100%}
 .sec p{margin:0}
 
@@ -312,6 +314,7 @@ var DEFAULTS = {
   regards: { en: "With Warm Regards", ar: "مع خالص التحيات" },
   from: { en: "Our Family Members\nAll Relatives & Friends", ar: "آل المنصوري و آل الهاشمي\nوجميع الأهل والأصدقاء" },
   hashtag: "#SultanWedsNoura",
+  coupleImage: "assets/couple-bisht.webp",         // or "assets/couple.webp" (groom in sherwani and kufi)
   music: "assets/music.mp3",                        // "" for no music
   blessings: { en: ["Mabrook!", "Masha'Allah", "Barak Allah", "Congratulations!"], ar: ["مبروك", "ما شاء الله", "بارك الله لكما", "ألف مبروك", "الله يتمم على خير"] }
 };
@@ -372,9 +375,12 @@ C.selectedEvents = (C.selectedEvents || []).filter(function (k) { return C.event
   /* ---------- stage size: a phone-shaped column, full screen on phones ---------- */
   var stage = $("#stage"), scroller = $("#scroll");
   function sizeStage() {
-    var w = innerWidth, h = innerHeight, sw = Math.min(w, Math.round(h * .6));
-    var fu = Math.min(sw, Math.round((h - sw * .72) / 1.2));   // text scales with the space inside the frame
+    var w = innerWidth, h = innerHeight, sw = w / h <= .62 ? w : Math.round(h * .54), fk = 1.28;   // phones: full width; wider screens: a phone-shaped column
+    // tuck the top of the bow above the screen just enough that the pillars always keep a short middle piece between top and bottom
+    var ft = Math.round(Math.max(sw * .1, sw * fk * .8889 + sw * (fk * .6111 - .03) + sw * .1 - h));
+    var fu = Math.min(sw, Math.round((h - (sw * .81 - ft)) / 1.2));   // text scales with the space inside the frame
     document.documentElement.style.setProperty("--sw", sw + "px");
+    document.documentElement.style.setProperty("--ft", ft + "px");
     document.documentElement.style.setProperty("--fu", fu + "px");
     document.documentElement.style.setProperty("--sh", h + "px");
   }
@@ -413,16 +419,16 @@ C.selectedEvents = (C.selectedEvents || []).filter(function (k) { return C.event
       (V.text ? rv("p", "verse", esc(V.text), .2) : "") +
       (en && V.tr ? rv("p", "tr", esc(T(V.tr)), .7) : "") +
       (V.ref ? rv("p", "ref", esc(T(V.ref)), .9) : "") +
-      '<img class="couple rv" src="assets/couple.webp" alt="" style="--d:.4s"></section>';
+      '<img class="couple rv" src="' + esc(C.coupleImage || "assets/couple.webp") + '" alt="" style="--d:.4s"></section>';
 
     // 2. invitation
     var hs = typeof C.hosts === "string" ? [{ name: C.hosts }] : C.hosts || [];
     h += '<section class="sec" id="s-invite">' + rv("p", "bism", "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ") +
+      (C.guest && C.guest.name ? rv("p", "guestline", (en ? "Specially for " : "إلى المكرّم: ") + "<b>" + esc(C.guest.name) + "</b>", .1) : "") +
       (hs.length ? rv("div", "hosts", hs.map(function (x) { return "<div><b>" + esc(T(x.name)) + "</b>" + (x.role ? "<span>" + esc(T(x.role)) + "</span>" : "") + "</div>"; }).join(""), .2) : "") +
       (C.request ? rv("p", "req", esc(T(C.request)), .35) : "") +
       rv("div", "names", '<span class="nm script gold">' + esc(n.G) + "</span>" + RINGS + '<span class="nm script gold">' + esc(n.B) + "</span>", .55) +
       rv("p", "when", (U("on") ? esc(U("on")) + "<br>" : "") + esc(fmt(main.date, { weekday: "long", day: "numeric", month: "long", year: "numeric" })) + "<small>" + esc(hijri(main.date)) + "</small>", .8) +
-      (C.guest && C.guest.name ? rv("p", "guestline", (en ? "Specially for " : "إلى المكرّم: ") + "<b>" + esc(C.guest.name) + "</b>", .9) : "") +
       (C.guest && C.guest.seats ? rv("span", "seats", esc(U("seats") + num(C.guest.seats)), 1) : "") +
       "</section>";
 
@@ -464,7 +470,7 @@ C.selectedEvents = (C.selectedEvents || []).filter(function (k) { return C.event
       (T(C.from) ? rv("p", "from", esc(T(C.from)), .75) : "") +
       (C.hashtag ? rv("span", "tag", esc(C.hashtag), .85, ' dir="auto"') : "") +
       rv("span", "credit", "THE INVITARY", .95) +
-      '<img class="couple rv" src="assets/couple.webp" alt="" style="--d:.3s"></section>';
+      '<img class="couple rv" src="' + esc(C.coupleImage || "assets/couple.webp") + '" alt="" style="--d:.3s"></section>';
 
     scroller.innerHTML = h;
     renderRsvp(); tick(); fitNames();
