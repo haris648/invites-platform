@@ -58,7 +58,7 @@ td .btn.danger{color:var(--error);border-color:rgba(240,163,122,.5)}
       <div class="tbl"><table><thead><tr><th>Link</th><th>Design</th><th>Status</th><th>Email</th><th></th></tr></thead><tbody id="invs"></tbody></table></div>
       <details style="margin-top:14px"><summary class="muted" style="cursor:pointer">Create without a preview (private designs)</summary>
         <div class="row" style="margin-top:10px">
-          <div class="field" style="flex:0 1 200px"><select id="newTpl" aria-label="Design"><option value="haris-ki-shadi">Haris ki Shadi</option></select></div>
+          <div class="field" style="flex:0 1 200px"><select id="newTpl" aria-label="Design"><option value="haris-ki-shadi">Haris ki Shadi</option><option value="lulua">Lulua</option></select></div>
           <div class="field" style="flex:1 1 160px"><input id="newSlug" value="haris-ki-shadi" aria-label="Invitation link"></div>
           <button class="btn solid" type="button" id="newCreate">Create</button>
         </div>
@@ -186,7 +186,7 @@ async function makeLive(id, suggested) {
 document.addEventListener("click", async (e) => {
   if (e.target.id !== "newCreate") return;
   try {
-    const { slug } = await api("invitations", { method: "POST", body: JSON.stringify({ slug: $("#newSlug").value.trim(), template: $("#newTpl").value, tier: "guests", data: { pageTitle: "Haris & Filza | Wedding Invitation" } }) });
+    const { slug } = await api("invitations", { method: "POST", body: JSON.stringify({ slug: $("#newSlug").value.trim(), template: $("#newTpl").value, tier: $("#newTpl").value === "haris-ki-shadi" ? "guests" : "basic", data: $("#newTpl").value === "haris-ki-shadi" ? { pageTitle: "Haris & Filza | Wedding Invitation" } : {} }) });
     await loadAll(); openEditor(slug);
   } catch (err) { say($("#newMsg"), err.message); }
 });

@@ -18,7 +18,7 @@
 <link rel="preload" as="image" href="assets/bow.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@500;700&family=Amiri:wght@400;700&family=Marcellus&family=Great+Vibes&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@500;700&family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&family=Marcellus&family=Great+Vibes&display=swap">
 <style>
 /* =========================================================
    LULUA · لؤلؤة
@@ -36,7 +36,7 @@
   --sw:390px; --sh:844px; --fu:390px;      /* stage size, set by script */
   color-scheme:light;
 }
-html[lang=ar]{--f-body:"Amiri","Times New Roman",serif; --f-script:"Noto Nastaliq Urdu","Amiri",serif}
+html[lang=ar]{--f-body:"Tajawal","Amiri",sans-serif; --f-script:"Noto Nastaliq Urdu","Amiri",serif}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{height:100%;margin:0}
@@ -46,12 +46,12 @@ button{font:inherit;color:inherit}
 a{color:inherit}
 
 /* ---------- the stage: a phone-shaped column, full screen on phones ---------- */
-#stage{position:fixed;top:0;bottom:0;left:50%;width:var(--sw);height:var(--sh);transform:translateX(-50%);overflow:hidden;background:var(--paper);box-shadow:0 0 60px rgba(90,64,30,.25);isolation:isolate}
+#stage{position:fixed;top:0;bottom:0;left:50%;width:var(--sw);height:var(--sh);transform:translateX(-50%);overflow:hidden;overflow:clip;background:var(--paper);box-shadow:0 0 60px rgba(90,64,30,.25);isolation:isolate}
 
 /* the frame is three slices so it fits any screen height: top and bottom keep their shape, the plain pillar section stretches.
    It is drawn wider than the screen, so the pillars sit half off the edges and the card inside has room to breathe. */
 :root{--fk:1.28;--ft:39px}   /* --ft: how much of the bow is tucked above the screen, set by script so the slices never overlap */
-.fr{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.fr{position:absolute;inset:0;pointer-events:none;overflow:hidden;overflow:clip}
 .fr i{position:absolute;left:calc(var(--sw) * (1 - var(--fk)) / 2);width:calc(var(--sw) * var(--fk));background-repeat:no-repeat;background-size:100% 100%}
 .fr .t{top:calc(var(--ft) * -1);height:calc(var(--sw) * var(--fk) * .8889)}
 .fr .b{bottom:calc(var(--sw) * -.03);height:calc(var(--sw) * var(--fk) * .6111)}
@@ -69,7 +69,7 @@ a{color:inherit}
 #scroll.swap{opacity:0}
 body.locked #scroll{overflow:hidden}
 .sec{min-height:var(--sh);scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
-  padding:calc(var(--sw) * .57 - var(--ft)) calc(var(--sw) * .14) calc(var(--sw) * .24)}
+  padding:calc(var(--sw) * .57 - var(--ft)) calc(var(--sw) * .155) calc(var(--sw) * .24)}
 .sec > *{max-width:100%}
 .sec p{margin:0}
 
@@ -89,6 +89,7 @@ html[lang=ar] .caps{letter-spacing:0}
 /* 1. couple and verse */
 .s-hero{justify-content:flex-start;padding-bottom:0}
 .s-hero .verse{font-size:calc(var(--fu) * .085);margin:0}
+.callig{display:block;width:100%;max-width:calc(var(--fu) * .84);height:auto;margin:4px auto 8px;pointer-events:none;user-select:none}
 .s-hero .tr{font-size:calc(var(--fu) * .04);color:var(--ink-2);margin-top:2px}
 .ref{font-size:calc(var(--fu) * .034);color:var(--muted);margin-top:2px}
 .couple{display:block;height:calc(var(--sh) * .52);max-height:calc(var(--sw) * 1.15);width:auto;max-width:none;margin:auto calc(var(--sw) * -.12) 0;pointer-events:none;user-select:none}
@@ -347,9 +348,10 @@ if (INJECTED && !INJECTED.guest) C.guest = null;
 if (INJECTED && INJECTED.couple) {
   // a customer's own names replace the sample in both languages unless they give Arabic names too
   if (!INJECTED.coupleAr) C.coupleAr = null;
-  if (!INJECTED.hashtag) C.hashtag = "#" + (C.couple.groom + "Weds" + C.couple.bride).replace(/\s+/g, "");
+  if (INJECTED.hashtag === undefined) C.hashtag = "#" + (C.couple.groom + "Weds" + C.couple.bride).replace(/\s+/g, "");
 }
 C.selectedEvents = (C.selectedEvents || []).filter(function (k) { return C.events[k]; });
+if (Array.isArray(C.eventOrder)) ORDER = C.eventOrder.filter(function (k) { return C.events[k]; });   // e.g. ["wedding", "milka"] changes the page order
 
 (function () {
   var $ = function (s) { return document.querySelector(s); }, $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
@@ -370,7 +372,8 @@ C.selectedEvents = (C.selectedEvents || []).filter(function (k) { return C.event
   var time = function (d) { return fmt(d, { hour: "numeric", minute: "2-digit", hour12: true }); };
   var hijri = function (d) { return fmt(d, { day: "numeric", month: "long", year: "numeric" }, true) + (LANG === "ar" ? " هـ" : ""); };
   var gcal = function (d) { return d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z"; };
-  var names = function () { var c = LANG === "ar" && C.coupleAr && C.coupleAr.bride ? C.coupleAr : C.couple; return { B: c.bride, G: c.groom }; };
+  var names = function () { var c = LANG === "ar" && C.coupleAr && (C.coupleAr.bride || C.coupleAr.groom) ? C.coupleAr : C.couple; return { B: c.bride || "", G: c.groom || "" }; };
+  var pair = function (n) { return n.B ? n.G + (LANG === "ar" ? " و " : " & ") + n.B : n.G; };
 
   /* ---------- stage size: a phone-shaped column, full screen on phones ---------- */
   var stage = $("#stage"), scroller = $("#scroll");
@@ -388,11 +391,11 @@ C.selectedEvents = (C.selectedEvents || []).filter(function (k) { return C.event
 
   var evs = ORDER.filter(function (k) { return C.selectedEvents.indexOf(k) > -1; }).map(function (k) { var e = C.events[k]; return Object.assign({ key: k }, e, { date: new Date(e.start) }); });
   if (!evs.length) evs = ORDER.map(function (k) { return Object.assign({ key: k }, C.events[k], { date: new Date(C.events[k].start) }); });
-  var main = evs.filter(function (e) { return e.key === "wedding"; })[0] || evs[evs.length - 1];
+  var main = evs.filter(function (e) { return e.key === (C.mainEvent || "wedding"); })[0] || evs[evs.length - 1];
   var calUrl = function (e) {
     var n = names(), end = new Date(e.date.getTime() + (e.hours || 3) * 36e5);
-    return "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(T(e.title) + " · " + n.G + (LANG === "ar" ? " و " : " & ") + n.B) +
-      "&dates=" + gcal(e.date) + "/" + gcal(end) + "&location=" + encodeURIComponent(T(e.venue) + ", " + T(e.address)) + "&ctz=" + encodeURIComponent(TZ);
+    return "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(T(e.title) + " · " + pair(n)) +
+      "&dates=" + gcal(e.date) + "/" + gcal(end) + "&location=" + encodeURIComponent(T(e.venue) + (T(e.address) ? ", " + T(e.address) : "")) + "&ctz=" + encodeURIComponent(TZ);
   };
   var mapUrl = function (e) { return e.map || "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent((e.venue && e.venue.en || T(e.venue)) + " " + (e.address && e.address.en || T(e.address))); };
 
@@ -416,7 +419,7 @@ C.selectedEvents = (C.selectedEvents || []).filter(function (k) { return C.event
 
     // 1. verse and couple
     h += '<section class="sec s-hero" id="s-hero">' +
-      (V.text ? rv("p", "verse", esc(V.text), .2) : "") +
+      (V.image ? '<img class="callig rv" src="' + esc(V.image) + '" alt="' + esc(V.text || "") + '" style="--d:.2s">' : V.text ? rv("p", "verse", esc(V.text), .2) : "") +
       (en && V.tr ? rv("p", "tr", esc(T(V.tr)), .7) : "") +
       (V.ref ? rv("p", "ref", esc(T(V.ref)), .9) : "") +
       '<img class="couple rv" src="' + esc(C.coupleImage || "assets/couple.webp") + '" alt="" style="--d:.4s"></section>';
@@ -427,7 +430,7 @@ C.selectedEvents = (C.selectedEvents || []).filter(function (k) { return C.event
       (C.guest && C.guest.name ? rv("p", "guestline", (en ? "Specially for " : "إلى المكرّم: ") + "<b>" + esc(C.guest.name) + "</b>", .1) : "") +
       (hs.length ? rv("div", "hosts", hs.map(function (x) { return "<div><b>" + esc(T(x.name)) + "</b>" + (x.role ? "<span>" + esc(T(x.role)) + "</span>" : "") + "</div>"; }).join(""), .2) : "") +
       (C.request ? rv("p", "req", esc(T(C.request)), .35) : "") +
-      rv("div", "names", '<span class="nm script gold">' + esc(n.G) + "</span>" + RINGS + '<span class="nm script gold">' + esc(n.B) + "</span>", .55) +
+      rv("div", "names", '<span class="nm script gold">' + esc(n.G) + "</span>" + (n.B ? RINGS + '<span class="nm script gold">' + esc(n.B) + "</span>" : ""), .55) +
       rv("p", "when", (U("on") ? esc(U("on")) + "<br>" : "") + esc(fmt(main.date, { weekday: "long", day: "numeric", month: "long", year: "numeric" })) + "<small>" + esc(hijri(main.date)) + "</small>", .8) +
       (C.guest && C.guest.seats ? rv("span", "seats", esc(U("seats") + num(C.guest.seats)), 1) : "") +
       "</section>";
@@ -439,11 +442,15 @@ C.selectedEvents = (C.selectedEvents || []).filter(function (k) { return C.event
         (T(e.sub) ? rv("p", "evsub", esc(T(e.sub)), .3) : "") +
         '<div class="rows">' +
           rv("div", "row", CAL + "<span><b>" + esc(fmt(e.date, { weekday: "long", day: "numeric", month: "long", year: "numeric" })) + "</b><small>" + esc(hijri(e.date)) + "</small></span>", .45) +
-          rv("div", "row", CLK + "<span>" + esc(time(e.date)) + "</span>", .6) +
-          rv("div", "row", PIN + "<span><b>" + esc(T(e.venue)) + "</b><small>" + esc(T(e.address)) + "</small></span>", .75) +
+          (e.time === false ? "" : rv("div", "row", CLK + "<span>" + esc(time(e.date)) + "</span>", .6)) +
+          rv("div", "row", PIN + "<span><b>" + esc(T(e.venue)) + "</b>" + (T(e.address) ? "<small>" + esc(T(e.address)) + "</small>" : "") + "</span>", .75) +
+          // a second place for the same occasion, e.g. the men's gathering at a chalet
+          (e.also ? rv("div", "row also", "<span>" + (T(e.also.label) ? esc(T(e.also.label)) + (LANG === "ar" ? " في " : " at ") : "") + "<b>" + esc(T(e.also.venue)) + "</b>" + (T(e.also.address) ? "<small>" + esc(T(e.also.address)) + "</small>" : "") + "</span>", .8) : "") +
         "</div>" +
         (T(e.note) ? rv("p", "evnote", esc(T(e.note)), .85) : "") +
-        rv("div", "acts", '<a class="btn solid" href="' + esc(mapUrl(e)) + '" target="_blank" rel="noopener">' + PIN + esc(U("map")) + '</a><a class="btn" href="' + esc(calUrl(e)) + '" target="_blank" rel="noopener">' + CAL + esc(U("cal")) + "</a>", .95) +
+        rv("div", "acts", '<a class="btn solid" href="' + esc(mapUrl(e)) + '" target="_blank" rel="noopener">' + PIN + esc(T(e.mapLabel) || U("map")) + "</a>" +
+          (e.also && e.also.map ? '<a class="btn solid" href="' + esc(e.also.map) + '" target="_blank" rel="noopener">' + PIN + esc(T(e.also.mapLabel) || U("map")) + "</a>" : "") +
+          '<a class="btn" href="' + esc(calUrl(e)) + '" target="_blank" rel="noopener">' + CAL + esc(U("cal")) + "</a>", .95) +
         "</section>";
     });
 
@@ -463,7 +470,7 @@ C.selectedEvents = (C.selectedEvents || []).filter(function (k) { return C.event
 
     // 7. closing
     h += '<section class="sec s-close" id="s-close">' +
-      (A2.text ? rv("p", "verse", esc(A2.text)) : "") +
+      (A2.image ? '<img class="callig rv" src="' + esc(A2.image) + '" alt="' + esc(A2.text || "") + '">' : A2.text ? rv("p", "verse", esc(A2.text)) : "") +
       (en && A2.tr ? rv("p", "tr", esc(T(A2.tr)), .3) : "") +
       (A2.ref ? rv("p", "ref", esc(T(A2.ref)), .4) : "") +
       (T(C.regards) ? rv("p", "regards caps", esc(T(C.regards)), .6) : "") +
@@ -493,6 +500,11 @@ C.selectedEvents = (C.selectedEvents || []).filter(function (k) { return C.event
     $$(".names .nm").forEach(function (el) {
       el.style.fontSize = ""; var box = el.parentNode.clientWidth + stage.clientWidth * .12, fs = parseFloat(getComputedStyle(el).fontSize);
       while (el.scrollWidth > box && fs > 20) { fs -= 1; el.style.fontSize = fs + "px"; }
+    });
+    // long occasion titles: shrink until every word fits the width
+    $$(".evt, .h2").forEach(function (el) {
+      el.style.fontSize = ""; var fs = parseFloat(getComputedStyle(el).fontSize);
+      while (el.scrollWidth > el.clientWidth + 1 && fs > 18) { fs -= 1; el.style.fontSize = fs + "px"; }
     });
   }
 
@@ -564,6 +576,8 @@ C.selectedEvents = (C.selectedEvents || []).filter(function (k) { return C.event
     setTimeout(function () {
       LANG = l; try { localStorage.setItem(LKEY, l); } catch (e) {}
       chrome(); build(); observe();
+      // the frame is wider than the screen; switching text direction must not slide it sideways
+      stage.scrollLeft = 0; $$(".fr").forEach(function (f) { f.scrollLeft = 0; });
       var ns = $$(".sec");
       scroller.classList.add("instant");
       ns.forEach(function (s, i) { if (seen[i]) s.classList.add("on"); });
