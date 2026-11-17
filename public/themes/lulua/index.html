@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>دعوة زفاف</title>
+<meta name="description" content="بكل الحب ندعوكم">
+<meta name="robots" content="noindex">
+<meta property="og:type" content="website">
+<meta property="og:title" content="دعوة زفاف">
+<meta property="og:description" content="بكل الحب ندعوكم">
+<meta property="og:image" content="/themes/lulua/og.jpg">
+<meta property="og:url" content="">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#efe6d6">
+<link rel="preload" as="image" href="assets/door-l.jpg">
+<link rel="preload" as="image" href="assets/door-r.jpg">
+<link rel="preload" as="image" href="assets/bow.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@1,400;1,500&display=swap">
+<style>
+/* =========================================================
+   LULUA · لؤلؤة
+   An ivory gate tied with a pearl-tasselled bow opens onto a
+   rose-and-pearl frame. The frame stays still; the invitation
+   scrolls inside it. Fully Arabic, right to left.
+   ========================================================= */
+:root{
+  --paper:#f3ece0; --paper-2:#efe6d6; --ink:#4b3b29; --ink-2:#6d5a43; --muted:#8c7a62;
+  --gold:#a8823f; --gold-2:#c9a463; --gold-d:#7d5f2b; --line:rgba(168,130,63,.38);
+  --f-cal:"Aref Ruqaa","Amiri",serif;
+  --f-ar:"Amiri","Times New Roman",serif;
+  --f-en:"Cormorant Garamond",Georgia,serif;
+  --sw:390px; --sh:844px; --fu:390px;      /* stage size, set by script */
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0}
+body{background:var(--paper-2);color:var(--ink);font-family:var(--f-ar);font-size:17px;line-height:1.7;overflow:hidden;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:-40px;background:url(assets/frame-top.webp) center/cover;filter:blur(28px) saturate(.9);opacity:.55}
+button{font:inherit;color:inherit}
+a{color:inherit}
+
+/* ---------- the stage: a phone-shaped column, full screen on phones ---------- */
+#stage{position:fixed;top:0;bottom:0;left:50%;width:var(--sw);height:var(--sh);transform:translateX(-50%);overflow:hidden;background:var(--paper);box-shadow:0 0 60px rgba(90,64,30,.25);isolation:isolate}
+
+/* the frame is three slices so it fits any screen height: top and bottom keep their shape, the plain pillar section stretches */
+.fr{position:absolute;inset:0;pointer-events:none}
+.fr i{position:absolute;left:0;right:0;background-repeat:no-repeat;background-size:100% 100%}
+.fr .t{top:0;height:calc(var(--sw) * .8889)}
+.fr .b{bottom:0;height:calc(var(--sw) * .6111)}
+.fr .m{top:calc(var(--sw) * .8889 - 1px);bottom:calc(var(--sw) * .6111 - 1px)}
+.fr.bg{z-index:0}
+.fr.bg .t{background-image:url(assets/frame-top.webp)} .fr.bg .m{background-image:url(assets/frame-mid.webp)} .fr.bg .b{background-image:url(assets/frame-bot.webp)}
+.fr.ov{z-index:3}
+.fr.ov .t{background-image:url(assets/frame-over-top.webp)} .fr.ov .m{background-image:url(assets/frame-over-mid.webp)} .fr.ov .b{background-image:url(assets/frame-over-bot.webp)}
+
+/* ---------- the scrolling invitation ---------- */
+#scroll{position:absolute;inset:0;z-index:2;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scroll-snap-type:y proximity;scrollbar-width:none;
+  -webkit-mask-image:linear-gradient(to bottom,transparent calc(var(--sw) * .30),#000 calc(var(--sw) * .45),#000 calc(100% - var(--sw) * .09),transparent calc(100% - var(--sw) * .01));
+          mask-image:linear-gradient(to bottom,transparent calc(var(--sw) * .30),#000 calc(var(--sw) * .45),#000 calc(100% - var(--sw) * .09),transparent calc(100% - var(--sw) * .01))}
+#scroll::-webkit-scrollbar{display:none}
+body.locked #scroll{overflow:hidden}
+.sec{min-height:var(--sh);scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  padding:calc(var(--sw) * .47) calc(var(--sw) * .225) calc(var(--sw) * .25)}
+.sec > *{max-width:100%}
+
+/* reveal: each piece floats up out of a soft blur when its section arrives */
+.rv{opacity:0;transform:translateY(16px);filter:blur(6px);transition:opacity 1.1s ease,transform 1.1s cubic-bezier(.2,.7,.2,1),filter 1.1s ease;transition-delay:var(--d,0s)}
+.on .rv{opacity:1;transform:none;filter:none}
+
+.gold{background:linear-gradient(100deg,#7d5f2b 0%,#b68f4a 28%,#e2c487 48%,#a8823f 66%,#7d5f2b 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;padding:0 .2em;line-height:1.6}
+.cal{font-family:var(--f-cal);font-weight:700}
+.en{font-family:var(--f-en);font-style:italic;direction:ltr;unicode-bidi:isolate;color:var(--ink-2)}
+.orn{width:calc(var(--fu) * .36);height:auto;color:var(--gold);margin:6px auto}
+.small{font-size:calc(var(--fu) * .038);color:var(--muted)}
+
+/* 1. couple and verse */
+.s-hero{justify-content:flex-start;padding-bottom:0}
+.s-hero .verse{font-size:calc(var(--fu) * .105);margin:0;line-height:1.55}
+.s-hero .tr{margin:0;font-size:calc(var(--fu) * .046)}
+.s-hero .ref{margin:2px 0 0;font-size:calc(var(--fu) * .034);color:var(--muted)}
+.couple{display:block;height:calc(var(--sh) * .52);max-height:calc(var(--sw) * 1.15);width:auto;max-width:none;margin:auto calc(var(--sw) * -.12) 0;pointer-events:none;user-select:none}
+.on .couple.rv{transition-duration:1.8s}
+
+/* 2. invitation card */
+.bism{font-family:var(--f-cal);font-size:calc(var(--fu) * .054);margin:0 0 2px;color:var(--gold-d)}
+.hosts{display:grid;gap:0;margin:2px 0}
+.hosts b{display:block;font-weight:700;font-size:calc(var(--fu) * .046);color:var(--ink)}
+.hosts span{display:block;font-size:calc(var(--fu) * .032);color:var(--muted);margin-top:-4px}
+.req{margin:4px 0 0;font-size:calc(var(--fu) * .043);line-height:1.75}
+.names{display:grid;justify-items:center;gap:0;margin:2px 0}
+.names .nm{font-family:var(--f-cal);font-weight:700;font-size:calc(var(--fu) * .115);white-space:nowrap}
+.rings{width:calc(var(--fu) * .1);height:auto;color:var(--gold);margin:-10px 0}
+.when{margin:2px 0 0;line-height:1.6;font-size:calc(var(--fu) * .042);color:var(--ink-2)}
+.when small{display:block;font-size:.85em;color:var(--muted)}
+.guestline{margin:0 0 6px;font-size:calc(var(--fu) * .04);color:var(--ink-2)}
+.guestline b{color:var(--gold-d)}
+.seats{display:inline-block;margin-top:8px;padding:3px 14px;border:1px solid var(--line);border-radius:99px;font-size:calc(var(--fu) * .036);color:var(--ink-2);background:rgba(255,252,246,.5)}
+
+/* 3. events */
+.insha{font-size:calc(var(--fu) * .1);margin:0;line-height:1.5}
+.evt{font-size:calc(var(--fu) * .115);margin:-4px 0 0;line-height:1.5}
+.evsub{margin:-6px 0 6px;font-size:calc(var(--fu) * .038);color:var(--muted)}
+.rows{display:grid;gap:10px;width:100%;margin:6px 0 4px}
+.row{display:grid;justify-items:center;gap:0;font-size:calc(var(--fu) * .041);line-height:1.55}
+.row svg{width:calc(var(--fu) * .062);height:calc(var(--fu) * .062);color:var(--gold);margin-bottom:2px}
+.row b{font-weight:700;color:var(--ink)}
+.row span{color:var(--ink-2)}
+.row small{display:block;font-size:.85em;color:var(--muted)}
+.evnote{margin:4px 0 0;font-size:calc(var(--fu) * .036);color:var(--muted)}
+.acts{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:5px 13px;border-radius:99px;border:1px solid var(--gold);background:rgba(255,252,246,.6);color:var(--gold-d);text-decoration:none;font-size:calc(var(--fu) * .036);cursor:pointer;line-height:1.5}
+.btn svg{width:1.1em;height:1.1em}
+.btn.solid{background:linear-gradient(180deg,#c9a463,#a8823f);color:#fffaf0;border-color:#a8823f;box-shadow:0 4px 12px rgba(125,95,43,.25)}
+
+/* 4. countdown */
+.h2{font-size:calc(var(--fu) * .1);margin:0;line-height:1.5}
+.kick{margin:0;font-size:calc(var(--fu) * .038);color:var(--muted)}
+.clock{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:100%;margin:12px 0 6px;direction:rtl}
+.clock div{border:1px solid var(--line);border-radius:12px;background:rgba(255,252,246,.65);padding:6px 0 2px}
+.clock b{display:block;font-size:calc(var(--fu) * .07);line-height:1.2;color:var(--gold-d);font-weight:700}
+.clock span{font-size:calc(var(--fu) * .03);color:var(--muted)}
+
+/* 5. notes */
+.notes{display:grid;gap:10px;width:100%;margin-top:8px}
+.note{display:grid;justify-items:center;gap:0}
+.note svg{width:calc(var(--fu) * .07);height:calc(var(--fu) * .07);color:var(--gold)}
+.note b{font-size:calc(var(--fu) * .046);font-family:var(--f-cal);font-weight:700;color:var(--gold-d)}
+.note span{font-size:calc(var(--fu) * .037);color:var(--ink-2);line-height:1.6}
+
+/* 6. RSVP */
+.form{display:grid;gap:9px;width:100%;margin-top:8px;text-align:right}
+.f{display:grid;gap:2px;border:0;padding:0;margin:0;min-width:0}
+.f label,.f legend{font-size:calc(var(--fu) * .035);color:var(--ink-2);padding:0}
+.f input,.f select,.f textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:rgba(255,252,246,.8);border:1px solid var(--line);border-radius:10px;padding:5px 10px;outline:none}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--gold)}
+.f textarea{min-height:56px;resize:none}
+.choice{display:grid;gap:5px}
+.choice label{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:3px 10px;background:rgba(255,252,246,.6);cursor:pointer;font-size:calc(var(--fu) * .037);color:var(--ink)}
+.choice input{accent-color:var(--gold);width:auto;margin:0}
+.msg{margin:0;font-size:14px;color:#9b3b2b;text-align:center}
+.form .btn{justify-self:center;font-size:calc(var(--fu) * .04);padding:6px 22px}
+.thanks{display:grid;gap:4px;justify-items:center}
+.thanks .t{font-family:var(--f-cal);font-weight:700;font-size:calc(var(--fu) * .1);margin:0;line-height:1.5}
+.thanks p{margin:0;font-size:calc(var(--fu) * .042)}
+.thanks small{color:var(--muted);font-size:13px}
+
+/* 7. closing */
+.s-close{justify-content:flex-start;padding-bottom:0}
+.s-close .ayah{font-family:var(--f-ar);font-size:calc(var(--fu) * .05);line-height:1.9;margin:0;color:var(--ink)}
+.s-close .tr{font-size:calc(var(--fu) * .036);margin:4px 0 0;line-height:1.45}
+.s-close .ref{font-size:calc(var(--fu) * .032);color:var(--muted);margin:2px 0 0}
+.regards{font-size:calc(var(--fu) * .085);margin:6px 0 0;line-height:1.5}
+.from{margin:-4px 0 0;font-size:calc(var(--fu) * .04);color:var(--ink-2)}
+.tag{margin-top:4px;font-size:calc(var(--fu) * .036);color:var(--gold-d)}
+.s-close .couple{height:calc(var(--sh) * .36)}
+.credit{display:block;margin:2px 0 0;font-family:var(--f-en);font-size:11px;letter-spacing:.3em;color:var(--muted);direction:ltr}
+
+/* scroll cue */
+#cue{position:absolute;z-index:4;left:50%;bottom:calc(var(--sw) * .03);transform:translateX(-50%);display:grid;justify-items:center;font-size:12px;color:var(--gold-d);pointer-events:none;transition:opacity .6s;opacity:0}
+#cue.show{opacity:1}
+#cue svg{width:22px;height:22px;animation:bob 1.8s ease-in-out infinite}
+#cue span{background:rgba(255,252,246,.75);padding:0 10px;border-radius:99px}
+@keyframes bob{50%{transform:translateY(5px)}}
+
+/* ---------- the gate ---------- */
+#gate{position:absolute;inset:0;z-index:10;perspective:1400px;overflow:hidden;cursor:pointer}
+.door{position:absolute;top:0;bottom:0;width:50.4%;background-size:cover;background-repeat:no-repeat;transition:transform 2.3s cubic-bezier(.65,0,.25,1),filter 2.3s;will-change:transform}
+.door.l{left:0;background-image:url(assets/door-l.jpg);background-position:right center;transform-origin:left center;box-shadow:inset -2px 0 4px rgba(90,64,30,.25)}
+.door.r{right:0;background-image:url(assets/door-r.jpg);background-position:left center;transform-origin:right center;box-shadow:inset 2px 0 4px rgba(90,64,30,.25)}
+.beam{position:absolute;top:0;bottom:0;left:50%;width:6px;transform:translateX(-50%);background:linear-gradient(to bottom,transparent,#fff 15%,#fff 85%,transparent);box-shadow:0 0 34px 14px rgba(255,250,238,1),0 0 110px 44px rgba(255,226,186,.75);opacity:0;transition:opacity .5s .3s}
+.bow{position:absolute;left:50%;top:50%;width:calc(var(--sw) * .66);transform:translate(-50%,-25.5%);transition:transform .9s cubic-bezier(.5,0,.3,1),opacity .8s;filter:drop-shadow(0 10px 14px rgba(90,64,30,.28));animation:sway 4.5s ease-in-out infinite;transform-origin:50% 25%}
+.bow img{display:block;width:100%;height:auto;pointer-events:none;user-select:none}
+@keyframes sway{50%{rotate:1.4deg}}
+.gfor{position:absolute;left:50%;top:calc(var(--sh) * .085);transform:translateX(-50%);width:max-content;max-width:78%;text-align:center;background:rgba(255,252,246,.86);border:1px solid var(--line);border-radius:16px;padding:4px 18px 6px;box-shadow:0 6px 18px rgba(90,64,30,.12);transition:opacity .6s}
+.gfor small{display:block;font-size:13px;color:var(--muted);line-height:1.4}
+.gfor b{font-family:var(--f-cal);font-size:22px;color:var(--gold-d);line-height:1.5}
+.tap{position:absolute;left:50%;bottom:calc(var(--sh) * .09);transform:translateX(-50%);white-space:nowrap;background:rgba(255,252,246,.88);border:1px solid var(--line);border-radius:99px;padding:4px 20px;font-size:15px;color:var(--gold-d);box-shadow:0 6px 18px rgba(90,64,30,.12);animation:pulse 2.2s ease-in-out infinite;transition:opacity .5s}
+@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(201,164,99,.18),0 6px 18px rgba(90,64,30,.12)}}
+#gate.open{cursor:default}
+#gate.open .bow{animation:none;transform:translate(-50%,-25.5%) scale(.6);opacity:0}
+#gate.open .tap,#gate.open .gfor{opacity:0}
+#gate.open .beam{opacity:1}
+#gate.open .door{filter:brightness(.95)}
+#gate.part .beam{opacity:0;transition:opacity 1.2s .9s}
+#gate.part .door.l{transform:translateX(-62%) rotateY(28deg);filter:brightness(1.06)}
+#gate.part .door.r{transform:translateX(62%) rotateY(-28deg);filter:brightness(1.06)}
+#gate.part{pointer-events:none}
+#gate.gone{display:none}
+.haze{position:absolute;inset:0;z-index:9;pointer-events:none;opacity:0;background:radial-gradient(60% 45% at 50% 48%,rgba(255,253,248,.98),rgba(250,226,222,.75) 55%,rgba(243,236,224,0) 100%)}
+.haze.go{animation:haze 3.4s ease-out forwards}
+@keyframes haze{0%{opacity:0}25%{opacity:1}100%{opacity:0}}
+#scroll.intro{transform:scale(1.06);transition:transform 2.6s cubic-bezier(.2,.7,.2,1)}
+#scroll.intro.in{transform:none}
+
+/* ---------- music, blessings, preview ---------- */
+#music{position:absolute;z-index:6;top:calc(var(--sw) * .035);left:calc(var(--sw) * .035);width:40px;height:40px;border-radius:50%;border:1px solid var(--gold);background:rgba(255,252,246,.88);color:var(--gold-d);display:grid;place-items:center;cursor:pointer;padding:0;box-shadow:0 4px 12px rgba(90,64,30,.15)}
+#music svg{width:20px;height:20px}
+#music .off,#music.muted .on{display:none}
+#music.muted .off{display:block}
+#sparks{position:fixed;inset:0;z-index:20;pointer-events:none;width:100vw;height:100vh}
+.bless{position:fixed;z-index:21;pointer-events:none;transform:translate(-50%,-50%);font-family:var(--f-cal);font-weight:700;font-size:30px;white-space:nowrap;color:var(--gold-d);text-shadow:0 0 12px rgba(255,252,246,.95),0 0 3px #fff;animation:bless 2s ease-out forwards}
+@keyframes bless{0%{opacity:0;transform:translate(-50%,-30%) scale(.7)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-140%) scale(1)}}
+.previewbar{position:fixed;z-index:30;left:50%;bottom:12px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;background:rgba(40,30,18,.92);color:#f6eedf;padding:6px 6px 6px 16px;border-radius:99px;font-family:var(--f-en);font-size:13px;letter-spacing:.2em;direction:ltr;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.previewbar .btn{font-family:system-ui,sans-serif;letter-spacing:0;font-size:13px;padding:6px 14px;white-space:nowrap}
+body.is-preview #cue{bottom:calc(var(--sw) * .03 + 52px)}
+
+@media (prefers-reduced-motion: reduce){
+  .rv{transition:none;opacity:1;transform:none;filter:none}
+  .bow,.tap,#cue svg{animation:none}
+}
+</style>
+</head>
+<body class="locked">
+<div id="stage">
+  <div class="fr bg" aria-hidden="true"><i class="t"></i><i class="m"></i><i class="b"></i></div>
+
+  <main id="scroll" class="intro">
+    <!-- 1. the verse and the couple -->
+    <section class="sec s-hero" id="s-hero">
+      <p class="verse cal gold rv" id="verse" style="--d:.2s"></p>
+      <p class="tr en rv" id="verseTr" style="--d:.7s"></p>
+      <p class="ref rv" id="verseRef" style="--d:.9s"></p>
+      <img class="couple rv" id="couple1" src="assets/couple.webp" alt="" style="--d:.4s">
+    </section>
+
+    <!-- 2. the invitation -->
+    <section class="sec" id="s-invite">
+      <p class="bism rv">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+      <p class="guestline rv" id="guestline" hidden style="--d:.1s"></p>
+      <div class="hosts rv" id="hosts" style="--d:.2s"></div>
+      <p class="req rv" id="req" style="--d:.35s"></p>
+      <div class="names rv" style="--d:.55s">
+        <span class="nm gold" id="nGroom"></span>
+        <svg class="rings" viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2"><circle cx="24" cy="24" r="12"/><circle cx="40" cy="24" r="12"/><path d="M36 5l4-4 4 4-4 5z" fill="currentColor" stroke-width="1"/></svg>
+        <span class="nm gold" id="nBride"></span>
+      </div>
+      <p class="when rv" id="when" style="--d:.8s"></p>
+      <span class="seats rv" id="seats" hidden style="--d:.95s"></span>
+    </section>
+
+    <!-- 3. one page per occasion, built from the settings -->
+    <div id="evPages"></div>
+
+    <!-- 4. countdown -->
+    <section class="sec" id="s-count">
+      <p class="kick rv">بإذن الله</p>
+      <h2 class="h2 cal gold rv" id="countTitle" style="--d:.15s">بقي على الفرح</h2>
+      <div class="clock rv" id="clock" style="--d:.3s"><div><b data-u="d">٠</b><span>يوم</span></div><div><b data-u="h">٠</b><span>ساعة</span></div><div><b data-u="m">٠</b><span>دقيقة</span></div><div><b data-u="s">٠</b><span>ثانية</span></div></div>
+      <svg class="orn rv" style="--d:.45s" viewBox="0 0 180 22" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M0 11h66M114 11h66"/><path d="M90 1l6 10-6 10-6-10z" fill="currentColor"/><circle cx="74" cy="11" r="2.5"/><circle cx="106" cy="11" r="2.5"/></svg>
+      <a class="btn rv" id="countCal" target="_blank" rel="noopener" style="--d:.55s"></a>
+    </section>
+
+    <!-- 5. notes -->
+    <section class="sec" id="s-notes">
+      <p class="kick rv">نرجو التكرّم بمراعاة</p>
+      <h2 class="h2 cal gold rv" style="--d:.15s">ملاحظات</h2>
+      <div class="notes" id="notes"></div>
+    </section>
+
+    <!-- 6. RSVP -->
+    <section class="sec" id="rsvp">
+      <p class="kick rv" id="rsvpBy"></p>
+      <h2 class="h2 cal gold rv" style="--d:.15s">تأكيد الحضور</h2>
+      <div class="rv" id="rsvpBox" style="--d:.3s;width:100%"></div>
+    </section>
+
+    <!-- 7. closing -->
+    <section class="sec s-close" id="s-close">
+      <p class="ayah rv" id="ayah2"></p>
+      <p class="tr en rv" id="ayah2Tr" style="--d:.3s"></p>
+      <p class="ref rv" id="ayah2Ref" style="--d:.4s"></p>
+      <p class="regards cal gold rv" id="regards" style="--d:.6s"></p>
+      <p class="from rv" id="from" style="--d:.75s"></p>
+      <span class="tag rv" id="hashtag" style="--d:.85s"></span>
+      <span class="credit rv" style="--d:.95s">THE INVITARY</span>
+      <img class="couple rv" src="assets/couple.webp" alt="" style="--d:.3s">
+    </section>
+  </main>
+
+  <div class="fr ov" aria-hidden="true"><i class="t"></i><i class="m"></i><i class="b"></i></div>
+  <div class="haze" id="haze" aria-hidden="true"></div>
+  <div id="cue" aria-hidden="true"><span>مرّر للأسفل</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 9l6 6 6-6"/></svg></div>
+
+  <!-- the gate -->
+  <div id="gate" role="button" tabindex="0" aria-label="افتح الدعوة">
+    <div class="door l"></div><div class="door r"></div>
+    <div class="beam"></div>
+    <div class="gfor" id="gfor" hidden><small>إلى المكرّم</small><b id="gname"></b></div>
+    <div class="bow"><img src="assets/bow.webp" alt=""></div>
+    <div class="tap">اضغط على الختم لفتح الدعوة</div>
+  </div>
+
+  <button type="button" id="music" aria-label="إيقاف الموسيقى" hidden>
+    <svg class="on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" stroke="none"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg>
+    <svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" stroke="none"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
+  </button>
+</div>
+<canvas id="sparks" aria-hidden="true"></canvas>
+<div class="previewbar" id="previewbar" hidden><span>PREVIEW</span><a class="btn solid" id="buyLink" href="#" target="_blank" rel="noopener">Buy this design</a></div>
+
+<!-- The server replaces "null" with this customer's settings. Opened directly, the sample below is shown. -->
+<script id="invite-data" type="application/json">null</script>
+<script>
+/* =========================================================
+   SAMPLE CONTENT. Each customer's saved settings are merged over this.
+   ========================================================= */
+var DEFAULTS = {
+  timeZone: "Asia/Riyadh",
+  digits: "arab",                                   // "arab" for ١٢٣, "latn" for 123
+  couple: { bride: "نورة", groom: "سلطان" },
+  verse: { text: "وَخَلَقْنَاكُمْ أَزْوَاجًا", tr: "And We created you in pairs", ref: "سورة النبأ: ٨" },
+  hosts: [
+    { name: "محمد بن عبدالله العتيبي", role: "والد العريس" },
+    { name: "خالد بن سعد القحطاني", role: "والد العروس" }
+  ],
+  request: "يتشرفان بدعوتكم لحضور حفل زواج ابنيهما",
+  whenLine: "وذلك بمشيئة الله تعالى",
+  guest: { name: "عائلة الدوسري الكريمة", seats: 4 },
+  selectedEvents: ["milka", "henna", "wedding"],
+  events: {
+    milka:   { title: "عقد القران", sub: "الملكة", start: "2027-03-25T20:30:00+03:00", hours: 2.5, venue: "قاعة الياسمين", address: "حي النخيل، الرياض", note: "" },
+    henna:   { title: "ليلة الحناء", sub: "للنساء فقط", start: "2027-04-13T20:00:00+03:00", hours: 4, venue: "قصر الأميرات", address: "طريق الملك فهد، الرياض", note: "" },
+    wedding: { title: "حفل الزفاف", sub: "قاعة الرجال وقاعة النساء", start: "2027-04-15T21:00:00+03:00", hours: 4, venue: "قاعة ليالي الشرق", address: "طريق الملك عبدالعزيز، الرياض", note: "العشاء الساعة ١١:٣٠ مساءً" }
+  },
+  notes: [
+    { icon: "kids", title: "جنة الأطفال منازلهم", text: "نعتذر عن استقبال الأطفال، مع خالص التقدير" },
+    { icon: "camera", title: "يُمنع التصوير", text: "احترامًا لخصوصية الحضور في قاعة النساء" }
+  ],
+  rsvp: { deadline: "2027-04-01" },
+  closingAyah: {
+    text: "﴿ وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ﴾",
+    tr: "And among His signs is that He created for you mates from among yourselves, that you may find tranquillity in them; and He placed between you affection and mercy.",
+    ref: "سورة الروم: ٢١"
+  },
+  showTranslation: true,                            // English lines under the verses
+  regards: "مع خالص التحيات",
+  from: "آل العتيبي و آل القحطاني",
+  hashtag: "#زواج_سلطان_ونورة",
+  music: "assets/music.mp3",                        // "" for no music
+  blessings: ["مبروك", "ما شاء الله", "بارك الله لكما", "ألف مبروك", "الله يتمم على خير"]
+};
+var ORDER = ["milka", "henna", "wedding"];
+function merge(base, over) {
+  if (Array.isArray(over) || over === null || typeof over !== "object") return over === undefined ? base : over;
+  var out = {}; for (var k in base) out[k] = base[k];
+  Object.keys(over).forEach(function (k) { out[k] = (base && base[k] && typeof base[k] === "object" && !Array.isArray(base[k])) ? merge(base[k], over[k]) : over[k]; });
+  return out;
+}
+var INJECTED = (function () { try { return JSON.parse(document.getElementById("invite-data").textContent); } catch (e) { return null; } })();
+var C = merge(DEFAULTS, INJECTED || {});
+if (INJECTED && !INJECTED.guest) C.guest = null;
+if (INJECTED && INJECTED.couple && !INJECTED.hashtag) C.hashtag = "#زواج_" + C.couple.groom.replace(/\s+/g, "_") + "_و" + C.couple.bride.replace(/\s+/g, "_");
+C.selectedEvents = (C.selectedEvents || []).filter(function (k) { return C.events[k]; });
+
+(function () {
+  var $ = function (s) { return document.querySelector(s); }, $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
+  var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+  var setText = function (s, t) { var el = $(s); if (el) el.textContent = t == null ? "" : t; };
+  var RM = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var TZ = C.timeZone || "Asia/Riyadh", NU = C.digits === "latn" ? "latn" : "arab";
+  var AR = "ar-SA-u-nu-" + NU + "-ca-gregory", HJ = "ar-SA-u-nu-" + NU + "-ca-islamic-umalqura";
+  var fmt = function (d, o, loc) { o.timeZone = TZ; return new Intl.DateTimeFormat(loc || AR, o).format(d); };
+  var num = function (n) { return new Intl.NumberFormat("ar-SA-u-nu-" + NU).format(n); };
+  var time = function (d) { return fmt(d, { hour: "numeric", minute: "2-digit", hour12: true }); };
+  var gcal = function (d) { return d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z"; };
+  var B = C.couple.bride, G = C.couple.groom;
+
+  /* ---------- stage size: a phone-shaped column, full screen on phones ---------- */
+  var stage = $("#stage");
+  function sizeStage() {
+    var w = innerWidth, h = innerHeight, sw = Math.min(w, Math.round(h * .6));
+    // text scales with the space inside the frame, so short screens still fit each page
+    var fu = Math.min(sw, Math.round((h - sw * .72) / 1.2));
+    document.documentElement.style.setProperty("--sw", sw + "px");
+    document.documentElement.style.setProperty("--fu", fu + "px");
+    document.documentElement.style.setProperty("--sh", h + "px");
+  }
+  sizeStage(); addEventListener("resize", sizeStage);
+
+  var evs = ORDER.filter(function (k) { return C.selectedEvents.indexOf(k) > -1; }).map(function (k) { var e = C.events[k]; return Object.assign({ key: k }, e, { date: new Date(e.start) }); });
+  if (!evs.length) evs = ORDER.map(function (k) { return Object.assign({ key: k }, C.events[k], { date: new Date(C.events[k].start) }); });
+  var main = evs.filter(function (e) { return e.key === "wedding"; })[0] || evs[evs.length - 1];
+  var calUrl = function (e) {
+    var end = new Date(e.date.getTime() + (e.hours || 3) * 36e5);
+    return "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(e.title + " · " + G + " و " + B) +
+      "&dates=" + gcal(e.date) + "/" + gcal(end) + "&location=" + encodeURIComponent(e.venue + "، " + e.address) + "&ctz=" + encodeURIComponent(TZ);
+  };
+  var mapUrl = function (e) { return e.map || "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(e.venue + " " + e.address); };
+  var tr = C.showTranslation !== false;
+
+  /* ---------- 1. verse ---------- */
+  var V = C.verse || {};
+  setText("#verse", V.text); setText("#verseRef", V.ref);
+  if (tr && V.tr) setText("#verseTr", V.tr); else $("#verseTr").remove();
+  if (!V.text) { $("#verse").remove(); $("#verseRef").remove(); }
+
+  /* ---------- 2. invitation ---------- */
+  var hs = C.hosts || [];
+  $("#hosts").innerHTML = hs.map(function (x) { return "<div><b>" + esc(x.name) + "</b>" + (x.role ? "<span>" + esc(x.role) + "</span>" : "") + "</div>"; }).join("");
+  if (!hs.length) $("#hosts").remove();
+  setText("#req", C.request);
+  setText("#nGroom", G); setText("#nBride", B);
+  $("#when").innerHTML = (C.whenLine ? esc(C.whenLine) + "<br>" : "") + "يوم " + esc(fmt(main.date, { weekday: "long", day: "numeric", month: "long", year: "numeric" })) +
+    "<small>" + esc(fmt(main.date, { day: "numeric", month: "long", year: "numeric" }, HJ)) + " هـ</small>";
+  if (C.guest && C.guest.name) {
+    $("#gfor").hidden = false; setText("#gname", C.guest.name);
+    var gl = $("#guestline"); gl.hidden = false; gl.innerHTML = "إلى المكرّم: <b>" + esc(C.guest.name) + "</b>";
+    if (C.guest.seats) { var se = $("#seats"); se.hidden = false; se.textContent = "عدد المقاعد المخصصة لكم: " + num(C.guest.seats); }
+  }
+  if (C.preview) { document.body.classList.add("is-preview"); $("#previewbar").hidden = false; if (C.buyUrl) $("#buyLink").href = C.buyUrl; else $("#buyLink").hidden = true; }
+
+  function fitNames() {
+    $$(".names .nm").forEach(function (el) {
+      el.style.fontSize = ""; var box = el.parentNode.clientWidth + parseFloat(getComputedStyle(stage).width) * .12, fs = parseFloat(getComputedStyle(el).fontSize);
+      while (el.scrollWidth > box && fs > 22) { fs -= 1; el.style.fontSize = fs + "px"; }
+    });
+  }
+
+  /* ---------- 3. events ---------- */
+  var PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>';
+  var CAL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>';
+  var CLK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+  $("#evPages").outerHTML = evs.map(function (e) {
+    return '<section class="sec s-ev">' +
+      '<p class="insha cal gold rv">إن شاء الله</p>' +
+      '<h2 class="evt cal gold rv" style="--d:.2s">' + esc(e.title) + '</h2>' +
+      (e.sub ? '<p class="evsub rv" style="--d:.3s">' + esc(e.sub) + '</p>' : '') +
+      '<div class="rows">' +
+        '<div class="row rv" style="--d:.45s">' + CAL + '<span><b>' + esc(fmt(e.date, { weekday: "long" })) + '</b> ' + esc(fmt(e.date, { day: "numeric", month: "long", year: "numeric" })) + '<small>' + esc(fmt(e.date, { day: "numeric", month: "long", year: "numeric" }, HJ)) + ' هـ</small></span></div>' +
+        '<div class="row rv" style="--d:.6s">' + CLK + '<span>' + esc(time(e.date)) + '</span></div>' +
+        '<div class="row rv" style="--d:.75s">' + PIN + '<span><b>' + esc(e.venue) + '</b><small>' + esc(e.address) + '</small></span></div>' +
+      '</div>' +
+      (e.note ? '<p class="evnote rv" style="--d:.85s">' + esc(e.note) + '</p>' : '') +
+      '<div class="acts rv" style="--d:.95s"><a class="btn solid" href="' + esc(mapUrl(e)) + '" target="_blank" rel="noopener">' + PIN + 'الموقع</a><a class="btn" href="' + esc(calUrl(e)) + '" target="_blank" rel="noopener">' + CAL + 'التقويم</a></div>' +
+      '</section>';
+  }).join("");
+
+  /* ---------- 4. countdown ---------- */
+  setText("#countTitle", "بقي على " + main.title);
+  var cc = $("#countCal"); cc.href = calUrl(main); cc.innerHTML = CAL + "ذكّرني بالموعد";
+  function tick() {
+    var ms = Math.max(0, main.date - Date.now()), d = Math.floor(ms / 864e5); ms -= d * 864e5;
+    var hh = Math.floor(ms / 36e5); ms -= hh * 36e5; var m = Math.floor(ms / 6e4), s = Math.floor((ms - m * 6e4) / 1e3);
+    [["d", d], ["h", hh], ["m", m], ["s", s]].forEach(function (x) { var el = document.querySelector('#clock [data-u="' + x[0] + '"]'); if (el) el.textContent = num(x[1]); });
+  }
+  tick(); setInterval(tick, 1000);
+
+  /* ---------- 5. notes ---------- */
+  var NI = {
+    kids: '<path d="M12 4a3 3 0 1 1 0 6 3 3 0 0 1 0-6zM7 20v-4a5 5 0 0 1 10 0v4"/><path d="M4 4l16 16"/>',
+    camera: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/><path d="M3 3l18 18"/>',
+    dress: '<path d="M9 3h6l-1 4 4 14H6l4-14z"/><path d="M10 7h4"/>',
+    heart: '<path d="M12 20s-7-4.4-7-9.5A3.9 3.9 0 0 1 12 8a3.9 3.9 0 0 1 7 2.5C19 15.6 12 20 12 20z"/>'
+  };
+  var notes = C.notes || [];
+  $("#notes").innerHTML = notes.map(function (n, i) { return '<div class="note rv" style="--d:' + (.3 + i * .15) + 's"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">' + (NI[n.icon] || NI.heart) + '</svg><b>' + esc(n.title) + '</b><span>' + esc(n.text) + '</span></div>'; }).join("");
+  if (!notes.length) $("#s-notes").remove();
+
+  /* ---------- 6. RSVP: same reply system as every Invitary design ---------- */
+  var RS = C.rsvp;
+  if (RS) {
+    if (RS.deadline) setText("#rsvpBy", "نأمل التأكيد قبل " + fmt(new Date(RS.deadline + "T12:00:00Z"), { day: "numeric", month: "long" }));
+    var RKEY = "lu-rsvp-" + (C.slug || "sample") + "-" + (C.guestKey || "");
+    var render = function (sent) {
+      var box = $("#rsvpBox"), done = sent;
+      try { done = done || JSON.parse(localStorage.getItem(RKEY)); } catch (e) {}
+      if (done) {
+        box.innerHTML = '<div class="thanks"><p class="t gold">' + (done.attending === "yes" ? "حيّاكم الله" : "شكرًا لكم") + '</p><p>' + (done.attending === "yes" ? "وصلنا تأكيد حضوركم، ننتظركم بكل شوق." : "نقدّر اعتذاركم، وسنفتقد وجودكم.") + '</p>' +
+          (C.slug ? '' : '<small>معاينة: تُحفظ الردود عند تفعيل الدعوة</small>') + '<button class="btn" type="button" id="rAgain">تعديل الرد</button></div>';
+        return;
+      }
+      var max = (C.guest && C.guest.seats) || 5, opts = "";
+      for (var i = 1; i <= max; i++) opts += '<option value="' + i + '">' + num(i) + '</option>';
+      box.innerHTML = '<form class="form" id="rForm" novalidate>' +
+        '<div class="f"><label for="rName">الاسم</label><input id="rName" maxlength="80" autocomplete="name" value="' + esc(C.guest && C.guest.name) + '"></div>' +
+        '<fieldset class="f"><legend>هل ستشرّفوننا بالحضور؟</legend><div class="choice">' +
+        '<label><input type="radio" name="att" value="yes" id="rYes"><span>سأحضر بإذن الله</span></label>' +
+        '<label><input type="radio" name="att" value="no" id="rNo"><span>أعتذر عن الحضور</span></label></div></fieldset>' +
+        '<div class="f" id="rCountF" hidden><label for="rCount">عدد الحضور</label><select id="rCount">' + opts + '</select></div>' +
+        '<div class="f"><label for="rNote">رسالة للعروسين</label><textarea id="rNote" maxlength="600" placeholder="اكتب تهنئتك هنا…"></textarea></div>' +
+        '<p class="msg" id="rMsg" role="status" hidden></p>' +
+        '<button class="btn solid" type="submit" id="rSend">إرسال الرد</button></form>';
+      $$('#rForm input[name="att"]').forEach(function (r) { r.addEventListener("change", function () { $("#rCountF").hidden = !$("#rYes").checked; }); });
+    };
+    document.addEventListener("click", function (e) { if (e.target.id === "rAgain") { try { localStorage.removeItem(RKEY); } catch (_) {} render(); } });
+    document.addEventListener("submit", function (e) {
+      if (e.target.id !== "rForm") return;
+      e.preventDefault();
+      var msg = $("#rMsg"), send = $("#rSend"), yes = $("#rYes").checked, no = $("#rNo").checked;
+      var body = { slug: C.slug, guest: C.guestKey || null, name: $("#rName").value.trim(), attending: yes ? "yes" : no ? "no" : "",
+        count: yes ? +$("#rCount").value : 0, meals: [], dietary: "", song: "", message: $("#rNote").value.trim() };
+      var err = !body.name ? "يرجى كتابة الاسم." : !body.attending ? "يرجى اختيار الحضور أو الاعتذار." : "";
+      if (err) { msg.textContent = err; msg.hidden = false; return; }
+      msg.hidden = true;
+      var done = function () { try { localStorage.setItem(RKEY, JSON.stringify(body)); } catch (_) {} render(body); if (yes) blessAt(innerWidth / 2, innerHeight * .45, "حيّاكم الله"); };
+      if (!C.slug) return done();
+      send.disabled = true; send.textContent = "جارٍ الإرسال…";
+      fetch("/api/rsvp", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })
+        .then(function (r) { if (!r.ok) throw new Error("لم يتم إرسال الرد، يرجى المحاولة مرة أخرى."); })
+        .then(done, function (x) { msg.textContent = x.message; msg.hidden = false; send.disabled = false; send.textContent = "إرسال الرد"; });
+    });
+    render();
+  } else $("#rsvp").remove();
+
+  /* ---------- 7. closing ---------- */
+  var A2 = C.closingAyah || {};
+  if (A2.text) { setText("#ayah2", A2.text); setText("#ayah2Ref", A2.ref); if (tr && A2.tr) setText("#ayah2Tr", A2.tr); else $("#ayah2Tr").remove(); }
+  else ["#ayah2", "#ayah2Tr", "#ayah2Ref"].forEach(function (s) { $(s).remove(); });
+  setText("#regards", C.regards); setText("#from", C.from); setText("#hashtag", C.hashtag);
+  if (!C.from) $("#from").remove(); if (!C.hashtag) $("#hashtag").remove();
+
+  /* ---------- reveal on scroll ---------- */
+  var scroller = $("#scroll"), secs = $$(".sec");
+  var io = new IntersectionObserver(function (ents) {
+    ents.forEach(function (en) { if (en.isIntersecting && document.body.classList.contains("opened")) en.target.classList.add("on"); });
+  }, { root: scroller, threshold: .3 });
+  secs.forEach(function (s) { io.observe(s); });
+  var cue = $("#cue");
+  scroller.addEventListener("scroll", function () { if (scroller.scrollTop > 40) cue.classList.remove("show"); }, { passive: true });
+
+  /* ---------- tap anywhere: a blessing in gold with sparkles ---------- */
+  var cv = $("#sparks"), cx = cv.getContext("2d"), parts = [], running = false;
+  function size() { var d = Math.min(devicePixelRatio || 1, 2); cv.width = innerWidth * d; cv.height = innerHeight * d; cx.setTransform(d, 0, 0, d, 0, 0); }
+  size(); addEventListener("resize", size);
+  function burst(x, y, n) {
+    if (RM) return;
+    var cols = ["#e2c487", "#c9a463", "#fffaf0", "#f3d9d2", "#a8823f"];
+    for (var i = 0; i < n; i++) { var a = Math.random() * Math.PI * 2, v = 1.2 + Math.random() * 3.6; parts.push({ x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 1.6, r: Math.random() * Math.PI, s: 2 + Math.random() * 3, c: cols[i % cols.length], life: 1, pearl: Math.random() < .45 }); }
+    if (!running) { running = true; requestAnimationFrame(loop); }
+  }
+  function loop() {
+    cx.clearRect(0, 0, innerWidth, innerHeight);
+    parts = parts.filter(function (p) { return p.life > 0; });
+    parts.forEach(function (p) {
+      p.x += p.vx; p.y += p.vy; p.vy += .06; p.vx *= .985; p.r += .08; p.life -= .011;
+      cx.save(); cx.globalAlpha = Math.max(0, p.life); cx.translate(p.x, p.y); cx.rotate(p.r);
+      if (p.pearl) { var g = cx.createRadialGradient(-p.s * .3, -p.s * .3, 0, 0, 0, p.s); g.addColorStop(0, "#fff"); g.addColorStop(1, "#e6dccb"); cx.fillStyle = g; cx.beginPath(); cx.arc(0, 0, p.s, 0, Math.PI * 2); cx.fill(); }
+      else { cx.fillStyle = p.c; cx.beginPath(); for (var k = 0; k < 8; k++) { var rr = k % 2 ? p.s * .4 : p.s * 1.4, an = k * Math.PI / 4; cx.lineTo(Math.cos(an) * rr, Math.sin(an) * rr); } cx.fill(); }
+      cx.restore();
+    });
+    if (parts.length) requestAnimationFrame(loop); else { running = false; cx.clearRect(0, 0, innerWidth, innerHeight); }
+  }
+  var opened = false, lastWord = -1;
+  function blessAt(x, y, word) {
+    var words = C.blessings || []; if (!word) { if (!words.length) return; var k; do { k = (Math.random() * words.length) | 0; } while (words.length > 1 && k === lastWord); lastWord = k; word = words[k]; }
+    var el = document.createElement("div"); el.className = "bless"; el.textContent = word;
+    el.style.left = Math.min(Math.max(x, 110), innerWidth - 110) + "px"; el.style.top = Math.max(y, 90) + "px";
+    document.body.appendChild(el); setTimeout(function () { el.remove(); }, 2000);
+    burst(x, y, 24);
+  }
+  document.addEventListener("click", function (e) {
+    if (!opened || !e.target.closest) return;
+    if (e.target.closest("a,button,input,textarea,select,label,form,.previewbar,#music,#gate")) return;
+    blessAt(e.clientX, e.clientY);
+  });
+
+  /* ---------- music: starts softly as the gate opens ---------- */
+  var VOL = .5, aud = null, actx = null, gain = null, muted = false, mBtn = $("#music");
+  function startMusic() {
+    if (!C.music || aud) return;
+    aud = new Audio(C.music); aud.loop = true; aud.preload = "auto";
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (AC) { try { actx = new AC(); var src = actx.createMediaElementSource(aud); gain = actx.createGain(); src.connect(gain); gain.connect(actx.destination);
+      var t = actx.currentTime; gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(VOL, t + 4); } catch (e) { actx = null; } }
+    if (!actx) { var v = 0; aud.volume = 0; var iv = setInterval(function () { v = Math.min(VOL, v + .025); aud.volume = v; if (v >= VOL) clearInterval(iv); }, 200); }
+    aud.play().catch(function () {}); mBtn.hidden = false;
+  }
+  mBtn.addEventListener("click", function () {
+    muted = !muted; mBtn.classList.toggle("muted", muted); mBtn.setAttribute("aria-label", muted ? "تشغيل الموسيقى" : "إيقاف الموسيقى");
+    if (!aud) return; if (muted) aud.pause(); else { if (actx && actx.state === "suspended") actx.resume(); aud.play().catch(function () {}); }
+  });
+  document.addEventListener("visibilitychange", function () { if (!aud || muted) return; if (document.hidden) aud.pause(); else { if (actx && actx.state === "suspended") actx.resume(); aud.play().catch(function () {}); } });
+
+  /* ---------- opening: the bow lifts away, light breaks through the seam, the gate parts ---------- */
+  var gate = $("#gate");
+  function reveal() {
+    document.body.classList.remove("locked"); document.body.classList.add("opened"); opened = true;
+    scroller.classList.add("in"); $("#s-hero").classList.add("on");
+    fitNames();
+    setTimeout(function () { if (scroller.scrollTop < 40) cue.classList.add("show"); }, 2600);
+  }
+  function openGate() {
+    if (gate.classList.contains("open")) return;
+    startMusic();
+    if (RM) { gate.classList.add("gone"); reveal(); return; }
+    gate.classList.add("open");
+    setTimeout(function () { gate.classList.add("part"); }, 950);
+    setTimeout(function () { $("#haze").classList.add("go"); }, 1300);
+    setTimeout(reveal, 1700);
+    setTimeout(function () { gate.classList.add("gone"); burst(innerWidth / 2, innerHeight * .4, 40); }, 3400);
+  }
+  gate.addEventListener("click", openGate);
+  gate.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openGate(); } });
+  addEventListener("resize", fitNames); if (document.fonts) document.fonts.ready.then(fitNames);
+})();
+</script>
+</body>
+</html>

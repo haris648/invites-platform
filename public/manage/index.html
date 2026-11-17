@@ -129,10 +129,10 @@ table{width:100%;border-collapse:collapse;font-size:15px}
   var tz = function () { return S.data.timeZone || S.theme.timeZone; };
   var titleOf = function (k) { var e = (S.data.events || {})[k] || {}; return e.title || S.theme.titles[k] || k; };
   var selected = function () { return (S.data.selectedEvents || []).filter(function (k) { return S.theme.events.indexOf(k) > -1; }); };
-  var coupleNames = function () { var c = S.data.couple || {}; return (c.bride || "") + " & " + (c.groom || ""); };
+  var coupleNames = function (ar) { var c = S.data.couple || {}; return ar ? (c.groom || "") + " و " + (c.bride || "") : (c.bride || "") + " & " + (c.groom || ""); };
   function shareText(guestName, link) {
-    var t = S.data.shareMessage || S.theme.shareMessage;
-    return t.replace(/\{guest\}/g, guestName || (isEA() ? "friends" : "everyone")).replace(/\{couple\}/g, coupleNames()).replace(/\{link\}/g, link);
+    var t = S.data.shareMessage || S.theme.shareMessage, ar = /[\u0600-\u06FF]/.test(t);   // Arabic messages (Lulua): "سلطان و نورة"
+    return t.replace(/\{guest\}/g, guestName || (ar ? "الجميع" : isEA() ? "friends" : "everyone")).replace(/\{couple\}/g, coupleNames(ar)).replace(/\{link\}/g, link);
   }
   var waLink = function (text) { return "https://wa.me/?text=" + encodeURIComponent(text); };
   function latestReplies() {
