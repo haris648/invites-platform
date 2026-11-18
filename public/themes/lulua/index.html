@@ -362,8 +362,11 @@ if (Array.isArray(C.eventOrder)) ORDER = C.eventOrder.filter(function (k) { retu
   var RM = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   var TZ = C.timeZone || "Asia/Dubai";
   var LANGS = (C.languages || ["en", "ar"]).filter(function (l) { return l === "en" || l === "ar"; }); if (!LANGS.length) LANGS = ["en"];
-  var LKEY = "lu-lang-" + (C.slug || "sample");
-  var LANG = (function () { var s; try { s = localStorage.getItem(LKEY); } catch (e) {} return LANGS.indexOf(s) > -1 ? s : LANGS.indexOf(C.lang) > -1 ? C.lang : LANGS[0]; })();
+  // Every visit opens in the invitation's own language. A switch is only remembered for this visit (e.g. a refresh),
+  // never on the guest's phone, so an old choice can't make the card open in the wrong language later.
+  var LKEY = "lu-lang2-" + (C.slug || "sample");
+  try { localStorage.removeItem("lu-lang-" + (C.slug || "sample")); } catch (e) {}   // clear what older versions saved
+  var LANG = (function () { var s; try { s = sessionStorage.getItem(LKEY); } catch (e) {} return LANGS.indexOf(s) > -1 ? s : LANGS.indexOf(C.lang) > -1 ? C.lang : LANGS[0]; })();
 
   // text helpers: T() picks the current language from { en, ar } or returns plain text as is
   var T = function (v) { if (v == null) return ""; if (typeof v === "object" && !Array.isArray(v)) return v[LANG] != null && v[LANG] !== "" ? v[LANG] : (v.en != null ? v.en : v.ar) || ""; return v; };
@@ -577,7 +580,7 @@ if (Array.isArray(C.eventOrder)) ORDER = C.eventOrder.filter(function (k) { retu
     var seen = secs.map(function (s) { return s.classList.contains("on"); });
     scroller.classList.add("swap");
     setTimeout(function () {
-      LANG = l; try { localStorage.setItem(LKEY, l); } catch (e) {}
+      LANG = l; try { sessionStorage.setItem(LKEY, l); } catch (e) {}
       chrome(); build(); observe();
       // the frame is wider than the screen; switching text direction must not slide it sideways
       stage.scrollLeft = 0; $$(".fr").forEach(function (f) { f.scrollLeft = 0; });
@@ -670,6 +673,8 @@ if (Array.isArray(C.eventOrder)) ORDER = C.eventOrder.filter(function (k) { retu
     setTimeout(function () { gate.classList.add("gone"); burst(innerWidth / 2, innerHeight * .4, 40); }, 3400);
   }
   gate.addEventListener("click", openGate);
+  // Safari and in-app browsers can restore an old copy of the page when a guest comes back to it; load it fresh instead
+  addEventListener("pageshow", function (e) { if (e.persisted) location.reload(); });
   gate.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openGate(); } });
 })();
 </script>
