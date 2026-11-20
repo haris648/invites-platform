@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/brand/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
+<meta name="theme-color" content="#0E2426">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin · The Invitary</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Corinthia&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Marcellus+SC&display=swap">
+<link rel="stylesheet" href="/assets/shop.css">
+<style>
+body{font-size:17px}
+main{display:grid;gap:28px;padding-block:32px}
+.card{border:1px solid var(--line);border-radius:18px;padding:22px;background:var(--panel);display:grid;gap:16px;min-width:0}
+.card h2{font-family:var(--f-script);font-weight:400;font-size:44px;line-height:.9}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+.row .field{flex:1 1 180px}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:16px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-family:var(--f-label);font-weight:400;font-size:11px;letter-spacing:.16em;color:var(--sand)}
+td .btn{min-height:36px;padding:0 14px;font-size:11px}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+.copy{cursor:pointer;color:var(--sand);text-decoration:underline;background:none;border:0;padding:0;font:inherit}
+.muted{color:var(--ivory-soft)}
+.pager{display:flex;align-items:center;gap:12px;justify-content:flex-end}
+.pager .btn{min-height:36px;padding:0 14px;font-size:11px}
+td .btn.danger{color:var(--error);border-color:rgba(240,163,122,.5)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap"><a class="brand" href="/" aria-label="The Invitary home"><img src="/assets/brand/logo-light.svg" alt="The Invitary"></a><span class="label">Admin</span></div></header>
+
+<main class="wrap">
+  <section class="card" id="login">
+    <h2>Sign in</h2>
+    <div class="row">
+      <div class="field"><label class="label" for="token">Admin password</label><input id="token" type="password" autocomplete="current-password"></div>
+      <button class="btn solid" type="button" id="signin">Open admin</button>
+    </div>
+    <p class="msg err" id="loginMsg" hidden></p>
+  </section>
+
+  <div id="app" hidden style="display:grid;gap:28px">
+    <section class="card">
+      <h2>Previews</h2>
+      <p class="muted" style="margin:0">Try-ons from the last 8 hours (older ones expire and are deleted). When a customer pays, give their invitation a link and make it live.</p>
+      <div class="tbl"><table><thead><tr><th>When</th><th>Couple</th><th>Email</th><th>Design</th><th></th></tr></thead><tbody id="drafts"></tbody></table></div>
+      <div class="pager" id="draftPager" hidden><span class="muted" id="draftPage"></span><button class="btn" type="button" id="draftPrev">Previous</button><button class="btn" type="button" id="draftNext">Next</button></div>
+    </section>
+
+    <section class="card">
+      <h2>Live invitations</h2>
+      <div class="tbl"><table><thead><tr><th>Link</th><th>Design</th><th>Status</th><th>Opens</th><th>Email</th><th></th></tr></thead><tbody id="invs"></tbody></table></div>
+      <details style="margin-top:14px"><summary class="muted" style="cursor:pointer">Create without a preview (private designs)</summary>
+        <div class="row" style="margin-top:10px">
+          <div class="field" style="flex:0 1 200px"><select id="newTpl" aria-label="Design"><option value="haris-filza-wedding">Haris &amp; Filza · Nikah (11 Dec)</option><option value="haris-ki-shadi">Haris &amp; Filza · Valima (13 Dec)</option><option value="lulua">Lulua</option></select></div>
+          <div class="field" style="flex:1 1 160px"><input id="newSlug" value="haris-filza-wedding" aria-label="Invitation link"></div>
+          <button class="btn solid" type="button" id="newCreate">Create</button>
+        </div>
+        <p class="msg" id="newMsg" hidden></p>
+      </details>
+    </section>
+
+    <section class="card" id="editor" hidden>
+      <h2 id="edTitle">Edit</h2>
+      <div class="card" style="background:#0b2122;gap:12px">
+        <span class="label">Couple panel</span>
+        <p class="muted" style="margin:0">Send this private link to the couple after payment. They can edit their details, see replies and, with the guest list package, manage their guests. Anyone with the link can edit, so only share it with the couple.</p>
+        <div class="row">
+          <div class="field" style="flex:0 1 260px"><label class="label" for="accTier">Package</label>
+            <select id="accTier"><option value="basic">Invitation</option><option value="guests">Invitation + Guest list</option></select></div>
+          <button class="btn" type="button" id="accRegen">Make a new link</button>
+        </div>
+        <div class="row"><button class="copy mono" type="button" id="accLink"></button>
+          <a class="btn" id="accOpen" href="#" target="_blank" rel="noopener">Open panel</a>
+          <a class="btn solid" id="accWa" href="#" target="_blank" rel="noopener">Send to couple on WhatsApp</a></div>
+        <p class="msg" id="accMsg" hidden></p>
+      </div>
+      <div class="card" style="background:#0b2122;gap:10px" id="stats"></div>
+      <p class="muted" style="margin:0">Only include what differs from the design's sample: names, parents, message, RSVP number, and each function's date, venue and address. Dates use the format 2026-12-13T19:00:00+05:00.</p>
+      <div class="field"><label class="label" for="edData">Invitation content (JSON)</label><textarea id="edData" spellcheck="false"></textarea></div>
+      <div class="row">
+        <div class="field" style="flex:0 1 200px"><label class="label" for="edStatus">Status</label><select id="edStatus"><option value="live">Live</option><option value="hidden">Hidden</option></select></div>
+        <button class="btn solid" type="button" id="edSave">Save changes</button>
+        <a class="btn" id="edOpen" href="#" target="_blank" rel="noopener">Open invitation</a>
+      </div>
+      <p class="msg" id="edMsg" hidden></p>
+
+      <h2 style="font-size:36px;margin-top:8px">Guests</h2>
+      <div class="row">
+        <div class="field"><label class="label" for="gName">Guest name</label><input id="gName" placeholder="Chachu family"></div>
+        <div class="field" style="flex:0 1 110px"><label class="label" for="gSeats">Seats</label><input id="gSeats" type="number" min="1" inputmode="numeric"></div>
+        <div class="field"><label class="label" for="gKey">Link ending (optional)</label><input id="gKey" placeholder="chachu"></div>
+      </div>
+      <div class="chips" id="gEvents"></div>
+      <div class="row"><button class="btn solid" type="button" id="gAdd">Add guest</button></div>
+      <p class="msg" id="gMsg" hidden></p>
+      <div class="tbl"><table><thead><tr><th>Guest</th><th>Seats</th><th>Functions</th><th>Link</th><th></th></tr></thead><tbody id="guests"></tbody></table></div>
+
+      <h2 style="font-size:36px;margin-top:8px">Replies</h2>
+      <p class="muted" id="rsvpSummary" style="margin:0"></p>
+      <div class="row"><button class="btn" type="button" id="rsvpCopy">Copy for spreadsheet</button></div>
+      <div class="tbl"><table><thead><tr><th>When</th><th>Name</th><th>Reply</th><th>Guests</th><th>Meals</th><th>Dietary</th><th>Song</th><th>Note</th></tr></thead><tbody id="rsvps"></tbody></table></div>
+    </section>
+  </div>
+</main>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+let TOKEN = "";
+try { TOKEN = sessionStorage.getItem("adminToken") || ""; } catch {}
+let current = null;
+let drafts = [], draftPage = 0;
+const PER_PAGE = 10;
+
+async function api(path, opts = {}) {
+  const res = await fetch("/api/admin/" + path, { ...opts, headers: { authorization: "Bearer " + TOKEN, "content-type": "application/json" } });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || "Request failed (" + res.status + ")");
+  return data;
+}
+function say(el, text, ok) { el.textContent = text; el.className = "msg " + (ok ? "ok" : "err"); el.hidden = false; }
+const when = (t) => new Date(t).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+const copyBtn = (url) => `<button class="copy" type="button" data-copy="${esc(url)}">${esc(url.replace(location.origin, ""))}</button>`;
+
+async function signIn() {
+  TOKEN = $("#token").value.trim() || TOKEN;
+  try {
+    await loadAll();
+    try { sessionStorage.setItem("adminToken", TOKEN); } catch {}
+    $("#login").hidden = true; $("#app").hidden = false;
+  } catch (e) { say($("#loginMsg"), e.message); }
+}
+async function loadAll() {
+  const [d, { invitations }] = await Promise.all([api("drafts"), api("invitations")]);
+  drafts = d.drafts;
+  renderDrafts();
+  $("#invs").innerHTML = invitations.map((i) => `<tr>
+    <td>${copyBtn(location.origin + "/" + i.slug)}</td><td>${esc(i.template)}</td><td>${esc(i.status)}</td><td title="Opens · people (devices)">${i.opens || 0} · ${i.people || 0}</td><td>${esc(i.email || "")}</td>
+    <td><div class="actions"><button class="btn" type="button" data-edit="${esc(i.slug)}">Edit</button>
+      <button class="btn danger" type="button" data-remove="${esc(i.slug)}">Delete</button></div></td></tr>`).join("")
+    || `<tr><td colspan="6" class="muted">No live invitations yet.</td></tr>`;
+}
+function renderDrafts() {
+  const pages = Math.max(1, Math.ceil(drafts.length / PER_PAGE));
+  draftPage = Math.min(Math.max(0, draftPage), pages - 1);
+  const rows = drafts.slice(draftPage * PER_PAGE, (draftPage + 1) * PER_PAGE);
+  $("#drafts").innerHTML = rows.map((d) => `<tr>
+    <td>${when(d.created_at)}</td>
+    <td>${esc(d.data.couple.bride)} &amp; ${esc(d.data.couple.groom)}<div class="muted mono">${esc(d.data.selectedEvents.join(", "))}</div></td>
+    <td>${esc(d.email)}</td><td>${esc(d.template)}</td>
+    <td><a class="btn" href="/try/${esc(d.id)}" target="_blank" rel="noopener">View</a>
+        <button class="btn solid" type="button" data-live="${esc(d.id)}" data-names="${esc(d.data.couple.bride + "-weds-" + d.data.couple.groom)}">Make live</button></td></tr>`).join("")
+    || `<tr><td colspan="5" class="muted">No previews yet. They appear here when someone uses "Try with your names".</td></tr>`;
+  $("#draftPager").hidden = pages < 2;
+  $("#draftPage").textContent = `Page ${draftPage + 1} of ${pages} · ${drafts.length} previews`;
+  $("#draftPrev").disabled = draftPage === 0;
+  $("#draftNext").disabled = draftPage >= pages - 1;
+}
+function askRemove(btn) {
+  const slug = btn.dataset.remove;
+  btn.closest(".actions").innerHTML = `<span class="muted">Delete /${esc(slug)}, its guests and replies?</span>
+    <button class="btn danger" type="button" data-remove-yes="${esc(slug)}">Delete for good</button>
+    <button class="btn" type="button" data-remove-no>Keep</button>`;
+}
+async function removeInvitation(slug) {
+  try {
+    await api("invitations/" + encodeURIComponent(slug), { method: "DELETE" });
+    if (current && current.invitation.slug === slug) { current = null; $("#editor").hidden = true; }
+    await loadAll();
+  } catch (e) { alert(e.message); }
+}
+
+async function makeLive(id, suggested) {
+  const slug = suggested.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  const row = document.querySelector(`[data-live="${id}"]`).closest("td");
+  row.innerHTML = `<div class="row"><div class="field" style="flex:1 1 160px"><input value="${esc(slug)}" aria-label="Invitation link"></div>
+    <div class="field" style="flex:0 1 190px"><select aria-label="Package"><option value="basic">Invitation</option><option value="guests">Invitation + Guest list</option></select></div>
+    <button class="btn solid" type="button" data-confirm="${esc(id)}">Create</button></div>`;
+}
+// Our own private cards: suggested link and the page title shown in browser tabs and WhatsApp previews
+const PRIVATE = {
+  "haris-filza-wedding": { slug: "haris-filza-wedding", title: "Haris & Filza | Nikah & Wedding" },
+  "haris-ki-shadi": { slug: "haris-ki-shadi", title: "Syed M Haris & Filza | Valima Invitation" },
+};
+$("#newTpl").addEventListener("change", () => { const own = PRIVATE[$("#newTpl").value]; if (own) $("#newSlug").value = own.slug; });
+document.addEventListener("click", async (e) => {
+  if (e.target.id !== "newCreate") return;
+  try {
+    const tpl = $("#newTpl").value, own = PRIVATE[tpl];
+    const { slug } = await api("invitations", { method: "POST", body: JSON.stringify({ slug: $("#newSlug").value.trim(), template: tpl, tier: own ? "guests" : "basic", data: own ? { pageTitle: own.title } : {} }) });
+    await loadAll(); openEditor(slug);
+  } catch (err) { say($("#newMsg"), err.message); }
+});
+async function confirmLive(id, input) {
+  try {
+    const tier = input.closest(".row").querySelector("select").value;
+    const { slug } = await api("invitations", { method: "POST", body: JSON.stringify({ draft_id: id, slug: input.value.trim(), tier }) });
+    await loadAll(); openEditor(slug);
+  } catch (e) { input.setCustomValidity(e.message); input.reportValidity(); input.addEventListener("input", () => input.setCustomValidity(""), { once: true }); }
+}
+
+function showAccess(a) {
+  current.access = a;
+  $("#accTier").value = a.tier;
+  $("#accLink").textContent = a.manageUrl; $("#accLink").dataset.copy = a.manageUrl;
+  $("#accOpen").href = a.manageUrl;
+  const names = current.invitation.data.couple ? current.invitation.data.couple.bride + " & " + current.invitation.data.couple.groom : "";
+  const msg = `Congratulations ${names}! Your invitation is live: ${location.origin}/${current.invitation.slug}\n\nManage your invitation here (please keep this link private): ${a.manageUrl}`;
+  $("#accWa").href = "https://wa.me/?text=" + encodeURIComponent(msg);
+  $("#accMsg").hidden = true;
+}
+async function updateAccess(body) {
+  try { showAccess(await api(`invitations/${current.invitation.slug}/access`, { method: "PUT", body: JSON.stringify(body) })); say($("#accMsg"), body.regenerate ? "New link made. The old link no longer works." : "Package updated.", true); }
+  catch (e) { say($("#accMsg"), e.message); }
+}
+async function openEditor(slug) {
+  const data = await api("invitations/" + encodeURIComponent(slug));
+  current = data;
+  $("#editor").hidden = false;
+  $("#edTitle").textContent = "/" + slug;
+  $("#edData").value = JSON.stringify(data.invitation.data, null, 2);
+  $("#edStatus").value = data.invitation.status;
+  $("#edOpen").href = "/" + slug + "?check";   // ?check: your own opens aren't counted
+  renderStats(data.stats);
+  showAccess(data.access);
+  $("#edMsg").hidden = true; $("#gMsg").hidden = true;
+  $("#gEvents").innerHTML = data.events.map((e) => `<label><input type="checkbox" value="${esc(e)}" checked><span>${esc(e)}</span></label>`).join("");
+  renderGuests(); renderRsvps();
+  $("#editor").scrollIntoView({ behavior: "smooth" });
+}
+function renderStats(st) {
+  st = st || {};
+  const daily = (st.daily || []).slice().reverse(), max = Math.max(1, ...daily.map((d) => d.views));
+  $("#stats").innerHTML = `<span class="label">Opens</span>
+    <div class="row" style="gap:28px;align-items:baseline">
+      <div><b style="font-size:34px">${st.opens || 0}</b> <span class="muted">times opened</span></div>
+      <div><b style="font-size:34px">${st.people || 0}</b> <span class="muted">people (devices)</span></div>
+      <div class="muted">${st.lastAt ? "Last opened " + when(st.lastAt) : "Not opened yet"}</div></div>
+    ${daily.length ? `<div style="display:flex;gap:3px;align-items:flex-end;height:70px" title="Opens per day, last 30 days">${daily.map((d) =>
+      `<div title="${esc(d.day)}: ${d.views}" style="flex:1;min-width:6px;background:#c9a463;border-radius:3px 3px 0 0;height:${Math.max(4, Math.round(d.views / max * 70))}px"></div>`).join("")}</div>
+      <div class="muted mono" style="display:flex;justify-content:space-between;font-size:12px"><span>${esc(daily[0].day)}</span><span>${esc(daily[daily.length - 1].day)}</span></div>` : ""}
+    ${(st.countries || []).length ? `<div class="muted">Countries: ${st.countries.map((c) => esc(c.country) + " " + c.people).join(" · ")}</div>` : ""}
+    <p class="muted" style="margin:0;font-size:14px">Counts everyone who opens the main link or a guest link. WhatsApp's link preview and links opened with ?check (like the Open button here) aren't counted.</p>`;
+}
+function renderGuests() {
+  const slug = current.invitation.slug;
+  $("#guests").innerHTML = current.guests.map((g) => `<tr><td>${esc(g.name)}</td><td>${g.seats ?? ""}</td>
+    <td class="mono">${esc((g.events || ["all"]).join(", "))}</td><td>${copyBtn(location.origin + "/" + slug + "/" + g.key)}</td>
+    <td><button class="btn" type="button" data-del="${esc(g.key)}">Remove</button></td></tr>`).join("")
+    || `<tr><td colspan="5" class="muted">No guests yet. Without guests, everyone uses the main link.</td></tr>`;
+}
+function latestRsvps() {
+  // One row per guest link (or per name for the open link): the newest reply wins.
+  const seen = new Set();
+  return current.rsvps.filter((r) => { const k = r.guest_key || "name:" + r.name.toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; });
+}
+function renderRsvps() {
+  const list = latestRsvps();
+  const yes = list.filter((r) => r.attending === "yes"), no = list.filter((r) => r.attending === "no");
+  const people = yes.reduce((n, r) => n + (r.count || 0), 0);
+  const meals = {}; yes.forEach((r) => (r.meals || []).forEach((m) => { if (m) meals[m] = (meals[m] || 0) + 1; }));
+  $("#rsvpSummary").textContent = list.length
+    ? `${people} ${people === 1 ? "guest" : "guests"} coming from ${yes.length} ${yes.length === 1 ? "reply" : "replies"} · ${no.length} declined` + (Object.keys(meals).length ? " · " + Object.entries(meals).map(([m, n]) => `${n} × ${m}`).join(", ") : "")
+    : "No replies yet. They appear here as guests RSVP on the invitation.";
+  $("#rsvps").innerHTML = list.map((r) => `<tr><td>${when(r.created_at)}</td><td>${esc(r.name)}</td><td>${r.attending === "yes" ? "Accepts" : "Declines"}</td><td>${r.count || ""}</td>
+    <td>${esc((r.meals || []).filter(Boolean).join(", "))}</td><td>${esc(r.dietary)}</td><td>${esc(r.song)}</td><td>${esc(r.message)}</td></tr>`).join("");
+}
+async function copyRsvps(btn) {
+  const cell = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  const rows = [["Name", "Reply", "Guests", "Meals", "Dietary", "Song", "Note", "Received"]]
+    .concat(latestRsvps().map((r) => [r.name, r.attending === "yes" ? "Accepts" : "Declines", r.count, (r.meals || []).join("; "), r.dietary, r.song, r.message, new Date(r.created_at).toLocaleString("en-GB")]));
+  const text = rows.map((r) => r.map(cell).join("\t")).join("\n");
+  try { await navigator.clipboard.writeText(text); btn.textContent = "Copied, paste into Sheets or Excel"; }
+  catch { btn.textContent = "Couldn't copy. Select the table instead."; }
+  setTimeout(() => (btn.textContent = "Copy for spreadsheet"), 2500);
+}
+async function save() {
+  let data;
+  try { data = JSON.parse($("#edData").value); } catch (e) { return say($("#edMsg"), "The content isn't valid JSON: " + e.message); }
+  try {
+    await api("invitations/" + current.invitation.slug, { method: "PUT", body: JSON.stringify({ data, status: $("#edStatus").value }) });
+    say($("#edMsg"), "Saved. Every link updates straight away.", true); loadAll();
+  } catch (e) { say($("#edMsg"), e.message); }
+}
+async function addGuest() {
+  const events = [...document.querySelectorAll("#gEvents input:checked")].map((i) => i.value);
+  const all = events.length === current.events.length;
+  try {
+    const r = await api(`invitations/${current.invitation.slug}/guests`, { method: "POST",
+      body: JSON.stringify({ name: $("#gName").value, seats: $("#gSeats").value, key: $("#gKey").value, events: all ? [] : events }) });
+    say($("#gMsg"), "Added. Their link: " + r.url, true);
+    $("#gName").value = $("#gSeats").value = $("#gKey").value = "";
+    openEditor(current.invitation.slug);
+  } catch (e) { say($("#gMsg"), e.message); }
+}
+
+document.addEventListener("click", async (e) => {
+  const t = e.target.closest("button"); if (!t) return;
+  if (t.id === "signin") return signIn();
+  if (t.id === "edSave") return save();
+  if (t.id === "gAdd") return addGuest();
+  if (t.id === "accRegen") return updateAccess({ regenerate: true });
+  if (t.id === "rsvpCopy") return copyRsvps(t);
+  if (t.id === "draftPrev") { draftPage--; return renderDrafts(); }
+  if (t.id === "draftNext") { draftPage++; return renderDrafts(); }
+  if (t.dataset.remove) return askRemove(t);
+  if (t.dataset.removeYes) return removeInvitation(t.dataset.removeYes);
+  if (t.hasAttribute("data-remove-no")) return loadAll();
+  if (t.dataset.live) return makeLive(t.dataset.live, t.dataset.names);
+  if (t.dataset.confirm) return confirmLive(t.dataset.confirm, t.closest(".row").querySelector("input"));
+  if (t.dataset.edit) return openEditor(t.dataset.edit).catch((e) => alert(e.message));
+  if (t.dataset.del) { await api(`invitations/${current.invitation.slug}/guests/${encodeURIComponent(t.dataset.del)}`, { method: "DELETE" }); return openEditor(current.invitation.slug); }
+  if (t.dataset.copy) {
+    try { const was = t.textContent; await navigator.clipboard.writeText(t.dataset.copy); t.textContent = "Copied"; setTimeout(() => { t.textContent = was; }, 1200); }
+    catch { window.getSelection().selectAllChildren(t); }
+  }
+});
+$("#accTier").addEventListener("change", (e) => updateAccess({ tier: e.target.value }));
+$("#token").addEventListener("keydown", (e) => { if (e.key === "Enter") signIn(); });
+if (TOKEN) signIn();
+</script>
+</body>
+</html>

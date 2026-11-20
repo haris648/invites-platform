@@ -59,17 +59,18 @@ const THEMES = {
     rsvpOnPage: true,
     shareMessage: "Extra, extra! Dear {guest}, {couple} are getting married, and you're invited. Read all about it: {link}",
   },
-  // Private: Haris & Filza's own wedding (Baraat & Nikah, Valima). Not listed in the shop, not available to try.
+  // Private: Haris & Filza's Valima, Sun 13 Dec 2026 at Royal Sapphire (the haris-ka-valima site). The Nikah has its own
+  // card, haris-filza-wedding. Not listed in the shop, not available to try.
   "haris-ki-shadi": {
-    name: "Haris ki Shadi",
+    name: "Haris & Filza · Valima",
     private: true,
     path: "/themes/haris-ki-shadi/",
     og: "/themes/haris-ki-shadi/og.jpg",
-    events: ["baraat", "valima"],
-    titles: { baraat: "Baraat & Nikah", valima: "Valima" },
+    events: ["valima"],
+    titles: { valima: "Valima" },
     timeZone: "Asia/Karachi",
     rsvpOnPage: false,
-    shareMessage: "Assalam o Alaikum {guest}! With great joy, Haris & Filza invite you to their wedding. Please open your invitation: {link}",
+    shareMessage: "Assalam o Alaikum {guest}! With great joy, Haris & Filza invite you to their Valima on Sunday, 13 December. Please open your invitation: {link}",
   },
   // Private: Haris & Filza's Nikah & Wedding, 11 Dec 2026. A copy of Lulua with its own files, English only,
   // with an order of events and RSVP on WhatsApp. Not listed in the shop, not available to try.

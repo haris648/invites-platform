@@ -58,7 +58,7 @@ td .btn.danger{color:var(--error);border-color:rgba(240,163,122,.5)}
       <div class="tbl"><table><thead><tr><th>Link</th><th>Design</th><th>Status</th><th>Opens</th><th>Email</th><th></th></tr></thead><tbody id="invs"></tbody></table></div>
       <details style="margin-top:14px"><summary class="muted" style="cursor:pointer">Create without a preview (private designs)</summary>
         <div class="row" style="margin-top:10px">
-          <div class="field" style="flex:0 1 200px"><select id="newTpl" aria-label="Design"><option value="haris-filza-wedding">Haris &amp; Filza · Nikah (11 Dec)</option><option value="haris-ki-shadi">Haris ki Shadi</option><option value="lulua">Lulua</option></select></div>
+          <div class="field" style="flex:0 1 200px"><select id="newTpl" aria-label="Design"><option value="haris-filza-wedding">Haris &amp; Filza · Nikah (11 Dec)</option><option value="haris-ki-shadi">Haris &amp; Filza · Valima (13 Dec)</option><option value="lulua">Lulua</option></select></div>
           <div class="field" style="flex:1 1 160px"><input id="newSlug" value="haris-filza-wedding" aria-label="Invitation link"></div>
           <button class="btn solid" type="button" id="newCreate">Create</button>
         </div>
@@ -187,7 +187,7 @@ async function makeLive(id, suggested) {
 // Our own private cards: suggested link and the page title shown in browser tabs and WhatsApp previews
 const PRIVATE = {
   "haris-filza-wedding": { slug: "haris-filza-wedding", title: "Haris & Filza | Nikah & Wedding" },
-  "haris-ki-shadi": { slug: "haris-ki-shadi", title: "Haris & Filza | Wedding Invitation" },
+  "haris-ki-shadi": { slug: "haris-ki-shadi", title: "Syed M Haris & Filza | Valima Invitation" },
 };
 $("#newTpl").addEventListener("change", () => { const own = PRIVATE[$("#newTpl").value]; if (own) $("#newSlug").value = own.slug; });
 document.addEventListener("click", async (e) => {
