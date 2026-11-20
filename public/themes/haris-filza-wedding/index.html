@@ -317,8 +317,9 @@ var DEFAULTS = {
     { time: "12:00 AM", title: "Rukhsati",             icon: "rukhsati" }
   ],
   notes: [],
-  // RSVP on WhatsApp: numbers with country code, digits only
-  rsvp: { whatsapp: ["923313195533", "923332452650"] },
+  // RSVP on WhatsApp: numbers with country code, digits only, and the message the guest's reply starts with.
+  // On a guest's own link, "This is <name>." is added after "Assalam o Alaikum!" automatically.
+  rsvp: { whatsapp: ["923313195533", "923332452650"], message: "RSVP for Haris & Filza's Nikah & Wedding on 11th December: " },
   closingAyah: {
     text: "وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا",
     tr: "And of His signs is that He created for you, from yourselves, mates that you may find tranquillity in them",
@@ -487,7 +488,7 @@ if (Array.isArray(C.eventOrder)) ORDER = C.eventOrder.filter(function (k) { retu
     // 6. RSVP on WhatsApp
     var wa = (C.rsvp && C.rsvp.whatsapp) || [];
     if (wa.length) {
-      var waText = "Assalam o Alaikum! " + (C.guest && C.guest.name ? "This is " + C.guest.name + ". " : "") + "RSVP for Haris & Filza's Nikah & Wedding on 11th December: ";
+      var waText = "Assalam o Alaikum! " + (C.guest && C.guest.name ? "This is " + C.guest.name + ". " : "") + T(C.rsvp.message || "");
       h += '<section class="sec" id="rsvp">' + rv("p", "kick", esc(U("rsvpK"))) + rv("h2", "h2 script gold", esc(U("rsvpH")), .15) +
         rv("p", "rsvptx", esc(U("rsvpTx")), .3) +
         rv("div", "wa", wa.map(function (num) {
