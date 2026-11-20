@@ -29,7 +29,7 @@
 <link rel="preload" as="image" href="assets/hero2.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri&family=Aref+Ruqaa:wght@400;700&family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Pinyon+Script&family=Noto+Nastaliq+Urdu:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amiri&family=Aref+Ruqaa:wght@400;700&family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Noto+Nastaliq+Urdu:wght@500&display=swap" rel="stylesheet">
 
 <style>
 :root{
@@ -43,7 +43,7 @@
   --silver:#8C98A5;
   --serif:'Cormorant Garamond', Georgia, serif;
   --caps:'Cinzel', Georgia, serif;
-  --script:'Pinyon Script', cursive;
+  --script:'Cormorant Garamond', Georgia, serif;   /* was Pinyon Script; used in italic for titles and names */
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%;background:#C9D4DF}
@@ -98,7 +98,7 @@ a{color:inherit}
 .seal-hit{position:absolute;left:50%;top:50%;width:38%;max-width:170px;aspect-ratio:1;transform:translate(-50%,-50%);z-index:5;pointer-events:none}
 .seal-glow{position:absolute;inset:-18%;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.45),rgba(255,255,255,0) 62%);animation:glow 2.8s ease-in-out infinite}
 @keyframes glow{50%{transform:scale(1.12);opacity:.55}}
-.env-title{position:absolute;left:0;right:0;top:64%;text-align:center;font-family:var(--script);font-size:clamp(54px,16vw,74px);line-height:1;
+.env-title{position:absolute;left:0;right:0;top:64%;text-align:center;font-family:var(--script);font-style:italic;font-weight:500;font-size:clamp(54px,16vw,74px);line-height:1;
   background:linear-gradient(100deg,#9C7B45 0%,#E9D3A0 30%,#B8955A 45%,#F6E7C1 58%,#A9874F 75%,#E2C892 100%);background-size:220% 100%;
   -webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 1px 0 rgba(255,250,235,.35)) drop-shadow(0 3px 5px rgba(20,32,48,.75));animation:shimmer 5s linear infinite}
 .env-shade{position:absolute;left:0;right:0;top:56%;bottom:0;background:radial-gradient(120% 70% at 50% 40%,rgba(40,58,80,.42),rgba(40,58,80,0) 70%);pointer-events:none}
@@ -227,7 +227,7 @@ a{color:inherit}
 .sc-after .cue{display:block;margin-top:10px;font-family:var(--caps);font-style:normal;font-size:11px;letter-spacing:.22em;color:var(--dusty)}
 .sc-after .cue svg{display:block;margin:6px auto 0;animation:nudge 1.8s ease-in-out infinite}
 /* a blessing rises from wherever the guest taps (as in Resham) */
-.bless{position:fixed;z-index:90;pointer-events:none;white-space:nowrap;font-family:var(--script);font-size:clamp(36px,10vw,48px);line-height:1.2;color:var(--gold);
+.bless{position:fixed;z-index:90;pointer-events:none;white-space:nowrap;font-family:var(--script);font-style:italic;font-weight:600;font-size:clamp(34px,9vw,44px);line-height:1.2;color:var(--gold);
   text-shadow:0 0 14px rgba(255,255,255,.95),0 0 4px #fff,0 2px 10px rgba(46,59,74,.25);animation:bless 1.9s ease-out forwards}
 @keyframes bless{0%{opacity:0;transform:translate(-50%,-30%) scale(.7)}18%{opacity:1;transform:translate(-50%,-70%) scale(1)}100%{opacity:0;transform:translate(-50%,-180%) scale(1.04)}}
 #popper{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:100%;pointer-events:none;z-index:85}
@@ -269,7 +269,7 @@ a{color:inherit}
 .person{margin-top:22px}
 .person .nm{font-family:var(--serif);font-weight:600;font-size:31px;line-height:1.15;color:var(--ink)}
 .person .of{font-style:italic;font-size:17px;color:var(--slate);margin-top:2px}
-.and{font-family:var(--script);font-size:40px;line-height:1;color:var(--gold);margin-top:16px}
+.and{font-family:var(--script);font-style:italic;font-size:40px;line-height:1;color:var(--gold);margin-top:16px}
 .cordial{font-style:italic;font-size:19px;line-height:1.45;color:var(--slate);margin:26px auto 0;max-width:15em}
 .when{font-family:var(--serif);font-weight:600;font-size:22px;color:var(--gold);margin-top:14px}
 .when-time{font-size:18px;color:var(--ink);margin-top:2px}
@@ -361,7 +361,7 @@ a{color:inherit}
 .closing > *:not(.closing-bg){position:relative;z-index:2}
 .dua{font-family:'Amiri',serif;font-size:23px;line-height:1.9;direction:rtl;color:var(--gold-hi)}
 .dua-en{font-style:italic;font-size:18px;line-height:1.5;opacity:.92;max-width:21em;margin:12px auto 0}
-.sign{font-family:var(--script);font-size:44px;line-height:1.2;margin-top:34px}
+.sign{font-family:var(--script);font-style:italic;font-weight:500;font-size:44px;line-height:1.2;margin-top:34px}
 .tag{font-family:var(--caps);font-size:14px;letter-spacing:.14em;color:var(--gold-hi);margin-top:10px}
 .foot{font-size:14px;opacity:.7;margin-top:30px;font-style:italic}
 
@@ -927,7 +927,7 @@ function openInvite() {
     for (var i = 0; i < 90; i++) { sctx.beginPath(); sctx.arc(Math.random() * r.width, Math.random() * r.height, Math.random() * 1.3, 0, 7); sctx.fill(); }
     sctx.strokeStyle = "rgba(255,255,255,.55)"; sctx.lineWidth = 1; sctx.strokeRect(10.5, 10.5, r.width - 21, r.height - 21);
     sctx.textAlign = "center"; sctx.shadowColor = "rgba(20,32,48,.6)"; sctx.shadowBlur = 8; sctx.shadowOffsetY = 2;
-    sctx.fillStyle = "#fff"; sctx.font = "52px 'Pinyon Script', cursive"; sctx.fillText("Scratch here", r.width / 2, r.height / 2 + 4);
+    sctx.fillStyle = "#fff"; sctx.font = "italic 500 46px 'Cormorant Garamond', Georgia, serif"; sctx.fillText("Scratch here", r.width / 2, r.height / 2 + 4);
     sctx.font = "15px 'Cormorant Garamond', serif"; sctx.fillText("to reveal the date", r.width / 2, r.height / 2 + 34);
     sctx.shadowColor = "transparent";
   }
