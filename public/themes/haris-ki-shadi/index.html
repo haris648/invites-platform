@@ -226,6 +226,10 @@ a{color:inherit}
 .sc-after{font-style:italic;font-size:19px;color:var(--slate);margin-top:22px;min-height:1.4em}
 .sc-after .cue{display:block;margin-top:10px;font-family:var(--caps);font-style:normal;font-size:11px;letter-spacing:.22em;color:var(--dusty)}
 .sc-after .cue svg{display:block;margin:6px auto 0;animation:nudge 1.8s ease-in-out infinite}
+/* a blessing rises from wherever the guest taps (as in Resham) */
+.bless{position:fixed;z-index:90;pointer-events:none;white-space:nowrap;font-family:var(--script);font-size:clamp(36px,10vw,48px);line-height:1.2;color:var(--gold);
+  text-shadow:0 0 14px rgba(255,255,255,.95),0 0 4px #fff,0 2px 10px rgba(46,59,74,.25);animation:bless 1.9s ease-out forwards}
+@keyframes bless{0%{opacity:0;transform:translate(-50%,-30%) scale(.7)}18%{opacity:1;transform:translate(-50%,-70%) scale(1)}100%{opacity:0;transform:translate(-50%,-180%) scale(1.04)}}
 #popper{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:100%;pointer-events:none;z-index:85}
 
 /* =========================================================
@@ -587,6 +591,7 @@ var CONFIG = {
     { number: "923002293774", display: "0300 2293774" },
     { number: "923312133838", display: "0331 2133838" }
   ],
+  blessings: ["MashaAllah", "Alhamdulillah", "Allahumma Barik", "Mubarak!"],   // one rises with a few petals wherever the guest taps
   // WhatsApp reply. "Assalam o Alaikum!" (and "This is <name>." on a guest's own link) is added in front automatically.
   message: "In sha Allah I will attend the Valima of Haris & Filza on Sunday, 13 December 2026 at Royal Sapphire.",
   music: "assets/music.mp3",       // loops softly from the moment the envelope is tapped
@@ -831,6 +836,27 @@ function openInvite() {
     if (!running) { running = true; requestAnimationFrame(loop); }
     setTimeout(function () { ambient(14); }, 900);
   }
+
+  /* ---------- tap anywhere (after the envelope opens): a blessing rises with a few petals ---------- */
+  var lastBless = -1;
+  function bless(x, y) {
+    var words = C.blessings || []; if (!words.length) return;
+    var i; do { i = Math.floor(Math.random() * words.length); } while (words.length > 1 && i === lastBless);
+    lastBless = i;
+    var el = document.createElement("div"); el.className = "bless"; el.textContent = words[i];
+    el.style.left = Math.min(Math.max(x, 110), innerWidth - 110) + "px"; el.style.top = Math.max(y, 90) + "px";
+    document.body.appendChild(el); setTimeout(function () { el.remove(); }, 2000);
+  }
+  document.addEventListener("click", function (e) {
+    if (!opened || !e.target.closest) return;
+    if (e.target.closest("#envelope, a, button, input, textarea, select, label, iframe, #scratch, #scratchWrap, #music")) return;
+    if (!RM) {
+      var r = cv.getBoundingClientRect();
+      for (var i = 0; i < 16; i++) petals.push(mk(e.clientX - r.left, e.clientY - r.top, true));
+      if (!running) { size(); running = true; requestAnimationFrame(loop); }
+    }
+    bless(e.clientX, e.clientY);
+  });
 
   /* ---------- confetti popper ---------- */
   var pc = $("#popper"), px = pc.getContext("2d"), bits = [], popRunning = false, PW = 0, PH = 0;
