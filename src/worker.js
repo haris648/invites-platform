@@ -108,7 +108,7 @@ const PRICING = {
 // To end it early or run a new one, change the date (or set percent to 0).
 const SALE = { percent: 20, label: "Launch offer", ends: "2026-10-28T23:59:59+05:00" };
 
-const RESERVED = new Set(["api", "try", "templates", "themes", "admin", "manage", "assets", "favicon.ico", "robots.txt", "404.html"]);
+const RESERVED = new Set(["api", "try", "templates", "themes", "admin", "manage", "assets", "favicon.ico", "robots.txt", "sitemap.xml", "404.html"]);
 const TIERS = ["basic", "guests"];   // basic = Invitation, guests = Invitation + Guest list
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const SLUG_RE = /^[a-z0-9](?:[a-z0-9-]{1,58}[a-z0-9])$/;

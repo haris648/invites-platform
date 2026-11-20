@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /manage/
+Disallow: /try/
+Disallow: /api/
+
+Sitemap: https://theinvitary.com/sitemap.xml
