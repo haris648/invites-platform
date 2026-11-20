@@ -48,7 +48,7 @@ td .btn.danger{color:var(--error);border-color:rgba(240,163,122,.5)}
   <div id="app" hidden style="display:grid;gap:28px">
     <section class="card">
       <h2>Previews</h2>
-      <p class="muted" style="margin:0">Every try-on. When a customer pays, give their invitation a link and make it live.</p>
+      <p class="muted" style="margin:0">Try-ons from the last 8 hours (older ones expire and are deleted). When a customer pays, give their invitation a link and make it live.</p>
       <div class="tbl"><table><thead><tr><th>When</th><th>Couple</th><th>Email</th><th>Design</th><th></th></tr></thead><tbody id="drafts"></tbody></table></div>
       <div class="pager" id="draftPager" hidden><span class="muted" id="draftPage"></span><button class="btn" type="button" id="draftPrev">Previous</button><button class="btn" type="button" id="draftNext">Next</button></div>
     </section>
@@ -58,8 +58,8 @@ td .btn.danger{color:var(--error);border-color:rgba(240,163,122,.5)}
       <div class="tbl"><table><thead><tr><th>Link</th><th>Design</th><th>Status</th><th>Opens</th><th>Email</th><th></th></tr></thead><tbody id="invs"></tbody></table></div>
       <details style="margin-top:14px"><summary class="muted" style="cursor:pointer">Create without a preview (private designs)</summary>
         <div class="row" style="margin-top:10px">
-          <div class="field" style="flex:0 1 200px"><select id="newTpl" aria-label="Design"><option value="haris-ki-shadi">Haris ki Shadi</option><option value="lulua">Lulua</option></select></div>
-          <div class="field" style="flex:1 1 160px"><input id="newSlug" value="haris-ki-shadi" aria-label="Invitation link"></div>
+          <div class="field" style="flex:0 1 200px"><select id="newTpl" aria-label="Design"><option value="haris-filza-wedding">Haris &amp; Filza · Nikah (11 Dec)</option><option value="haris-ki-shadi">Haris ki Shadi</option><option value="lulua">Lulua</option></select></div>
+          <div class="field" style="flex:1 1 160px"><input id="newSlug" value="haris-filza-wedding" aria-label="Invitation link"></div>
           <button class="btn solid" type="button" id="newCreate">Create</button>
         </div>
         <p class="msg" id="newMsg" hidden></p>
@@ -184,10 +184,17 @@ async function makeLive(id, suggested) {
     <div class="field" style="flex:0 1 190px"><select aria-label="Package"><option value="basic">Invitation</option><option value="guests">Invitation + Guest list</option></select></div>
     <button class="btn solid" type="button" data-confirm="${esc(id)}">Create</button></div>`;
 }
+// Our own private cards: suggested link and the page title shown in browser tabs and WhatsApp previews
+const PRIVATE = {
+  "haris-filza-wedding": { slug: "haris-filza-wedding", title: "Haris & Filza | Nikah & Wedding" },
+  "haris-ki-shadi": { slug: "haris-ki-shadi", title: "Haris & Filza | Wedding Invitation" },
+};
+$("#newTpl").addEventListener("change", () => { const own = PRIVATE[$("#newTpl").value]; if (own) $("#newSlug").value = own.slug; });
 document.addEventListener("click", async (e) => {
   if (e.target.id !== "newCreate") return;
   try {
-    const { slug } = await api("invitations", { method: "POST", body: JSON.stringify({ slug: $("#newSlug").value.trim(), template: $("#newTpl").value, tier: $("#newTpl").value === "haris-ki-shadi" ? "guests" : "basic", data: $("#newTpl").value === "haris-ki-shadi" ? { pageTitle: "Haris & Filza | Wedding Invitation" } : {} }) });
+    const tpl = $("#newTpl").value, own = PRIVATE[tpl];
+    const { slug } = await api("invitations", { method: "POST", body: JSON.stringify({ slug: $("#newSlug").value.trim(), template: tpl, tier: own ? "guests" : "basic", data: own ? { pageTitle: own.title } : {} }) });
     await loadAll(); openEditor(slug);
   } catch (err) { say($("#newMsg"), err.message); }
 });

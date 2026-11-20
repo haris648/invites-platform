@@ -5,7 +5,7 @@
  * This Worker only runs for the dynamic routes:
  *
  *   POST /api/try                  save a try-on draft, email the preview link
- *   GET  /try/:id                  show a theme filled with that draft (preview mode)
+ *   GET  /try/:id                  show a theme filled with that draft (preview mode, open for 8 hours)
  *   GET  /:slug                    a paid, live invitation
  *   GET  /:slug/:guest             the same invitation for one guest (name, seats, their events)
  *   POST /api/rsvp                 a guest's reply to a live invitation
@@ -36,17 +36,6 @@ const THEMES = {
     timeZone: "Asia/Karachi",
     rsvpOnPage: false,
     shareMessage: "Assalam o Alaikum {guest}! With great joy, {couple} invite you to celebrate their wedding with them. Please open your invitation: {link}",
-  },
-  // Sawari: the wedding car drives the guest along a red-carpet road, stopping at a decorated gate for each function.
-  "sawari": {
-    name: "Sawari",
-    path: "/themes/sawari/",
-    og: "/themes/sawari/og.jpg",
-    events: ["mehndi", "nikkah", "baraat", "walima"],
-    titles: { mehndi: "Mehndi", nikkah: "Nikkah", baraat: "Baraat", walima: "Walima" },
-    timeZone: "Asia/Karachi",
-    rsvpOnPage: false,
-    shareMessage: "Assalam o Alaikum {guest}! With great joy, {couple} invite you to celebrate their wedding with them. Hop in, your invitation is here: {link}",
   },
   // Resham: deep sage silk, a film for each function.
   "resham": {
@@ -82,6 +71,19 @@ const THEMES = {
     rsvpOnPage: false,
     shareMessage: "Assalam o Alaikum {guest}! With great joy, Haris & Filza invite you to their wedding. Please open your invitation: {link}",
   },
+  // Private: Haris & Filza's Nikah & Wedding, 11 Dec 2026. A copy of Lulua with its own files, English only,
+  // with an order of events and RSVP on WhatsApp. Not listed in the shop, not available to try.
+  "haris-filza-wedding": {
+    name: "Haris & Filza · Nikah",
+    private: true,
+    path: "/themes/haris-filza-wedding/",
+    og: "/themes/haris-filza-wedding/og.jpg",
+    events: ["wedding"],
+    titles: { wedding: "Nikah & Wedding" },
+    timeZone: "Asia/Karachi",
+    rsvpOnPage: false,
+    shareMessage: "Assalam o Alaikum {guest}! With great joy, Haris & Filza invite you to their Nikah & Wedding on 11th December. Please open your invitation: {link}",
+  },
   "ever-after": {
     name: "Ever After",
     path: "/themes/ever-after/",
@@ -107,6 +109,10 @@ const PRICING = {
 // Sale for every region. While it runs, the regular price is shown crossed out.
 // To end it early or run a new one, change the date (or set percent to 0).
 const SALE = { percent: 20, label: "Launch offer", ends: "2026-10-28T23:59:59+05:00" };
+
+// Try-on previews stay open for this long, then the link stops working and the row is deleted.
+const PREVIEW_HOURS = 8;
+const PREVIEW_MS = PREVIEW_HOURS * 3600e3;
 
 const RESERVED = new Set(["api", "try", "templates", "themes", "admin", "manage", "assets", "favicon.ico", "robots.txt", "sitemap.xml", "404.html"]);
 const TIERS = ["basic", "guests"];   // basic = Invitation, guests = Invitation + Guest list
@@ -178,13 +184,14 @@ async function createDraft(req, env, ctx, url) {
 
   const link = `${origin(env, url)}/try/${id}`;
   ctx.waitUntil(sendPreviewEmail(env, { email, bride, groom, themeName: theme.name, link }));
+  ctx.waitUntil(deleteExpiredDrafts(env).catch(() => {}));
   return json({ id, url: `/try/${id}` });
 }
 
 async function renderDraft(env, url, id) {
-  const draft = await env.DB.prepare("SELECT * FROM drafts WHERE id = ?").bind(id).first();
+  const draft = await env.DB.prepare("SELECT * FROM drafts WHERE id = ? AND created_at > ?").bind(id, Date.now() - PREVIEW_MS).first();
   const theme = draft && themeFor(draft.template);
-  if (!theme) return notFound(env, url);
+  if (!theme) return previewExpired(env);
 
   const data = JSON.parse(draft.data);
   const { bride, groom } = data.couple;
@@ -193,6 +200,27 @@ async function renderDraft(env, url, id) {
     title: `${bride} & ${groom} · Invitation preview`,
     description: `Your ${theme.name} wedding invitation preview`,
   });
+}
+
+// Removes previews older than PREVIEW_HOURS. Runs whenever a new preview is made and when the admin list loads.
+function deleteExpiredDrafts(env) {
+  return env.DB.prepare("DELETE FROM drafts WHERE created_at <= ?").bind(Date.now() - PREVIEW_MS).run();
+}
+
+// Shown for an old or unknown preview link: a kind note and a way to make a fresh one.
+function previewExpired(env) {
+  const wa = env.WHATSAPP_NUMBER ? `<a class="b o" href="https://wa.me/${env.WHATSAPP_NUMBER}">Chat on WhatsApp</a>` : "";
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Preview expired · The Invitary</title><meta name="robots" content="noindex">
+<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0e2426;color:#f6eedf;font-family:Georgia,serif;padding:24px;box-sizing:border-box}
+.c{max-width:420px;border:1px solid #c8a04f;border-radius:18px;padding:34px 26px;text-align:center}
+small{display:block;font-size:12px;letter-spacing:3px;color:#e6cd9f}h1{font-weight:400;font-style:italic;font-size:32px;margin:14px 0 8px}
+p{font-size:17px;line-height:1.55;color:#d9cfbd;margin:0 0 24px}.b{display:inline-block;margin:4px;padding:13px 24px;border-radius:999px;text-decoration:none;font-size:15px;background:#c8a04f;color:#241806}
+.b.o{background:none;border:1px solid #c8a04f;color:#e6cd9f}</style></head>
+<body><div class="c"><small>THE INVITARY</small><h1>This preview has expired</h1>
+<p>Previews stay open for ${PREVIEW_HOURS} hours. Make a new one with your names in a few seconds, free.</p>
+<a class="b" href="/#designs">Make a new preview</a>${wa}</div></body></html>`;
+  return new Response(html, { status: 410, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex" } });
 }
 
 /* ---------------- live invitations ---------------- */
@@ -300,8 +328,9 @@ async function admin(req, env, url, path) {
 
   // GET /api/admin/drafts
   if (resource === "drafts" && req.method === "GET") {
+    await deleteExpiredDrafts(env);
     const { results } = await env.DB.prepare("SELECT id, template, email, data, created_at FROM drafts ORDER BY created_at DESC LIMIT 500").all();
-    return json({ drafts: results.map((d) => ({ ...d, data: JSON.parse(d.data) })) });
+    return json({ drafts: results.map((d) => ({ ...d, data: JSON.parse(d.data), expires_at: d.created_at + PREVIEW_MS })) });
   }
 
   if (resource !== "invitations") return json({ error: "Unknown admin route." }, 404);
@@ -667,7 +696,7 @@ async function sendPreviewEmail(env, { email, bride, groom, themeName, link }) {
     <table width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;border:1px solid #c8a04f;border-radius:18px;padding:32px 28px;text-align:center">
       <tr><td style="font-size:12px;letter-spacing:3px;color:#e6cd9f;text-transform:uppercase">${esc(site)}</td></tr>
       <tr><td style="padding:18px 0 6px;font-size:34px;font-style:italic">${esc(bride)} &amp; ${esc(groom)}</td></tr>
-      <tr><td style="font-size:17px;line-height:1.5;color:#d9cfbd">Your ${esc(themeName)} invitation preview is ready. Open it any time from this link.</td></tr>
+      <tr><td style="font-size:17px;line-height:1.5;color:#d9cfbd">Your ${esc(themeName)} invitation preview is ready. This link stays open for ${PREVIEW_HOURS} hours.</td></tr>
       <tr><td style="padding:26px 0 10px"><a href="${link}" style="display:inline-block;background:#c8a04f;color:#241806;text-decoration:none;padding:14px 28px;border-radius:999px;font-size:15px;letter-spacing:1px">Open my preview</a></td></tr>
       <tr><td style="font-size:13px;color:#a99f8c;word-break:break-all">${link}</td></tr>
     </table>
@@ -681,7 +710,7 @@ async function sendPreviewEmail(env, { email, bride, groom, themeName, link }) {
       to: [email],
       subject: `${bride} & ${groom}: your invitation preview`,
       html,
-      text: `Your ${themeName} invitation preview is ready: ${link}`,
+      text: `Your ${themeName} invitation preview is ready (open for ${PREVIEW_HOURS} hours): ${link}`,
     }),
   });
   if (!res.ok) console.error("Resend error", res.status, await res.text());
