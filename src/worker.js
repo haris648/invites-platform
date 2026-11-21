@@ -232,7 +232,8 @@ async function renderInvitation(req, env, ctx, url, slug, guestKey) {
   if (!theme) return notFound(env, url);
 
   const config = { guest: null, ...JSON.parse(inv.data), slug, guestKey: guestKey || null };
-  let description = "You're invited";
+  // The line under the title in WhatsApp / social previews. Set "shareDescription" in an invitation's JSON to change it.
+  let description = config.shareDescription || "You're invited. Tap to open your invitation.";
 
   // Opens are counted for every visitor, except link-preview bots and anyone opening with ?check (you and the couple checking it)
   const ua = req.headers.get("user-agent") || "";
@@ -247,7 +248,7 @@ async function renderInvitation(req, env, ctx, url, slug, guestKey) {
     config.guest = { name: guest.name, seats: guest.seats || null };
     const allowed = guest.events ? JSON.parse(guest.events) : null;
     if (allowed?.length) config.selectedEvents = (config.selectedEvents || theme.events).filter((e) => allowed.includes(e));
-    description = `${guest.name}, you're invited`;
+    description = `${guest.name}, you're invited. Tap to open your invitation.`;
     // Remember that this guest opened their invitation
     if (counts) {
       const now = Date.now();
@@ -306,6 +307,14 @@ async function serveTheme(env, url, theme, config, meta, extraHeaders = {}) {
     .on('meta[property="og:description"]', { element: (el) => el.setAttribute("content", meta.description) })
     .on('meta[property="og:image"]', { element: (el) => el.setAttribute("content", ogImage) })
     .on('meta[property="og:url"]', { element: (el) => el.setAttribute("content", url.href) })
+    // Declare the share image fully (every theme's og.jpg is 1200×630), so WhatsApp and others can lay out the large preview.
+    .on('meta[property^="og:image:"], meta[property="og:site_name"], meta[name="twitter:card"], meta[name="twitter:image"]', { element: (el) => el.remove() })
+    .on("head", { element: (el) => el.append(
+      `<meta property="og:site_name" content="${esc(env.SITE_NAME || "The Invitary")}">` +
+      `<meta property="og:image:secure_url" content="${esc(ogImage)}"><meta property="og:image:type" content="image/jpeg">` +
+      `<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">` +
+      `<meta property="og:image:alt" content="${esc(meta.title)}">` +
+      `<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="${esc(ogImage)}">`, { html: true }) })
     .transform(res);
 
   return new Response(out.body, {
